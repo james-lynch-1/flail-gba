@@ -1,0 +1,7 @@
+.vscode/
+*.elf
+*.sav
+tiled-project/
+graphics/
+build/
+timeline.txt
