@@ -2,6 +2,6 @@
 *.elf
 *.sav
 tiled-project/
-graphics/
+/graphics/
 build/
 timeline.txt
