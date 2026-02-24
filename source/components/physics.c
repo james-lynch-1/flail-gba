@@ -1,4 +1,4 @@
-#include "physics.h"
+#include "component.h"
 
 // first use the input or ai components to add a vec to this vec, then clamp and decay speed, and apply gravity
 void updatePhysics() {

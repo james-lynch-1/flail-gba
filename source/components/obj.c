@@ -1,4 +1,4 @@
-#include "obj.h"
+#include "component.h"
 
 ObjComponent* addObjComponent(u32 entId, int posSourceCompType) {
     if (gNumCompsPerType[COMP_OBJ] > MAX_OBJ_COMPONENTS || entId > UINT16_MAX) return NULL;

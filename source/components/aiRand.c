@@ -1,4 +1,4 @@
-#include "aiRand.h"
+#include "component.h"
 
 void updateAiRand() {
     for (int i = 0; i < gNumCompsPerType[COMP_AI_RAND]; i++)

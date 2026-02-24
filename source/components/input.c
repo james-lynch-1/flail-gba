@@ -1,4 +1,4 @@
-#include "input.h"
+#include "component.h"
 
 void handleInputNormal(int entIndex) { // coupled to PhysicsComponent
     PhysicsComponent* ent = &gPhysCompsDense[gCompSetSparse[COMP_PHYSICS][entIndex]];
@@ -21,8 +21,9 @@ void handleInputNormal(int entIndex) { // coupled to PhysicsComponent
             }
         }
     }
-    if (key_hit(KEY_L | KEY_R))
+    if (key_hit(KEY_L | KEY_R)) {
         spawnEnemyWeak(qran_range(0, SCREEN_WIDTH) << 16, qran_range(0, SCREEN_HEIGHT) << 16);
+    }
     Vector dirVec = { {key_tri_horz() * ent->archetype->radius * ent->archetype->accel.WORD},
         {key_tri_vert() * ent->archetype->radius * ent->archetype->accel.WORD} };
     ent->vec = addVec(ent->vec, dirVec);

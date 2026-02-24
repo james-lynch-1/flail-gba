@@ -5,7 +5,7 @@
 #include "global.h"
 #include "graphics/graphics.h"
 #include "state.h"
-#include "components/component.h"
+#include "component.h"
 #include "encounter.h"
 #include "mem.h"
 

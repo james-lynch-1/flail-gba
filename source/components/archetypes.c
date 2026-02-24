@@ -1,4 +1,4 @@
-#include "archetypes.h"
+#include "component.h"
 
 int addPhysArchetypeCustom(void* data) {
     if (gNumCustomPhysArchetypes == MAX_PHYS_ARCHETYPES_CUSTOM) return 0;

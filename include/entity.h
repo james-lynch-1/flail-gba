@@ -2,7 +2,7 @@
 #define ENTITY
 
 #include "global.h"
-#include "physics.h"
+#include "component.h"
 
 void updatePlayerPos(PlayerEnt * ent);
 

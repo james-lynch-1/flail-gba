@@ -18,5 +18,6 @@ int spawnEnemyWeak(int x, int y) {
     if (!objComp) return -1;
     if (!addComponentCustom(COMP_PHYSICS_SIMPLE, &phys)) return -1;
     if (!addComponentCustom(COMP_AI_RAND, &ai)) return -1;
-    return 1;
+    return entId;
+    // TODO: logic to undo the whole process if one of these fails
 }
