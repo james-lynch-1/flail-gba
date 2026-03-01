@@ -1,13 +1,13 @@
 #include "component.h"
 
-ObjComponent* addObjComponent(u32 entId, int posSourceCompType) {
-    if (gNumCompsPerType[COMP_OBJ] > MAX_OBJ_COMPONENTS || entId > UINT16_MAX) return NULL;
+ObjComponent* addComponentObj(s16 entId, u16 flags, int posSourceCompType) {
+    if (gNumCompsPerType[COMP_OBJ] > MAX_OBJ_COMPONENTS || entId > INT16_MAX) return NULL;
     ObjComponent o = {
-        {entId, COMP_OBJ, 0},
+        {entId, 0},
         &gObjBuffer[gNumCompsPerType[COMP_OBJ]],
         posSourceCompType
     };
-    ObjComponent* objComp = (ObjComponent*)addComponentCustom(COMP_OBJ, &o);
+    ObjComponent* objComp = (ObjComponent*)addComponentCustom(&o, COMP_OBJ);
     return objComp;
 }
 
@@ -15,10 +15,10 @@ ObjComponent* addObjComponent(u32 entId, int posSourceCompType) {
 void updateObjs() {
     for (int i = 0; i < gNumCompsPerType[COMP_OBJ]; i++) {
         int posSourceCompType = gObjCompsDense[i].posSourceCompType;
-        ComponentHeader* physComp = (ComponentHeader*)(gDenseSetAddresses[posSourceCompType] +
-            gCompSetSparse[posSourceCompType][gObjCompsDense[i].header.entIndex] * gCompSizes[posSourceCompType]);
-        PhysArchetype arch = **(PhysArchetype**)((int)physComp + sizeof(ComponentHeader) + sizeof(Position));
-        Position pos = *(Position*)((int)physComp + sizeof(ComponentHeader));
+        ComponentHeader* physComp = (ComponentHeader*)(denseSetAddr(posSourceCompType) +
+            gCompSetSparse[posSourceCompType][gObjCompsDense[i].header.entId] * compSize(posSourceCompType));
+        PhysArchetype arch = **(PhysArchetype**)((uint32_t)physComp + sizeof(ComponentHeader) + sizeof(Position));
+        Position pos = *(Position*)((uint32_t)physComp + sizeof(ComponentHeader));
 
         if (!in_range(pos.x.HALF.HI, 0 - arch.hitbox.width / 2, SCREEN_WIDTH + arch.hitbox.height / 2) ||
             !in_range(pos.y.HALF.HI, 0 - arch.hitbox.width / 2, SCREEN_HEIGHT + arch.hitbox.height / 2))

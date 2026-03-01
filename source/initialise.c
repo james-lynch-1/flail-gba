@@ -16,7 +16,7 @@ void initialiseGame() {
     memset32(&gEntFlags, 0, sizeof(gEntFlags) / 4);
     memset16(gCompSetSparse, -1, NUM_COMP_TYPES * MAX_ENTS);
     memset32(gEntsToDelete, 0, sizeof(gEntsToDelete) / 4);
-    initialisePlayerComps();
+    spawnPlayer(120 << 16, 80 << 16);
 
     // initialisePlayer();
     // initialiseEntities();

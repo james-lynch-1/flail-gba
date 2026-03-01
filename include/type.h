@@ -2,8 +2,9 @@
 #define TYPE
 
 #include "tonc.h"
+#include "constants.h"
 
-// ent flags:
+// ent flags
 #define ENT_ACTIVE      0b1000000000000000 // active
 #define ENT_PERSIST     0b0100000000000000 // persists when off screen
 #define ENT_AFFINE      0b0010000000000000 // uses affine object
@@ -31,6 +32,11 @@ typedef enum {
     COMP_PHYSICS,
     COMP_PHYSICS_SIMPLE,
     COMP_AI_RAND,
+    COMP_TIMER,
+    COMP_COUNTER,
+    COMP_SPAWNER,
+    COMP_MEMBER,
+    COMP_GROUP,
     NUM_COMP_TYPES
 } ComponentType;
 
@@ -131,12 +137,23 @@ typedef struct Viewport_ {
 
 // stuff for entities
 
-typedef int EntId;
+typedef s16 entId;
 
 typedef struct Position_ {
     SWord x;
     SWord y;
 } Position;
+
+typedef struct PositionMini_ {
+    u8 x;
+    u8 y;
+} PositionMini;
+
+// data for spawning a star line, not the in-game object.
+// Terminated by a [255, 255] position
+typedef struct StarLine_ {
+    PositionMini starPos[MAX_STARLINE_LENGTH];
+} StarLine;
 
 typedef struct Hitbox_ {
     u8 width;
@@ -233,7 +250,7 @@ typedef struct Encounter_ {
     int length; // in seconds
     void* music;
     enum Objective objective;
-    void* spawnSchedule;
+    int spawnScheduleIndex;
 } Encounter;
 
 typedef struct EncounterSet_ {
@@ -255,9 +272,9 @@ typedef enum Direction_ {
 } Direction;
 
 typedef struct ComponentHeader_ {
-    u16 entIndex; // 2 bytes
-    u8 componentType; // 1 byte
-    u8 flags; // 1 byte
+    s16 entId;
+    // u8 componentType;
+    u16 flags;
 } ComponentHeader;
 
 typedef struct ObjComponent_ {
@@ -282,7 +299,7 @@ typedef struct AudioComponent_ {
 
 typedef struct InputComponent_ {
     ComponentHeader header;
-    void (*inputHandler)(int index);
+    void (*inputHandler)(s16 entId);
 } InputComponent;
 
 #define PHYS_GRAVITY_FLAG        0b10000000
@@ -301,6 +318,7 @@ typedef struct PhysicsComponent_ {
     Position pos; // 8 bytes. should always be after header for updateObjs()
     PhysArchetype* archetype; // 4 bytes. should always be after header and pos for updateObjs()
     Vector vec; // 8 bytes
+    void (*onCollide)(struct PhysicsComponent_);
     u16 angle; // 2 bytes
 } PhysicsComponent;
 
@@ -315,5 +333,52 @@ typedef struct SimplePhysicsComponent_ {
 typedef struct AiRandComponent_ {
     ComponentHeader header; // 4 bytes
 } AiRandComponent;
+
+typedef struct TimerComponent_ {
+    ComponentHeader header; // 4 bytes
+    u32 time; // 4 bytes
+    void(*callback)(); // 4 bytes
+} TimerComponent;
+
+typedef struct CounterComponent_ {
+    ComponentHeader header; // 4 bytes
+    u16 counter; // 2 bytes
+    u16 goal; // 2 bytes
+    void(*callback)(); // 4 bytes
+} CounterComponent;
+
+typedef struct SpawnerComponent_ {
+    ComponentHeader header; // 4 bytes
+    Position pos; // 8 bytes
+    u16 entType; // 2 bytes
+    u16 spawnerBehaviourIdx; // 2 bytes
+    u16 frequency; // 2 bytes
+    u16 timer; // 2 bytes
+} SpawnerComponent;
+
+// member flags, to denote the kind of ent the member is,
+// and to denote whether the member has been collected
+#define MEMBER_ITEM             0b0000000000000001u
+#define MEMBER_ENEMY            0b0000000000000010u
+#define MEMBER_PLAYER           0b0000000000000100u
+#define MEMBER_TIMER            0b0000000000001000u
+#define MEMBER_GROUP            0b0000000000010000u
+#define MEMBER_IS_COLLECTED     0b1000000000000000u
+
+typedef struct MemberComponent_ {
+    ComponentHeader header; // 4 bytes
+    int groupId; // 4 bytes
+} MemberComponent;
+
+typedef struct GroupComponent_ {
+    ComponentHeader header; // 4 bytes
+    u16 memberIds[24]; // 48 bytes - max 24 members
+    void (*onCollect)(struct MemberComponent_*); // 4 bytes
+    u8 numCollected; // 1 byte
+    u8 numMembers; // 1 byte
+} GroupComponent;
+
+// star line entity has multiple star components, each with the same entId (obvs)
+// 
 
 #endif

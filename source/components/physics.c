@@ -38,11 +38,20 @@ void updatePhysics() {
             ent->vec.y.WORD = 0;
         }
 
-        // for (int i = 0; i < gNumCompsPerType[COMP_PHYSICS_SIMPLE]; i++) {
-        //     if (checkPhysToSimplePhysCollision(ent, &(gSimplePhysCompsDense[i]))) {
-        //         markEntToBeDeleted(gSimplePhysCompsDense[i].header.entIndex);
-        //     }
-        // }
+        // do collision with every single simplephysicscomponent :O
+        for (int i = 0; i < gNumCompsPerType[COMP_PHYSICS_SIMPLE]; i++) {
+            SimplePhysicsComponent* spc = &(gSimplePhysCompsDense[i]);
+            if (checkPhysToSimplePhysCollision(ent, spc)) {
+                markEntToBeDeleted(spc->header.entId);
+                // if member of group, do that group's collection action
+                MemberComponent* mComp = getComponent(spc->header.entId, COMP_MEMBER);
+                if (mComp) {
+                    GroupComponent* gComp = (GroupComponent*)getComponent(mComp->groupId, COMP_GROUP);
+                    gComp->numCollected++;
+                    gComp->onCollect(mComp);
+                }
+            }
+        }
 
         if (!in_range(ent->pos.x.HALF.HI, 0 + ent->archetype->hitbox.width / 2, SCREEN_WIDTH - ent->archetype->hitbox.width / 2))
             ent->vec.x.WORD += (reflect(ent->pos.x.HALF.HI, 0, SCREEN_WIDTH) - ent->pos.x.HALF.HI) << 14;
@@ -58,17 +67,14 @@ void updatePhysics() {
 void updatePhysicsSimple() {
     for (int i = 0; i < gNumCompsPerType[COMP_PHYSICS_SIMPLE]; i++) {
         SimplePhysicsComponent* ent = &gSimplePhysCompsDense[i];
-        ent->vec.x.WORD = ent->archetype->radius *
-            lu_cos(ent->angle) << 4;
-        ent->vec.y.WORD = ent->archetype->radius *
-            -lu_sin(ent->angle) << 4;
+        ent->vec.x.WORD = ent->archetype->radius * lu_cos(ent->angle) << 4;
+        ent->vec.y.WORD = ent->archetype->radius * -lu_sin(ent->angle) << 4;
         if (!in_range(ent->pos.x.HALF.HI, 0 + ent->archetype->hitbox.width / 2, SCREEN_WIDTH - ent->archetype->hitbox.width / 2))
             ent->vec.x.WORD += (reflect(ent->pos.x.HALF.HI, 0, SCREEN_WIDTH) - ent->pos.x.HALF.HI) << 14;
         if (!in_range(ent->pos.y.HALF.HI, 0 + ent->archetype->hitbox.height / 2, SCREEN_HEIGHT - ent->archetype->hitbox.height / 2))
             ent->vec.y.WORD += (reflect(ent->pos.y.HALF.HI, 0, SCREEN_HEIGHT) - ent->pos.y.HALF.HI) << 14;
         ent->pos.x.WORD += ent->vec.x.WORD;
         ent->pos.y.WORD += ent->vec.y.WORD;
-        // TODO: clamp movement to screen
     }
 }
 

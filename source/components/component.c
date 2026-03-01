@@ -1,40 +1,50 @@
 #include "component.h"
 
-ComponentHeader* addComponentCustom(int componentType, void* data) {
+ComponentHeader* addComponentCustom(void* data, ComponentType componentType) {
     if (componentType >= NUM_COMP_TYPES ||
-        gNumCompsPerType[componentType] >= gMaxCompsPerType[componentType]) return NULL;
-    ComponentHeader* dest = (void*)gDenseSetAddresses[componentType] + (int)gCompSizes[componentType] * gNumCompsPerType[componentType];
-    memcpy32((void*)dest, data, gCompSizes[componentType] / 4);
-    gCompSetSparse[componentType][((ComponentHeader*)data)->entIndex] = gNumCompsPerType[componentType]++;
+        gNumCompsPerType[componentType] >= maxComps(componentType))
+        return NULL;
+    ComponentHeader* dest = (void*)denseSetAddr(componentType) + compSize(componentType) * gNumCompsPerType[componentType];
+    memcpy32((void*)dest, data, compSize(componentType) / 4);
+    gCompSetSparse[componentType][((ComponentHeader*)data)->entId] = gNumCompsPerType[componentType]++;
     return dest;
 }
 
-// moves last component in list to the slot of the one being removed
-// updates the corresponding entry in gCompSetSparse[componentType] to -1
-// decrements gNumCompsPerType[componentType]
 void removeComponent(int index, int componentType) {
-    if (gCompSetSparse[componentType][index] == -1) return;
+    if (gCompSetSparse[componentType][index] == -1) return; // in case component doesn't exist
     int denseIndex = gCompSetSparse[componentType][index];
     gCompSetSparse[componentType][index] = -1;
     if (gNumCompsPerType[componentType] == 1) {
         gNumCompsPerType[componentType]--;
     }
     if (gNumCompsPerType[componentType] == 0) return;
-    int replacementEntIndex = ((ComponentHeader*)(gDenseSetAddresses[componentType] +
-        gCompSizes[componentType] * (gNumCompsPerType[componentType] - 1)))->entIndex;
-    void* dst = (void*)(gDenseSetAddresses[componentType] + gCompSizes[componentType] * denseIndex);
-    void* src = (void*)(gDenseSetAddresses[componentType] + gCompSizes[componentType] * (gNumCompsPerType[componentType] - 1));
-    memcpy32(dst, src, gCompSizes[componentType] / 4);
+    int replacementEntId = ((ComponentHeader*)(denseSetAddr(componentType) +
+        compSize(componentType) * (gNumCompsPerType[componentType] - 1)))->entId;
+    void* dst = (void*)(denseSetAddr(componentType) + compSize(componentType) * denseIndex);
+    // void* dst = (void*)(gCompTable[componentType][COMP_DSET_ADDRESSES] + compSize[componentType] * denseIndex);
+    void* src = (void*)(denseSetAddr(componentType) + compSize(componentType) * (gNumCompsPerType[componentType] - 1));
+    memcpy32(dst, src, compSize(componentType) / 4);
     // memset32(src, 0, sizeof(ComponentHeader) / 4);
-    gCompSetSparse[componentType][replacementEntIndex] = denseIndex;
+    gCompSetSparse[componentType][replacementEntId] = denseIndex;
     gNumCompsPerType[componentType]--;
 }
 
-void* getComponent(int index, int componentType) {
-    return (void*)gDenseSetAddresses[componentType] + (int)gCompSizes[componentType] * gCompSetSparse[componentType][index];
+bool hasComponent(s16 entId, int componentType) {
+    int index = gCompSetSparse[componentType][entId];
+    return index != -1;
 }
 
-void removeObjComponent(u32 entId) {
+void* getComponent(s16 entId, int componentType) {
+    if (hasComponent(entId, componentType))
+        return denseSetAddr(componentType) + compSize(componentType) * gCompSetSparse[componentType][entId];
+    return NULL;
+}
+
+void* getComponentFromDenseIndex(int denseIndex, int componentType) {
+    return denseSetAddr(componentType) + compSize(componentType) * denseIndex;
+}
+
+void removeObjComponent(s16 entId) {
     ObjComponent* o = &gObjCompsDense[gCompSetSparse[COMP_OBJ][entId]];
     for (int i = 0; i < gNumSpritesAllocated; i++) {
         if (gSpriteAllocList[i].arrIndex == (o->obj->attr2 & ATTR2_ID_MASK)) {
@@ -52,21 +62,36 @@ void removeObjComponent(u32 entId) {
     removeComponent(entId, COMP_OBJ);
 }
 
+ComponentType getComponentType(ComponentHeader* compPtr) {
+    for (int i = 0; i < NUM_COMP_TYPES; i++)
+        if ((uint32_t)compPtr >= (uint32_t)denseSetAddr(i))
+            return i;
+    return -1;
+}
+
 void initialiseComponentArrays() {
     memset32(&gNumCompsPerType, 0, sizeof(gNumCompsPerType) / 4);
     for (int i = 0; i < NUM_COMP_TYPES; i++) {
-        if (!gDenseSetAddresses[i]) break;
-        memset32((void*)gDenseSetAddresses[i], 0, gCompSizes[i] / 4);
-    }
-    for (int i = 0; i < NUM_COMP_TYPES; i++) {
-        memset32(&gCompSetSparse[i], 0, MAX_ENTS / 4);
+        if (!denseSetAddr(i)) break;
+        // memset32((void*)denseSetAddr[i], 0, compSize[i] / 4);
+        // make the index from the dense set comp to the 
+        for (int j = 0; j < maxComps(i); j++) {
+            ComponentHeader* compHeader = denseSetAddr(i) + compSize(i) * j;
+            compHeader->entId = -1;
+        }
+        // -1 means there is no comp of this type for this ent
+        for (int j = 0; j < MAX_ENTS; j++)
+            gCompSetSparse[i][j] = -1;
     }
 }
 
 int reserveEntSlot() {
     if (gNumEnts == MAX_ENTS) return -1;
-    gEntFlags[gNumEnts] = true;
-    return gNumEnts++;
+    int i = 0;
+    while (gEntFlags[i] != 0) i++;
+    gEntFlags[i] = true;
+    gNumEnts++;
+    return i;
 }
 
 void markEntToBeDeleted(int index) {

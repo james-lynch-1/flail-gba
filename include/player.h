@@ -3,6 +3,7 @@
 
 #include "component.h"
 
-int initialisePlayerComps();
+/** Spawns player at x, y (x and y are SplitWords) */
+int spawnPlayer(int x, int y);
 
 #endif

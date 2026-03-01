@@ -36,7 +36,7 @@ int allocateObj(const u16* tiles, int tilesLen) {
             gObjAllocArr[i] = OBJ_SLOT_USED;
             for (i++; i < numBlocksReqd; i++)
                 gObjAllocArr[i] = OBJ_SLOT_CONTINUE;
-            memcpy32(MEM_VRAM_OBJ + (void*)(index * 32), tiles, tilesLen / 4);
+            memcpy32(MEM_VRAM_OBJ + (void*)(uint32_t)(index * 32), tiles, tilesLen / 4);
             return index;
         }
     }

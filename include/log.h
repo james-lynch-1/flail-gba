@@ -1,7 +1,5 @@
 #ifndef LOG
 #define LOG
-#ifndef logh
-#define logh
 
 #include "type.h"
 #include <tonc.h>
@@ -17,8 +15,5 @@
 
 void mgbaLog(Type type, void* messagePtr);
 char* toHex(int num);
-
-#endif
-
 
 #endif
