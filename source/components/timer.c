@@ -14,3 +14,7 @@ void updateTimers() {
         }
     }
 }
+
+void removeComponentTimer(int entId) {
+    removeComponent(entId, COMP_TIMER);
+}

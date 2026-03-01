@@ -2,6 +2,7 @@
 
 int spawnPlayer(int x, int y) {
     int index = reserveEntSlot();
+    gPlayerId = index;
     if (index == -1) return -1;
 
     ObjComponent* o = addComponentObj(index, 0, COMP_PHYSICS);

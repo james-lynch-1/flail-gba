@@ -1,9 +1,9 @@
 #ifndef STAR
 #define STAR
 
-#include "main.h"
-#include "type.h"
-#include "log.h"
+#include "global.h"
+#include "entity.h"
+#include "component.h"
 
 // a star pattern is an array of mini position structs. Each element
 // is an offset from the first star. Therefore, spawning any given

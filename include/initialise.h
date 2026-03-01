@@ -11,12 +11,6 @@
 
 void initialiseGame();
 
-void initialisePlayer();
-
-void initialiseEntities();
-
-Entity* allocEntities();
-
 void loadSprites();
 
 #endif

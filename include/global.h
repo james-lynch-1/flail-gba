@@ -17,6 +17,8 @@ extern int gNumCustomPhysArchetypes;
 extern int gNumSpritesAllocated;
 extern int gNumEntsToDelete;
 
+extern s16 gPlayerId;
+
 extern OBJ_ATTR gObjBuffer[128];
 extern OBJ_AFFINE* gObjAffBuffer;
 extern u8 gObjAllocArr[1024];
@@ -25,9 +27,6 @@ extern u8 gEntsToDelete[MAX_ENTS];
 
 extern GameState gGameState;
 extern u32 gFlags;
-extern PlayerEnt gPlayer;
-extern Entity* gEntities;
-extern Entity* gFirstAvailableEntSlot;
 extern Direction gDPadDir;
 
 extern u8 gEntFlags[MAX_ENTS];
@@ -42,7 +41,6 @@ extern PhysicsComponent gPhysCompsDense[MAX_PHYSICS_COMPONENTS];
 extern SimplePhysicsComponent gSimplePhysCompsDense[MAX_SIMPLE_PHYSICS_COMPONENTS];
 extern AiRandComponent gAiRandCompsDense[MAX_AI_RAND_COMPONENTS];
 extern TimerComponent gTimerCompsDense[MAX_TIMER_COMPONENTS];
-extern CounterComponent gCounterCompsDense[MAX_COUNTER_COMPONENTS];
 extern SpawnerComponent gSpawnerCompsDense[MAX_SPAWNER_COMPONENTS];
 extern MemberComponent gMemberCompsDense[MAX_MEMBER_COMPONENTS];
 extern GroupComponent gGroupCompsDense [MAX_GROUP_COMPONENTS];
@@ -53,17 +51,21 @@ extern PhysArchetype gPhysArchetypesCustom[MAX_PHYS_ARCHETYPES_CUSTOM];
 
 extern int gNumCompsPerType[NUM_COMP_TYPES];
 
-/** Table with addresses of component dense sets, sizes of comps, and max comps per type */
-enum gCompTableIndexes { COMP_DSET_ADDRESSES, COMP_SIZES, COMP_MAX_PER_TYPE };
+/** Table with addresses of comp dense sets, sizes of comps, max comps per type and comp removers */
+enum gCompTableIndexes { COMP_DSET_ADDRESSES, COMP_SIZES, COMP_MAX_PER_TYPE, COMP_REMOVERS };
 
 #define denseSetAddr(x) (void*)gCompTable[x][COMP_DSET_ADDRESSES]
 #define compSize(x) (int)gCompTable[x][COMP_SIZES]
 #define maxComps(x) (int)gCompTable[x][COMP_MAX_PER_TYPE]
-#define numComps(x) gNumCompsPerType[NUM_COMP_TYPES][x]
+#define numComps(x) gNumCompsPerType[x]
 
-extern const uint32_t gCompTable[NUM_COMP_TYPES][3];
+extern const uint32_t gCompTable[NUM_COMP_TYPES][4];
 
 // sparse sets for components. each element is an index into the dense array
 extern s16 gCompSetSparse[NUM_COMP_TYPES][MAX_ENTS];
+
+// entities
+
+extern int (*gEntSpawners[NUM_ENT_KINDS])(int x, int y);
 
 #endif

@@ -1,7 +1,7 @@
 #include "component.h"
 
 ObjComponent* addComponentObj(s16 entId, u16 flags, int posSourceCompType) {
-    if (gNumCompsPerType[COMP_OBJ] > MAX_OBJ_COMPONENTS || entId > INT16_MAX) return NULL;
+    if (gNumCompsPerType[COMP_OBJ] >= MAX_OBJ_COMPONENTS || entId < 0) return NULL;
     ObjComponent o = {
         {entId, 0},
         &gObjBuffer[gNumCompsPerType[COMP_OBJ]],
@@ -9,6 +9,24 @@ ObjComponent* addComponentObj(s16 entId, u16 flags, int posSourceCompType) {
     };
     ObjComponent* objComp = (ObjComponent*)addComponentCustom(&o, COMP_OBJ);
     return objComp;
+}
+
+void removeComponentObj(s16 entId) {
+    ObjComponent* o = &gObjCompsDense[gCompSetSparse[COMP_OBJ][entId]];
+    for (int i = 0; i < gNumSpritesAllocated; i++) {
+        if (gSpriteAllocList[i].arrIndex == (o->obj->attr2 & ATTR2_ID_MASK)) {
+            gSpriteAllocList[i].numUsing--;
+            if (gSpriteAllocList[i].numUsing == 0) {
+                deallocateObj(gSpriteAllocList[i].arrIndex);
+                gSpriteAllocList[i] = gSpriteAllocList[gNumSpritesAllocated-- - 1];
+            }
+            break;
+        }
+    }
+    o->obj->attr0 = 512;
+    o->obj->attr1 = 0;
+    o->obj->attr2 = 0;
+    removeComponent(entId, COMP_OBJ);
 }
 
 // updates the pos based on the pos provided by corresponding comp of type posSourceCompType

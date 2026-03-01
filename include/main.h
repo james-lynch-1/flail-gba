@@ -2,6 +2,7 @@
 #define MAIN
 
 #include "global.h"
+#include "entity.h"
 #include "encounter.h"
 #include "star.h"
 #include "enemy.h"

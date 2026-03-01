@@ -24,6 +24,15 @@ enum PhysArchetype {
 };
 
 typedef enum {
+    ENT_PLAYER,
+    ENT_ENEMY_WEAK,
+    ENT_ENEMY,
+    ENT_ITEM,
+    ENT_CUSTOM,
+    NUM_ENT_KINDS
+} EntityKind;
+
+typedef enum {
     COMP_OBJ,
     COMP_OBJ_AFF,
     COMP_TILE,
@@ -33,7 +42,6 @@ typedef enum {
     COMP_PHYSICS_SIMPLE,
     COMP_AI_RAND,
     COMP_TIMER,
-    COMP_COUNTER,
     COMP_SPAWNER,
     COMP_MEMBER,
     COMP_GROUP,
@@ -170,65 +178,6 @@ typedef struct Vector_ {
 #define ILK_ENEMY   0
 #define ILK_ITEM    1
 
-typedef struct PlayerEnt_ {
-    // shadow OAM entries
-    OBJ_ATTR* obj; // 4 bytes
-    OBJ_AFFINE* obj_aff; // 4 bytes
-
-    // important
-    Position position; // 8 bytes
-    Hitbox hitbox; // 8 bytes
-    int health; // 4 bytes
-    int radius; // 4 bytes. Top speed
-    SWord accel; // 4 bytes
-    Vector vec; // 8 bytes
-    int angleOffset; // 4 bytes
-    u16 angle; // 2 bytes
-    u16 angleVisual; // 2 bytes
-    u16 remoteControlCountdown; // 2 bytes. No. of frames before control is handed back to the player. 65535 means indefinite
-    u8 invincibleTime; // 1 byte
-    u8 toBeDeleted; // 1 byte
-
-    // visual
-    u8 animationState; // 1 byte
-    u8 animFrames; // 1 byte. how many frames ent has been in current animation state
-} PlayerEnt;
-
-typedef struct Entity_ {
-    // this union to be used for the position when object is active,
-    // and a ptr to the next free ent when object is inactive
-    union {
-        Position position;
-        struct Entity_* next;
-    } state; // 8 bytes
-    Hitbox hitbox; // 8 bytes
-
-    // shadow OAM entries
-    OBJ_ATTR* obj; // 4 bytes
-    OBJ_AFFINE* obj_aff; // 4 bytes
-
-    // ai stuff
-    u8 turnFrequency;
-
-    int health; // 4 bytes
-    int radius; // 4 bytes. Top speed
-    SWord accel; // 4 bytes
-    Vector vec; // 8 bytes
-    int angleOffset; // 4 bytes
-    u16 angle; // 2 bytes
-    u16 angleVisual; // 2 bytes
-    s16 lifetime; // 2 bytes
-    u16 invincibleTime; // 2 bytes
-
-    // 13-0: unused
-    u16 flags; // 2 bytes
-    u8 ilk; // 1 byte. 0: player, 1: enemy
-
-    // visual
-    u8 animationState; // 1 byte
-    u8 animFrames; // 1 byte. how many frames ent has been in current animation state
-} Entity;
-
 typedef struct SpriteAllocList_ {
     const u16* tileData; // 4 bytes
     u16 arrIndex; // 2 bytes
@@ -340,13 +289,6 @@ typedef struct TimerComponent_ {
     void(*callback)(); // 4 bytes
 } TimerComponent;
 
-typedef struct CounterComponent_ {
-    ComponentHeader header; // 4 bytes
-    u16 counter; // 2 bytes
-    u16 goal; // 2 bytes
-    void(*callback)(); // 4 bytes
-} CounterComponent;
-
 typedef struct SpawnerComponent_ {
     ComponentHeader header; // 4 bytes
     Position pos; // 8 bytes
@@ -356,15 +298,7 @@ typedef struct SpawnerComponent_ {
     u16 timer; // 2 bytes
 } SpawnerComponent;
 
-// member flags, to denote the kind of ent the member is,
-// and to denote whether the member has been collected
-#define MEMBER_ITEM             0b0000000000000001u
-#define MEMBER_ENEMY            0b0000000000000010u
-#define MEMBER_PLAYER           0b0000000000000100u
-#define MEMBER_TIMER            0b0000000000001000u
-#define MEMBER_GROUP            0b0000000000010000u
-#define MEMBER_IS_COLLECTED     0b1000000000000000u
-
+// member uses the header flags to determine what ent kind it is
 typedef struct MemberComponent_ {
     ComponentHeader header; // 4 bytes
     int groupId; // 4 bytes

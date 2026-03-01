@@ -9,3 +9,7 @@ void updateAiRand() {
         physComp->angle += qran_range(-1, 2) * qran_range(0x1000, 0x2000);
     }
 }
+
+void removeComponentAiRand(int entId) {
+    removeComponent(entId, COMP_AI_RAND);
+}

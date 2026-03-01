@@ -18,8 +18,6 @@ void initialiseGame() {
     memset32(gEntsToDelete, 0, sizeof(gEntsToDelete) / 4);
     spawnPlayer(120 << 16, 80 << 16);
 
-    // initialisePlayer();
-    // initialiseEntities();
     loadEncounter(&firstEncounter);
     // loadBG(MAP_SBB, gradientPal, gradientPalLen, gradientTiles, gradientTilesLen, gradientMap, gradientMapLen);
     // ui:
@@ -29,68 +27,6 @@ void initialiseGame() {
     setGameState(NORMAL);
 
     gGameState.enterFunction();
-}
-
-void initialisePlayer() {
-    PlayerEnt p = {
-        &gObjBuffer[127], &gObjAffBuffer[0],
-        {{120 << 16}, {80 << 16}},
-        {12, 12, 0, 0},
-        20,
-        5, // radius
-        {0x5000}, // accel
-        {{0}, {0}}, // vector
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-    };
-    gPlayer = p;
-    // initialise player obj
-    gObjBuffer[127].attr0 = ATTR0_REG;
-    gObjBuffer[127].attr1 = ATTR1_SIZE_16x16;
-    gObjBuffer[127].attr2 = ATTR2_ID(0);
-}
-
-void initialiseEntities() {
-    gEntities = allocEntities();
-    gFirstAvailableEntSlot = gEntities;
-
-    Entity enemy = {
-        {{{0}, {0}}},
-        {8, 8, 0, 0},
-        &gObjBuffer[1], NULL,
-        WEAK_TURN_FREQ,
-        1, // health
-        1, // radius
-        {0x1000}, // accel
-        {{0}, {0}}, // vector
-        0,
-        0,
-        0,
-        0,
-        0, // flags
-        ILK_ENEMY,
-        0, // animationState
-        0, // animFrames
-    };
-
-    for (int i = 0; i < MAX_ENTS; i++) {
-        memcpy32(&gEntities[i], &enemy, sizeof(Entity) / 4);
-        gEntities[i].state.next = &gEntities[i + 1];
-        gEntities[i].obj = &gObjBuffer[i];
-        gEntities[i].obj->attr2 = ATTR2_ID(4);
-    }
-    gEntities[MAX_ENTS - 1].state.next = NULL;
-}
-
-Entity* allocEntities() {
-    Entity* ents = malloc(sizeof(Entity) * MAX_ENTS);
-    return ents;
 }
 
 void loadSprites() {

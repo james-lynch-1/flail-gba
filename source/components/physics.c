@@ -124,3 +124,11 @@ Vector scalarMultVec(Vector vec, int scalar) {
     Vector newVec = { {vec.x.WORD * scalar}, {vec.y.WORD * scalar} };
     return newVec;
 }
+
+void removeComponentPhysics(int entId) {
+    removeComponent(entId, COMP_PHYSICS);
+}
+
+void removeComponentPhysicsSimple(int entId) {
+    removeComponent(entId, COMP_PHYSICS_SIMPLE);
+}

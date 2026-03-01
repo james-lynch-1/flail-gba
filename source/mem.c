@@ -25,6 +25,9 @@ int allocateObj(const u16* tiles, int tilesLen) {
     u32 index = 0;
     for (int i = 0; i < 1024; i += numBlocksReqd) {
         for (int j = i; j < i + numBlocksReqd; j++) {
+            if (i < 0)
+                logSomething();
+            // ZZZ remove the above it's dumb
             if (gObjAllocArr[j] != OBJ_SLOT_UNUSED) {
                 found = false;
                 break;
@@ -34,7 +37,7 @@ int allocateObj(const u16* tiles, int tilesLen) {
         if (found) {
             index = i;
             gObjAllocArr[i] = OBJ_SLOT_USED;
-            for (i++; i < numBlocksReqd; i++)
+            for (++i; i < numBlocksReqd; i++)
                 gObjAllocArr[i] = OBJ_SLOT_CONTINUE;
             memcpy32(MEM_VRAM_OBJ + (void*)(uint32_t)(index * 32), tiles, tilesLen / 4);
             return index;
