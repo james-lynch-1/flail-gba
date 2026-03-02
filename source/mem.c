@@ -1,6 +1,5 @@
 #include "mem.h"
 
-// returns index of sprite data in gObjAllocArr, allocating a new one if not found
 int fetchSprite(const u16* tiles, int tilesLen) {
     for (int i = 0; i < gNumSpritesAllocated; i++) {
         if (gSpriteAllocList[i].tileData == tiles) {
@@ -15,19 +14,13 @@ int fetchSprite(const u16* tiles, int tilesLen) {
     return index;
 }
 
-// https://www.gamedeveloper.com/programming/gameboy-advance-resource-management
-// 'OBJ Sprite Memory Management'
-// returns -1 if unsuccessful, returns index in allocation array if successful
 int allocateObj(const u16* tiles, int tilesLen) {
-    if (tilesLen < 32 || tilesLen > 2048 || (tilesLen & (tilesLen - 1)) != 0) return -1;
+    if ((tilesLen < 32) || (tilesLen > 2048) || (tilesLen & (tilesLen - 1)) != 0) return -1;
     int numBlocksReqd = tilesLen / 32;
     bool found = false;
     u32 index = 0;
     for (int i = 0; i < 1024; i += numBlocksReqd) {
         for (int j = i; j < i + numBlocksReqd; j++) {
-            if (i < 0)
-                logSomething();
-            // ZZZ remove the above it's dumb
             if (gObjAllocArr[j] != OBJ_SLOT_UNUSED) {
                 found = false;
                 break;

@@ -18,7 +18,7 @@ void handleInputNormal(s16 entId) { // coupled to PhysicsComponent
         ((ObjComponent*)getComponent(gPlayerId, COMP_OBJ))->obj->attr2 ^= ATTR2_PALBANK(1);
     }
     if (key_hit(KEY_A))
-        for (int i = 0; i < 127; i++)
+        for (int i = 0; i < 50; i++)
             spawnEnemyWeak(0,0);
 
     if (key_hit(KEY_B)) {
@@ -39,8 +39,9 @@ void handleInputNormal(s16 entId) { // coupled to PhysicsComponent
         addComponentMember(enemy, ENT_ENEMY_WEAK, gid);
     }
     if (key_hit(KEY_R)) {
-        int inputCompType = getComponentType((ComponentHeader*)denseSetAddr(COMP_INPUT));
-        log(INT, inputCompType);
+        // int inputCompType = getComponentType((ComponentHeader*)denseSetAddr(COMP_INPUT));
+        // log(INT, inputCompType);
+        log(INT, numComps(COMP_OBJ));
     }
     Vector dirVec = { {key_tri_horz() * ent->archetype->radius * ent->archetype->accel.WORD},
         {key_tri_vert() * ent->archetype->radius * ent->archetype->accel.WORD} };

@@ -229,7 +229,7 @@ typedef struct ComponentHeader_ {
 typedef struct ObjComponent_ {
     ComponentHeader header; // 4 bytes
     OBJ_ATTR* obj; // 4 bytes
-    u8 posSourceCompType; // 2 bytes. The componentType of the obj holding the ent's position
+    u8 posSourceCompType; // 1 byte. The componentType of the obj holding the ent's position
 } ObjComponent;
 
 typedef struct ObjAffComponent_ {

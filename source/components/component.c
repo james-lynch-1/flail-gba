@@ -10,23 +10,23 @@ ComponentHeader* addComponentCustom(void* data, ComponentType componentType) {
     return dest;
 }
 
-void removeComponent(int entId, int componentType) {
-    if (gCompSetSparse[componentType][entId] == -1) return; // in case component doesn't exist
+int removeComponent(int entId, int componentType) {
+    if (gCompSetSparse[componentType][entId] == -1) return -1; // in case component doesn't exist
     int denseIndex = gCompSetSparse[componentType][entId];
     gCompSetSparse[componentType][entId] = -1;
     if (gNumCompsPerType[componentType] == 1) {
         gNumCompsPerType[componentType]--;
     }
-    if (gNumCompsPerType[componentType] == 0) return;
+    if (gNumCompsPerType[componentType] == 0) return entId;
     int replacementEntId = ((ComponentHeader*)(denseSetAddr(componentType) +
         compSize(componentType) * (gNumCompsPerType[componentType] - 1)))->entId;
     void* dst = (void*)(denseSetAddr(componentType) + compSize(componentType) * denseIndex);
-    // void* dst = (void*)(gCompTable[componentType][COMP_DSET_ADDRESSES] + compSize[componentType] * denseIndex);
     void* src = (void*)(denseSetAddr(componentType) + compSize(componentType) * (gNumCompsPerType[componentType] - 1));
     memcpy32(dst, src, compSize(componentType) / 4);
-    // memset32(src, 0, sizeof(ComponentHeader) / 4);
+
     gCompSetSparse[componentType][replacementEntId] = denseIndex;
     gNumCompsPerType[componentType]--;
+    return replacementEntId;
 }
 
 bool hasComponent(s16 entId, int componentType) {

@@ -9,8 +9,8 @@ void updateTimers() {
     for (int i = 0; i < gNumCompsPerType[COMP_TIMER]; i++) {
         gTimerCompsDense[i].time--;
         if (gTimerCompsDense[i].time == 0) {
-            gTimerCompsDense[i].callback();
-            gTimerCompsDense[i].time = 60;
+            if (gTimerCompsDense[i].callback) gTimerCompsDense[i].callback();
+            gTimerCompsDense[i].time = 60; // ZZZ make initial time and current time separate fields so timers can repeat
         }
     }
 }

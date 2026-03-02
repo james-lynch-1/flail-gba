@@ -14,7 +14,7 @@ void addStarLine(int starLineType, PositionMini pos, u32 freq) {
     s16 entId = reserveEntSlot();
     if (entId == -1) return;
     // timer, counter, physics
-    TimerComponent t = { {entId, 0}, 60, timerCallback };
+    TimerComponent t = { {entId, 0}, 60, NULL };
     addComponentCustom(&t, COMP_TIMER);
     StarLine sL = StarLines[starLineType];
 

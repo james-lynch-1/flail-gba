@@ -18,7 +18,6 @@ void markEntToBeDeleted(int index) {
 }
 
 int deleteEnt(int index) {
-    // ZZZ have to update this for every new component you add
     if (gEntFlags[index] == 0) return 0;
     for (int i = 0; i < NUM_COMP_TYPES; i++) {
         void(*delFn)(int);

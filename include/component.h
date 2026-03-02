@@ -12,8 +12,9 @@ ComponentHeader* addComponentCustom(void* data, ComponentType componentType);
 /** Moves last component in list to the slot of the one being removed.
  * Updates the corresponding entry in gCompSetSparse[componentType] to -1.
  * Decrements gNumCompsPerType[componentType].
+ * Returns the entId of the replacement ent.
  */
-void removeComponent(int entId, int componentType);
+int removeComponent(int entId, int componentType);
 
 bool hasComponent(s16 entId, int componentType);
 

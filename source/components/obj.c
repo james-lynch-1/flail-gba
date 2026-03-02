@@ -13,6 +13,7 @@ ObjComponent* addComponentObj(s16 entId, u16 flags, int posSourceCompType) {
 
 void removeComponentObj(s16 entId) {
     ObjComponent* o = &gObjCompsDense[gCompSetSparse[COMP_OBJ][entId]];
+    OBJ_ATTR* thisObjBufferPtr = o->obj;
     for (int i = 0; i < gNumSpritesAllocated; i++) {
         if (gSpriteAllocList[i].arrIndex == (o->obj->attr2 & ATTR2_ID_MASK)) {
             gSpriteAllocList[i].numUsing--;
@@ -23,10 +24,31 @@ void removeComponentObj(s16 entId) {
             break;
         }
     }
-    o->obj->attr0 = 512;
-    o->obj->attr1 = 0;
-    o->obj->attr2 = 0;
-    removeComponent(entId, COMP_OBJ);
+    
+    // replace this one with the last obj in the buffer,
+    // also update that obj's obj comp to point to this new location
+    int replacementEntId = removeComponent(entId, COMP_OBJ);
+    ObjComponent* replacementObj = getComponent(replacementEntId, COMP_OBJ);
+
+    // if there is only one obj left, just set its buffer value to 0
+    if (replacementEntId == entId) {
+        replacementObj->obj->attr0 = 512;
+        replacementObj->obj->attr1 = 0;
+        replacementObj->obj->attr2 = 0;
+        return;
+    }
+
+    // move the replacement obj buffer attrs to their new location
+    OBJ_ATTR* replacementObjBufferPtr = replacementObj->obj;
+    memcpy32(thisObjBufferPtr, replacementObjBufferPtr, 2);
+
+    // finally, initialise the replacement's old obj buffer position to defaults
+    replacementObj->obj->attr0 = 512;
+    replacementObj->obj->attr1 = 0;
+    replacementObj->obj->attr2 = 0;
+
+    // make the replacement obj component point to this buffer location
+    replacementObj->obj = thisObjBufferPtr;
 }
 
 // updates the pos based on the pos provided by corresponding comp of type posSourceCompType

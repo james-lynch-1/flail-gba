@@ -22,7 +22,6 @@ void updateNormal() {
     updateObjs();
     deleteMarkedEnts();
     updateTimers();
-    // do queued events (e.g. a timer has run out). A timer should have a callback fn ptr
 
     VBlankIntrWait();
 
