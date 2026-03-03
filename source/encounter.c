@@ -42,10 +42,8 @@ void loadEncounter(Encounter* encounter) {
     // length
     if (encounter->length != -1) {
         s16 entId = reserveEntSlot();
-        if (entId != -1) {
-            TimerComponent t = { {entId, 0}, encounter->length * 60, logSomething };
-            addComponentCustom(&t, COMP_TIMER);
-        }
+        if (entId != -1)
+            addComponentTimer(entId, 0, encounter->length * 60, logSomething);
     }
     // music
 

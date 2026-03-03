@@ -1,12 +1,5 @@
 #include "component.h"
 
-void logCollected(MemberComponent* m) {
-    GroupComponent* g = getComponent(m->groupId, COMP_GROUP);
-    log(U8, g->numCollected);
-    if (g->numCollected == g->numMembers)
-        log(CHAR, "collected all members!");
-}
-
 void handleInputNormal(s16 entId) { // coupled to PhysicsComponent
     PhysicsComponent* ent = &gPhysCompsDense[gCompSetSparse[COMP_PHYSICS][entId]];
     if (key_hit(KEY_START)) {
@@ -33,7 +26,7 @@ void handleInputNormal(s16 entId) { // coupled to PhysicsComponent
         int gid;
         if (gNumCompsPerType[COMP_GROUP] == 0) {
             gid = reserveEntSlot();
-            addComponentGroup(gid, 0, NULL, logCollected, 0, ENT_ENEMY_WEAK);
+            addComponentGroup(gid, 0, NULL, incrementNumCollectedAndLog, 0, ENT_ITEM);
         }
         else gid = gGroupCompsDense[0].header.entId; // ZZZ MAKE THIS NOT DUMB. TEST ONLY
         addComponentMember(enemy, ENT_ENEMY_WEAK, gid);

@@ -20,6 +20,7 @@
 enum PhysArchetype {
     ARCHETYPE_PLAYER,
     ARCHETYPE_WEAK_ENEMY,
+    ARCHETYPE_ITEM,
     NUM_PHYS_ARCHETYPES
 };
 
@@ -40,6 +41,7 @@ typedef enum {
     COMP_AUDIO,
     COMP_PHYSICS,
     COMP_PHYSICS_SIMPLE,
+    COMP_HITBOX,
     COMP_AI_RAND,
     COMP_TIMER,
     COMP_SPAWNER,
@@ -144,8 +146,6 @@ typedef struct Viewport_ {
 } Viewport;
 
 // stuff for entities
-
-typedef s16 entId;
 
 typedef struct Position_ {
     SWord x;
@@ -267,7 +267,7 @@ typedef struct PhysicsComponent_ {
     Position pos; // 8 bytes. should always be after header for updateObjs()
     PhysArchetype* archetype; // 4 bytes. should always be after header and pos for updateObjs()
     Vector vec; // 8 bytes
-    void (*onCollide)(struct PhysicsComponent_);
+    // void (*onCollide)(struct PhysicsComponent_);
     u16 angle; // 2 bytes
 } PhysicsComponent;
 
@@ -279,13 +279,22 @@ typedef struct SimplePhysicsComponent_ {
     u16 angle; // 2 bytes
 } SimplePhysicsComponent;
 
+typedef struct HitboxComponent_ {
+    ComponentHeader header; // 4 bytes
+    u8 width; // 1 byte
+    u8 height; // 1 byte
+    s8 xOffset; // 1 byte. Whole hitbox offset on x axis
+    s8 yOffset; // 1 byte. Whole hitbox offset on y axis
+} HitboxComponent;
+
 typedef struct AiRandComponent_ {
     ComponentHeader header; // 4 bytes
 } AiRandComponent;
 
 typedef struct TimerComponent_ {
     ComponentHeader header; // 4 bytes
-    u32 time; // 4 bytes
+    const u16 time; // 2 bytes
+    u16 timeRemaining; // 2 bytes
     void(*callback)(); // 4 bytes
 } TimerComponent;
 
@@ -301,13 +310,13 @@ typedef struct SpawnerComponent_ {
 // member uses the header flags to determine what ent kind it is
 typedef struct MemberComponent_ {
     ComponentHeader header; // 4 bytes
-    int groupId; // 4 bytes
+    s8 groupIds[MAX_GROUPS_PER_MEMBER]; // 4 bytes. Can be in up to 4 groups. Each id defaults to -1
 } MemberComponent;
 
 typedef struct GroupComponent_ {
     ComponentHeader header; // 4 bytes
-    u16 memberIds[24]; // 48 bytes - max 24 members
-    void (*onCollect)(struct MemberComponent_*); // 4 bytes
+    u16 memberIds[MAX_MEMBERS_PER_GROUP]; // 48 bytes - max 24 members
+    void (*onCollect)(struct MemberComponent_*, struct GroupComponent_*); // 4 bytes
     u8 numCollected; // 1 byte
     u8 numMembers; // 1 byte
 } GroupComponent;

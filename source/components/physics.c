@@ -38,21 +38,6 @@ void updatePhysics() {
             ent->vec.y.WORD = 0;
         }
 
-        // do collision with every single simplephysicscomponent :O
-        for (int i = 0; i < gNumCompsPerType[COMP_PHYSICS_SIMPLE]; i++) {
-            SimplePhysicsComponent* spc = &(gSimplePhysCompsDense[i]);
-            if (checkPhysToSimplePhysCollision(ent, spc)) {
-                markEntToBeDeleted(spc->header.entId);
-                // if member of group, do that group's collection action
-                MemberComponent* mComp = getComponent(spc->header.entId, COMP_MEMBER);
-                if (mComp) {
-                    GroupComponent* gComp = (GroupComponent*)getComponent(mComp->groupId, COMP_GROUP);
-                    gComp->numCollected++;
-                    gComp->onCollect(mComp);
-                }
-            }
-        }
-
         if (!in_range(ent->pos.x.HALF.HI, 0 + ent->archetype->hitbox.width / 2, SCREEN_WIDTH - ent->archetype->hitbox.width / 2))
             ent->vec.x.WORD += (reflect(ent->pos.x.HALF.HI, 0, SCREEN_WIDTH) - ent->pos.x.HALF.HI) << 14;
         if (!in_range(ent->pos.y.HALF.HI, 0 + ent->archetype->hitbox.height / 2, SCREEN_HEIGHT - ent->archetype->hitbox.height / 2))
@@ -78,11 +63,12 @@ void updatePhysicsSimple() {
     }
 }
 
-bool checkPhysToSimplePhysCollision(PhysicsComponent* ent, SimplePhysicsComponent* simpleEnt) {
-    return ((ent->pos.x.HALF.HI + ent->archetype->hitbox.width / 2) > simpleEnt->pos.x.HALF.HI) &&
-        ((ent->pos.x.HALF.HI - ent->archetype->hitbox.width / 2) < simpleEnt->pos.x.HALF.HI) &&
-        ((ent->pos.y.HALF.HI + ent->archetype->hitbox.height / 2) > simpleEnt->pos.y.HALF.HI) &&
-        ((ent->pos.y.HALF.HI - ent->archetype->hitbox.height / 2) < simpleEnt->pos.y.HALF.HI);
+bool checkPlayerToHitboxCollision(PhysicsComponent* ent, HitboxComponent* hBox) {
+    SimplePhysicsComponent* simplePhys = getComponent(hBox->header.entId, COMP_PHYSICS_SIMPLE);
+    return ((ent->pos.x.HALF.HI + ent->archetype->hitbox.width / 2) > simplePhys->pos.x.HALF.HI) &&
+        ((ent->pos.x.HALF.HI - ent->archetype->hitbox.width / 2) < simplePhys->pos.x.HALF.HI) &&
+        ((ent->pos.y.HALF.HI + ent->archetype->hitbox.height / 2) > simplePhys->pos.y.HALF.HI) &&
+        ((ent->pos.y.HALF.HI - ent->archetype->hitbox.height / 2) < simplePhys->pos.y.HALF.HI);
 }
 
 // utils

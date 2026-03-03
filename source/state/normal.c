@@ -18,6 +18,7 @@ void updateNormal() {
     updateInputComps();
     updateAiRand();
     updatePhysics();
+    updateHitboxes();
     updatePhysicsSimple();
     updateObjs();
     deleteMarkedEnts();

@@ -42,7 +42,7 @@ ObjComponent* addComponentObj(s16 entId, u16 flags, int posSourceCompType);
  * a pointer into the obj buffer. This means that if we just leave the data
  * there, we end up with junk. So we have to explicitly set the attrs to 0.
  */
-void removeComponentObj(s16 entId);
+void removeComponentObj(int entId);
 
 void updateObjs();
 
@@ -78,7 +78,10 @@ void updatePhysics();
 
 void updatePhysicsSimple();
 
-bool checkPhysToSimplePhysCollision(PhysicsComponent* ent, SimplePhysicsComponent* simpleEnt);
+// bool checkPhysToSimplePhysCollision(PhysicsComponent* ent, SimplePhysicsComponent* simpleEnt);
+
+/** Assumes the hBox haver also has a SimplePhysics component */
+bool checkPlayerToHitboxCollision(PhysicsComponent* ent, HitboxComponent* hBox);
 
 Vector decaySpeed(Vector vec, int rate);
 
@@ -95,6 +98,13 @@ Vector scalarMultVec(Vector vec, int scalar);
 void removeComponentPhysics(int entId);
 void removeComponentPhysicsSimple(int entId);
 
+// Hitbox
+
+/** Do collision between phys objects and hitbox comps */
+void updateHitboxes();
+
+void removeComponentHitbox(int entId);
+
 // Ai
 
 void updateAiRand();
@@ -103,7 +113,7 @@ void removeComponentAiRand(int entId);
 
 // Timer
 
-void addComponentTimer(s16 entId, u16 flags, u32 length, void(*callback));
+void addComponentTimer(s16 entId, u16 flags, u16 length, void(*callback));
 
 void updateTimers();
 
@@ -118,17 +128,22 @@ void removeComponentSpawner(int entId);
 /** Helper function for creating a member component. Assumes group exists */
 MemberComponent* addComponentMember(s16 entId, u16 flags, int groupId);
 
-/** Removes a member component and also removes the reference to it in its
- * parent group, if there is one.
+/** Removes a member component and also removes the reference to it in all its
+ * parent group(s), if there are any.
  * We remove the id from the group's array by assigning the id at the last spot
  * in the array to the to-be-deleted id's spot and decrementing numMembers by 1.
  */
 void removeComponentMember(int entId);
 
+/** Removes a member from a group without deleting any components. */
+void removeMemberCompFromGroup(int entIdMem, int entIdGroup);
+
+void doGroupCallbacks(int entId);
+
 // Group
 
 /** Helper function for creating a group component */
-GroupComponent* addComponentGroup(s16 entId, u16 flags, s16* memberIds, void (*onCollect)(struct MemberComponent_*), int numMembers, int entKind);
+GroupComponent* addComponentGroup(s16 entId, u16 flags, s16* memberIds, void (*onCollect)(struct MemberComponent_*, struct GroupComponent_*), int numMembers, int entKind);
 
 void removeComponentGroup(int entId);
 

@@ -1,5 +1,5 @@
 #ifndef CONSTANTS
-#define CONSTANTS
+#define CONSTANTS        
 
 #define ANGLE_MIN           0
 #define ANGLE_MAX           65535
@@ -12,11 +12,15 @@
 #define MAX_AUDIO_COMPONENTS            32
 #define MAX_PHYSICS_COMPONENTS          32
 #define MAX_SIMPLE_PHYSICS_COMPONENTS   128
+#define MAX_HITBOX_COMPONENTS           128
 #define MAX_AI_RAND_COMPONENTS          128
 #define MAX_TIMER_COMPONENTS            128
 #define MAX_SPAWNER_COMPONENTS          128
 #define MAX_MEMBER_COMPONENTS           128
 #define MAX_GROUP_COMPONENTS            8
+
+#define MAX_GROUPS_PER_MEMBER           4
+#define MAX_MEMBERS_PER_GROUP           24
 
 #define MAX_PHYS_ARCHETYPES_STATIC      32
 #define MAX_PHYS_ARCHETYPES_CUSTOM      32

@@ -10,6 +10,7 @@ extern void removeComponentInput(int entId);
 extern void removeComponentAudio(int entId);
 extern void removeComponentPhysics(int entId);
 extern void removeComponentPhysicsSimple(int entId);
+extern void removeComponentHitbox(int entId);
 extern void removeComponentAiRand(int entId);
 extern void removeComponentTimer(int entId);
 extern void removeComponentSpawner(int entId);
@@ -44,6 +45,7 @@ InputComponent gInputCompsDense[MAX_INPUT_COMPONENTS];
 AudioComponent gAudioCompsDense[MAX_AUDIO_COMPONENTS];
 PhysicsComponent gPhysCompsDense[MAX_PHYSICS_COMPONENTS];
 SimplePhysicsComponent gSimplePhysCompsDense[MAX_SIMPLE_PHYSICS_COMPONENTS];
+HitboxComponent gHitboxCompsDense[MAX_HITBOX_COMPONENTS];
 AiRandComponent gAiRandCompsDense[MAX_AI_RAND_COMPONENTS];
 TimerComponent gTimerCompsDense[MAX_TIMER_COMPONENTS];
 SpawnerComponent gSpawnerCompsDense[MAX_SPAWNER_COMPONENTS];
@@ -58,6 +60,7 @@ const uint32_t gCompTable[NUM_COMP_TYPES][4] = {
     {(uint32_t)&gAudioCompsDense, sizeof(AudioComponent), MAX_AUDIO_COMPONENTS, (uint32_t)removeComponentAudio},
     {(uint32_t)&gPhysCompsDense, sizeof(PhysicsComponent), MAX_PHYSICS_COMPONENTS, (uint32_t)removeComponentPhysics},
     {(uint32_t)&gSimplePhysCompsDense, sizeof(SimplePhysicsComponent), MAX_SIMPLE_PHYSICS_COMPONENTS, (uint32_t)removeComponentPhysicsSimple},
+    {(uint32_t)&gHitboxCompsDense, sizeof(HitboxComponent), MAX_HITBOX_COMPONENTS, (uint32_t)removeComponentHitbox},
     {(uint32_t)&gAiRandCompsDense, sizeof(AiRandComponent), MAX_AI_RAND_COMPONENTS, (uint32_t)removeComponentAiRand},
     {(uint32_t)&gTimerCompsDense, sizeof(TimerComponent), MAX_TIMER_COMPONENTS, (uint32_t)removeComponentTimer},
     {(uint32_t)&gSpawnerCompsDense, sizeof(SpawnerComponent), MAX_SPAWNER_COMPONENTS, (uint32_t)removeComponentSpawner},
@@ -79,6 +82,13 @@ const PhysArchetype gPhysArchetypesStatic[MAX_PHYS_ARCHETYPES_STATIC] = {
     {8, 8, 0, 0},
     1,
     {0x00002000},
+    0,
+    true
+    },
+    { // item
+    {8, 8, 0, 0},
+    0,
+    {0},
     0,
     true
     }

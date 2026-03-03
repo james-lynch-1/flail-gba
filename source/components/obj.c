@@ -11,7 +11,7 @@ ObjComponent* addComponentObj(s16 entId, u16 flags, int posSourceCompType) {
     return objComp;
 }
 
-void removeComponentObj(s16 entId) {
+void removeComponentObj(int entId) {
     ObjComponent* o = &gObjCompsDense[gCompSetSparse[COMP_OBJ][entId]];
     OBJ_ATTR* thisObjBufferPtr = o->obj;
     for (int i = 0; i < gNumSpritesAllocated; i++) {

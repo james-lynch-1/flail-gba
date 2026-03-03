@@ -17,7 +17,6 @@ int spawnPlayer(int x, int y) {
         {{x}, {y}},
         (PhysArchetype*)&gPhysArchetypesStatic[ARCHETYPE_PLAYER],
         { {0}, {0} },
-        NULL,
         0
     };
     if (!addComponentCustom(&input, COMP_INPUT)) return -1;

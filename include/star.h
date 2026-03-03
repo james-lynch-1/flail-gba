@@ -15,7 +15,11 @@ extern const StarLine StarLines[];
 
 void timerCallback();
 
+void incrementNumCollectedAndLog(MemberComponent * m, GroupComponent * g);
+
 void addStarLine(int starLineType, PositionMini pos, u32 freq);
+
+int spawnStar(int x, int y);
 
 // a star line has timer, progress, simplephysics components
 

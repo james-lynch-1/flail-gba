@@ -3,9 +3,8 @@
 int spawnEnemyWeak(int x, int y) {
     if ((numComps(COMP_OBJ) >= MAX_OBJ_COMPONENTS) ||
         (numComps(COMP_PHYSICS_SIMPLE) >= MAX_SIMPLE_PHYSICS_COMPONENTS) ||
-        (numComps(COMP_AI_RAND) >= MAX_AI_RAND_COMPONENTS)) {
+        (numComps(COMP_AI_RAND) >= MAX_AI_RAND_COMPONENTS))
         return -1;
-    }
     s16 entId = reserveEntSlot();
     if (entId == -1) return -1;
     ObjComponent* objComp = addComponentObj(entId, 0, COMP_PHYSICS_SIMPLE);
@@ -19,9 +18,10 @@ int spawnEnemyWeak(int x, int y) {
         0xF000
     };
     AiRandComponent ai = { {entId, 0} };
+    HitboxComponent hBox = { {entId, 0}, 8, 8, 0, 0};
 
-    if (!objComp) return -1;
-    if (!addComponentCustom(&phys, COMP_PHYSICS_SIMPLE)) return -1;
-    if (!addComponentCustom(&ai, COMP_AI_RAND)) return -1;
+    addComponentCustom(&hBox, COMP_HITBOX);
+    addComponentCustom(&phys, COMP_PHYSICS_SIMPLE);
+    addComponentCustom(&ai, COMP_AI_RAND);
     return entId;
 }

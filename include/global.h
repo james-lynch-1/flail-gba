@@ -39,6 +39,7 @@ extern InputComponent gInputCompsDense[MAX_INPUT_COMPONENTS];
 extern AudioComponent gAudioCompsDense[MAX_AUDIO_COMPONENTS];
 extern PhysicsComponent gPhysCompsDense[MAX_PHYSICS_COMPONENTS];
 extern SimplePhysicsComponent gSimplePhysCompsDense[MAX_SIMPLE_PHYSICS_COMPONENTS];
+extern HitboxComponent gHitboxCompsDense[MAX_HITBOX_COMPONENTS];
 extern AiRandComponent gAiRandCompsDense[MAX_AI_RAND_COMPONENTS];
 extern TimerComponent gTimerCompsDense[MAX_TIMER_COMPONENTS];
 extern SpawnerComponent gSpawnerCompsDense[MAX_SPAWNER_COMPONENTS];
