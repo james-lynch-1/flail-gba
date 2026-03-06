@@ -5,7 +5,7 @@
  * be printed to the mGBA debug console.
  * Acceptable types: CHAR, INT, PTR, U16, U32
  */
-void mgbaLog(Type type, void* messagePtr) {
+void mgbaLog(enum Type type, void* messagePtr) {
     *REG_DEBUG_ENABLE = 0xC0DE;
 
     int maxCharsPerLine = 64;
@@ -17,7 +17,7 @@ void mgbaLog(Type type, void* messagePtr) {
         length = sprintf(message, "char: %s", (char*)messagePtr);
         break;
     case DIRECTION:
-        Direction direction = *(int*)messagePtr;
+        enum Direction direction = *(int*)messagePtr;
         char dirStr[11];
         switch (direction) {
         case EAST: strcpy(dirStr, "East"); break;

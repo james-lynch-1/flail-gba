@@ -18,7 +18,7 @@ int spawnEnemyWeak(int x, int y) {
         0xF000
     };
     AiRandComponent ai = { {entId, 0} };
-    HitboxComponent hBox = { {entId, 0}, 8, 8, 0, 0};
+    HitboxComponent hBox = { {entId, 0}, {8, 8, 0, 0}};
 
     addComponentCustom(&hBox, COMP_HITBOX);
     addComponentCustom(&phys, COMP_PHYSICS_SIMPLE);

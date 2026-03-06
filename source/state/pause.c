@@ -15,7 +15,7 @@ void updatePause() {
     VBlankIntrWait();
 }
 
-void exitPause(GameStateEnum state) {
+void exitPause(enum GameState state) {
     REG_DISPCNT |= DCNT_OBJ | DCNT_BG1;
     setGameState(state);
 }

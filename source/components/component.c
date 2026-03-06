@@ -1,6 +1,6 @@
 #include "component.h"
 
-ComponentHeader* addComponentCustom(void* data, ComponentType componentType) {
+ComponentHeader* addComponentCustom(void* data, enum ComponentType componentType) {
     if (componentType >= NUM_COMP_TYPES ||
         gNumCompsPerType[componentType] >= maxComps(componentType))
         return NULL;
@@ -10,7 +10,7 @@ ComponentHeader* addComponentCustom(void* data, ComponentType componentType) {
     return dest;
 }
 
-int removeComponent(int entId, int componentType) {
+int removeComponent(int entId, enum ComponentType componentType) {
     if (gCompSetSparse[componentType][entId] == -1) return -1; // in case component doesn't exist
     int denseIndex = gCompSetSparse[componentType][entId];
     gCompSetSparse[componentType][entId] = -1;
@@ -29,22 +29,22 @@ int removeComponent(int entId, int componentType) {
     return replacementEntId;
 }
 
-bool hasComponent(s16 entId, int componentType) {
+bool hasComponent(s16 entId, enum ComponentType componentType) {
     int index = gCompSetSparse[componentType][entId];
     return index != -1;
 }
 
-void* getComponent(s16 entId, int componentType) {
+void* getComponent(s16 entId, enum ComponentType componentType) {
     if (hasComponent(entId, componentType))
         return denseSetAddr(componentType) + compSize(componentType) * gCompSetSparse[componentType][entId];
     return NULL;
 }
 
-void* getComponentFromDenseIndex(int denseIndex, int componentType) {
+void* getComponentFromDenseIndex(int denseIndex, enum ComponentType componentType) {
     return denseSetAddr(componentType) + compSize(componentType) * denseIndex;
 }
 
-ComponentType getComponentType(ComponentHeader* compPtr) {
+enum ComponentType getComponentType(ComponentHeader* compPtr) {
     for (int i = 0; i < NUM_COMP_TYPES; i++)
         if ((uint32_t)compPtr >= (uint32_t)denseSetAddr(i))
             return i;

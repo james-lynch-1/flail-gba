@@ -10,6 +10,6 @@ void updateTitle() {
 
 }
 
-void exitTitle(GameStateEnum state) {
+void exitTitle(enum GameState state) {
     setGameState(state);
 }

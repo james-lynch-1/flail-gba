@@ -8,6 +8,8 @@ void initialiseGame() {
     REG_DISPCNT = DCNT_MODE0 | DCNT_BG0 | DCNT_OBJ | DCNT_OBJ_1D;
     REG_BG0CNT = BG_PRIO(3) | BG_CBB(0) | BG_SBB(MAP_SBB) | BG_4BPP | BG_REG_32x32; // map
 
+    memset32(&gNumListenersPerType, 0, sizeof(gNumListenersPerType) / 4);
+
     // components stuff
     initialiseComponentArrays();
     initialiseArchetypeArrays();

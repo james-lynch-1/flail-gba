@@ -14,13 +14,26 @@ int fetchSprite(const u16* tiles, int tilesLen) {
     return index;
 }
 
+void stopUsingSprite(int sprAllocListIndex) {
+    for (int i = 0; i < gNumSpritesAllocated; i++) {
+        if (gSpriteAllocList[i].arrIndex == sprAllocListIndex) {
+            gSpriteAllocList[i].numUsing--;
+            if (gSpriteAllocList[i].numUsing == 0) {
+                deallocateObj(gSpriteAllocList[i].arrIndex);
+                gSpriteAllocList[i] = gSpriteAllocList[gNumSpritesAllocated-- - 1];
+            }
+            break;
+        }
+    }
+}
+
 int allocateObj(const u16* tiles, int tilesLen) {
     if ((tilesLen < 32) || (tilesLen > 2048) || (tilesLen & (tilesLen - 1)) != 0) return -1;
     int numBlocksReqd = tilesLen / 32;
     bool found = false;
     u32 index = 0;
     for (int i = 0; i < 1024; i += numBlocksReqd) {
-        for (int j = i; j < i + numBlocksReqd; j++) {
+        for (u32 j = i; j < i + numBlocksReqd; j++) {
             if (gObjAllocArr[j] != OBJ_SLOT_UNUSED) {
                 found = false;
                 break;
@@ -30,7 +43,7 @@ int allocateObj(const u16* tiles, int tilesLen) {
         if (found) {
             index = i;
             gObjAllocArr[i] = OBJ_SLOT_USED;
-            for (++i; i < numBlocksReqd; i++)
+            for (++i; i < index + numBlocksReqd; i++)
                 gObjAllocArr[i] = OBJ_SLOT_CONTINUE;
             memcpy32(MEM_VRAM_OBJ + (void*)(uint32_t)(index * 32), tiles, tilesLen / 4);
             return index;

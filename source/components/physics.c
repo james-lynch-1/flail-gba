@@ -65,10 +65,10 @@ void updatePhysicsSimple() {
 
 bool checkPlayerToHitboxCollision(PhysicsComponent* ent, HitboxComponent* hBox) {
     SimplePhysicsComponent* simplePhys = getComponent(hBox->header.entId, COMP_PHYSICS_SIMPLE);
-    return ((ent->pos.x.HALF.HI + ent->archetype->hitbox.width / 2) > simplePhys->pos.x.HALF.HI) &&
-        ((ent->pos.x.HALF.HI - ent->archetype->hitbox.width / 2) < simplePhys->pos.x.HALF.HI) &&
-        ((ent->pos.y.HALF.HI + ent->archetype->hitbox.height / 2) > simplePhys->pos.y.HALF.HI) &&
-        ((ent->pos.y.HALF.HI - ent->archetype->hitbox.height / 2) < simplePhys->pos.y.HALF.HI);
+    return ((ent->pos.x.HALF.HI + ent->archetype->hitbox.width / 2) > simplePhys->pos.x.HALF.HI - hBox->hitbox.width / 2) &&
+        ((ent->pos.x.HALF.HI - ent->archetype->hitbox.width / 2) < simplePhys->pos.x.HALF.HI + hBox->hitbox.width / 2) &&
+        ((ent->pos.y.HALF.HI + ent->archetype->hitbox.height / 2) > simplePhys->pos.y.HALF.HI - hBox->hitbox.height / 2) &&
+        ((ent->pos.y.HALF.HI - ent->archetype->hitbox.height / 2) < simplePhys->pos.y.HALF.HI + hBox->hitbox.height / 2);
 }
 
 // utils

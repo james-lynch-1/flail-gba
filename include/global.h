@@ -23,17 +23,22 @@ extern OBJ_ATTR gObjBuffer[128];
 extern OBJ_AFFINE* gObjAffBuffer;
 extern u8 gObjAllocArr[1024];
 extern SpriteAllocList gSpriteAllocList[MAX_ALLOC_SPRITES];
+extern u8 gEntFlags[MAX_ENTS];
 extern u8 gEntsToDelete[MAX_ENTS];
 
 extern GameState gGameState;
 extern u32 gFlags;
-extern Direction gDPadDir;
+extern enum Direction gDPadDir;
 
-extern u8 gEntFlags[MAX_ENTS];
+
+// // events and listeners
+extern int gNumListenersPerType[NUM_COMP_TYPES];
+extern EventListener gEventListeners[NUM_COMP_TYPES][MAX_EVENT_LISTENERS_PER_TYPE];
 
 // components
 extern ObjComponent gObjCompsDense[MAX_OBJ_COMPONENTS];
 extern ObjAffComponent gObjAffCompsDense[MAX_OBJ_AFF_COMPONENTS];
+extern DebugBlobComponent gDebugBlobCompsDense[MAX_DEBUG_BLOB_COMPONENTS];
 extern TileComponent gTileCompsDense[MAX_TILE_COMPONENTS];
 extern InputComponent gInputCompsDense[MAX_INPUT_COMPONENTS];
 extern AudioComponent gAudioCompsDense[MAX_AUDIO_COMPONENTS];
@@ -42,9 +47,11 @@ extern SimplePhysicsComponent gSimplePhysCompsDense[MAX_SIMPLE_PHYSICS_COMPONENT
 extern HitboxComponent gHitboxCompsDense[MAX_HITBOX_COMPONENTS];
 extern AiRandComponent gAiRandCompsDense[MAX_AI_RAND_COMPONENTS];
 extern TimerComponent gTimerCompsDense[MAX_TIMER_COMPONENTS];
+extern CounterComponent gCounterCompsDense[MAX_COUNTER_COMPONENTS];
 extern SpawnerComponent gSpawnerCompsDense[MAX_SPAWNER_COMPONENTS];
 extern MemberComponent gMemberCompsDense[MAX_MEMBER_COMPONENTS];
 extern GroupComponent gGroupCompsDense [MAX_GROUP_COMPONENTS];
+extern InputCheckerComponent gInputCheckerCompsDense[MAX_INPUT_CHECKER_COMPONENTS];
 
 // physics component archetypes
 extern const PhysArchetype gPhysArchetypesStatic[MAX_PHYS_ARCHETYPES_STATIC];

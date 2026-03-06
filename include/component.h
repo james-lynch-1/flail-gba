@@ -7,29 +7,29 @@
 #include "enemy.h"
 #include "state.h"
 
-ComponentHeader* addComponentCustom(void* data, ComponentType componentType);
+ComponentHeader* addComponentCustom(void* data, enum ComponentType componentType);
 
 /** Moves last component in list to the slot of the one being removed.
  * Updates the corresponding entry in gCompSetSparse[componentType] to -1.
  * Decrements gNumCompsPerType[componentType].
  * Returns the entId of the replacement ent.
  */
-int removeComponent(int entId, int componentType);
+int removeComponent(int entId, enum ComponentType componentType);
 
-bool hasComponent(s16 entId, int componentType);
+bool hasComponent(s16 entId, enum ComponentType componentType);
 
 /** Gets the first component of a given type on an entity */
-void* getComponent(s16 entId, int componentType);
+void* getComponent(s16 entId, enum ComponentType componentType);
 
-void* getComponentFromDenseIndex(int denseIndex, int componentType);
+void* getComponentFromDenseIndex(int denseIndex, enum ComponentType componentType);
 
-/** The idea is you can get a component's type by checking if it is in the
- * range of memory of a particular dense set.
- * as we iterate through gDenseSetAddresses, the addresses get smaller.
+/** Get a component's type by checking if it is in the memory range of
+ * a particular dense set.
+ * As we iterate through gDenseSetAddresses, the addresses get smaller.
  * so, for a given component address, if it is greater than the current
  * dense set address, it is a component of that type.
  */
-ComponentType getComponentType(ComponentHeader* compPtr);
+enum ComponentType getComponentType(ComponentHeader* compPtr);
 
 void initialiseComponentArrays();
 
@@ -46,6 +46,19 @@ void removeComponentObj(int entId);
 
 void updateObjs();
 
+// Debug blob
+
+void updateDebugBlobs();
+
+/** Adds a hitbox viewer for a given ent, if that ent
+ * has either a HitboxComponent or a PhysComponent
+ */
+DebugBlobComponent* addComponentDebugBlob(int entId);
+
+void removeComponentDebugBlob(int entId);
+
+u16* drawDebugBlob(u32 width, u32 height);
+
 // Obj Aff
 
 void removeComponentObjAff(int entId);
@@ -61,6 +74,14 @@ void handleInputNormal(s16 entId);
 void updateInputComps();
 
 void removeComponentInput(int entId);
+
+// Input Checker
+
+void updateInputCheckers();
+
+void addComponentInputChecker(int entId, u16 keys);
+
+void removeComponentInputChecker(int entId);
 
 // Audio
 
@@ -113,13 +134,23 @@ void removeComponentAiRand(int entId);
 
 // Timer
 
-void addComponentTimer(s16 entId, u16 flags, u16 length, void(*callback));
-
 void updateTimers();
+
+void addComponentTimer(s16 entId, u16 flags, u16 length, void(*callback));
 
 void removeComponentTimer(int entId);
 
+// Counter
+
+void addComponentCounter(int entId, u16 max);
+
+void removeComponentCounter(int entId);
+
 // Spawner
+
+void addComponentSpawner(int entId, u16 flags, int x, int y, enum EntityKind entKind);
+
+void updateSpawners();
 
 void removeComponentSpawner(int entId);
 

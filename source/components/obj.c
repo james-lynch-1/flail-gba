@@ -14,16 +14,7 @@ ObjComponent* addComponentObj(s16 entId, u16 flags, int posSourceCompType) {
 void removeComponentObj(int entId) {
     ObjComponent* o = &gObjCompsDense[gCompSetSparse[COMP_OBJ][entId]];
     OBJ_ATTR* thisObjBufferPtr = o->obj;
-    for (int i = 0; i < gNumSpritesAllocated; i++) {
-        if (gSpriteAllocList[i].arrIndex == (o->obj->attr2 & ATTR2_ID_MASK)) {
-            gSpriteAllocList[i].numUsing--;
-            if (gSpriteAllocList[i].numUsing == 0) {
-                deallocateObj(gSpriteAllocList[i].arrIndex);
-                gSpriteAllocList[i] = gSpriteAllocList[gNumSpritesAllocated-- - 1];
-            }
-            break;
-        }
-    }
+    stopUsingSprite(o->obj->attr2 & ATTR2_ID_MASK);
     
     // replace this one with the last obj in the buffer,
     // also update that obj's obj comp to point to this new location
@@ -54,21 +45,20 @@ void removeComponentObj(int entId) {
 // updates the pos based on the pos provided by corresponding comp of type posSourceCompType
 void updateObjs() {
     for (int i = 0; i < gNumCompsPerType[COMP_OBJ]; i++) {
-        int posSourceCompType = gObjCompsDense[i].posSourceCompType;
-        ComponentHeader* physComp = (ComponentHeader*)(denseSetAddr(posSourceCompType) +
-            gCompSetSparse[posSourceCompType][gObjCompsDense[i].header.entId] * compSize(posSourceCompType));
-        PhysArchetype arch = **(PhysArchetype**)((uint32_t)physComp + sizeof(ComponentHeader) + sizeof(Position));
+        ObjComponent* objComp = &gObjCompsDense[i];
+        int posSourceCompType = objComp->posSourceCompType;
+        PhysicsComponent* physComp = getComponent(objComp->header.entId, posSourceCompType);
         Position pos = *(Position*)((uint32_t)physComp + sizeof(ComponentHeader));
-
-        if (!in_range(pos.x.HALF.HI, 0 - arch.hitbox.width / 2, SCREEN_WIDTH + arch.hitbox.height / 2) ||
-            !in_range(pos.y.HALF.HI, 0 - arch.hitbox.width / 2, SCREEN_HEIGHT + arch.hitbox.height / 2))
+        const u8* sizes = obj_get_size(objComp->obj);
+        if (!in_range(pos.x.HALF.HI, 0 - sizes[0] / 2, SCREEN_WIDTH + sizes[1] / 2) ||
+            !in_range(pos.y.HALF.HI, 0 - sizes[0] / 2, SCREEN_HEIGHT + sizes[1] / 2))
             gObjCompsDense[i].obj->attr0 |= ATTR0_HIDE;
         else
             gObjCompsDense[i].obj->attr0 &= ~ATTR0_AFF_DBL;
 
-        gObjCompsDense[i].obj->attr0 &= ~ATTR0_Y_MASK;
-        gObjCompsDense[i].obj->attr0 |= ATTR0_Y(pos.y.HALF.HI - arch.hitbox.height / 2) & ATTR0_Y_MASK;
-        gObjCompsDense[i].obj->attr1 &= ~ATTR1_X_MASK;
-        gObjCompsDense[i].obj->attr1 |= ATTR1_X(pos.x.HALF.HI - arch.hitbox.width / 2) & ATTR1_X_MASK;
+        objComp->obj->attr0 &= ~ATTR0_Y_MASK;
+        objComp->obj->attr0 |= ATTR0_Y(pos.y.HALF.HI - sizes[1] / 2) & ATTR0_Y_MASK;
+        objComp->obj->attr1 &= ~ATTR1_X_MASK;
+        objComp->obj->attr1 |= ATTR1_X(pos.x.HALF.HI - sizes[0] / 2) & ATTR1_X_MASK;
     }
 }

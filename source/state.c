@@ -1,6 +1,6 @@
 #include "state.h"
 
-void setGameState(GameStateEnum state) {
+void setGameState(enum GameState state) {
     switch (state) {
         case NORMAL:
             gGameState.enterFunction = enterNormal;

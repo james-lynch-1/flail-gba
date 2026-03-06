@@ -4,8 +4,19 @@
 #include "global.h"
 #include "log.h"
 
+extern u8 attr1SizesArr[4][4];
+
+/** Returns the appropriate sprite ATTR1 sprite size for width and height. */
+int getAppropriateSpriteSize(int width, int height);
+
+/** Returns the appropriate sprite ATTR0 sprite shape for width and height. */
+int getAppropriateSpriteShape(int width, int height);
+
 void doNothing();
 
 void logSomething();
+
+// https://jameshfisher.com/2018/03/30/round-up-power-2/
+int nextPow2(int num);
 
 #endif

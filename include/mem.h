@@ -6,6 +6,8 @@
 /** Returns index of sprite data in gObjAllocArr, allocating a new one if not found */
 int fetchSprite(const u16* tiles, int tilesLen);
 
+void stopUsingSprite(int sprAllocListIndex);
+
 /** https://www.gamedeveloper.com/programming/gameboy-advance-resource-management
  * 'OBJ Sprite Memory Management'
  * returns -1 if unsuccessful, returns index in allocation array if successful

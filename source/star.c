@@ -55,7 +55,7 @@ int spawnStar(int x, int y) {
         0xF000
     };
     addComponentCustom(&phys, COMP_PHYSICS_SIMPLE);
-    HitboxComponent hBox = { {entId, 0}, 8, 8, 0, 0 };
+    HitboxComponent hBox = { {entId, 0}, {8, 8, 0, 0} };
     addComponentCustom(&hBox, COMP_HITBOX);
     return entId;
 }

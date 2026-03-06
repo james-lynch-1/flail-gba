@@ -13,7 +13,7 @@
 #define REG_DEBUG_FLAGS (vu16 *)0x4FFF700
 #define REG_DEBUG_STRING (char *)0x4FFF600
 
-void mgbaLog(Type type, void* messagePtr);
+void mgbaLog(enum Type type, void* messagePtr);
 char* toHex(int num);
 
 #endif

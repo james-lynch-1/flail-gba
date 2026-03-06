@@ -11,6 +11,7 @@
 #include "player.h"
 #include "state.h"
 #include "ui.h"
+#include "eventListener.h"
 #include "util.h"
 
 #include "component.h"

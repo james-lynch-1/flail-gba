@@ -17,25 +17,26 @@
 
 // archetype stuff
 
-enum PhysArchetype {
+enum __attribute__ ((__packed__)) PhysArchetypeEnum {
     ARCHETYPE_PLAYER,
     ARCHETYPE_WEAK_ENEMY,
     ARCHETYPE_ITEM,
     NUM_PHYS_ARCHETYPES
 };
 
-typedef enum {
+enum __attribute__ ((__packed__)) EntityKind {
     ENT_PLAYER,
     ENT_ENEMY_WEAK,
     ENT_ENEMY,
     ENT_ITEM,
     ENT_CUSTOM,
     NUM_ENT_KINDS
-} EntityKind;
+};
 
-typedef enum {
+enum __attribute__ ((__packed__)) ComponentType {
     COMP_OBJ,
     COMP_OBJ_AFF,
+    COMP_DEBUG_BLOB,
     COMP_TILE,
     COMP_INPUT,
     COMP_AUDIO,
@@ -44,13 +45,15 @@ typedef enum {
     COMP_HITBOX,
     COMP_AI_RAND,
     COMP_TIMER,
+    COMP_COUNTER,
     COMP_SPAWNER,
     COMP_MEMBER,
     COMP_GROUP,
+    COMP_INPUT_CHECKER,
     NUM_COMP_TYPES
-} ComponentType;
+};
 
-typedef enum {
+enum __attribute__ ((__packed__)) Type {
     CHAR,
     DIRECTION,
     PTR,
@@ -65,9 +68,9 @@ typedef enum {
     U32HEX,
     SPLITWORD,
     USPLITWORD
-} Type;
+};
 
-enum Objective {
+enum __attribute__ ((__packed__)) Objective {
     SURVIVE,
     ROUT,
     DEFEND,
@@ -75,7 +78,7 @@ enum Objective {
     CHILL
 };
 
-enum PaletteEnum {
+enum __attribute__ ((__packed__)) PaletteEnum {
     PLAYER_PAL,
     ENEMY_WEAK_PAL,
     ENEMY_STRONG_PAL,
@@ -83,13 +86,6 @@ enum PaletteEnum {
 };
 
 typedef const u16* PaletteSet[16];
-
-enum EntityIlk {
-    STR_0, // harmless
-    STR_1, // weak
-    STR_2, // med
-    STR_3, // strong
-};
 
 // fixed point number types
 
@@ -125,18 +121,29 @@ typedef union SplitHWord {
 
 // stuff for the game loop
 
-typedef enum GameStateEnum_ {
+enum __attribute__ ((__packed__)) GameState {
     NORMAL,
     TITLE,
     PAUSE
-} GameStateEnum;
+};
 
 typedef struct gGameState { // for game states (FSM)
-    GameStateEnum gameStateEnum;
+    enum GameState gameStateEnum;
     void (*enterFunction)();
-    void (*exitFunction)(GameStateEnum state);
+    void (*exitFunction)(enum GameState state);
     void (*updateFunction)();
 } GameState;
+
+// Events and Listeners
+
+typedef struct Event_ {
+    u32 flags;
+} Event;
+
+typedef struct EventListener_ {
+    u32 flags;
+    void (*callback)(void* data);
+} EventListener;
 
 // stuff with only one instance
 
@@ -208,7 +215,7 @@ typedef struct EncounterSet_ {
     // Scene* scenes;
 } EncounterSet;
 
-typedef enum Direction_ {
+enum Direction {
     EAST = 0,
     NORTHEAST = 0x2000,
     NORTH = 0x4000,
@@ -218,7 +225,7 @@ typedef enum Direction_ {
     SOUTH = 0xC000,
     SOUTHEAST = 0xE000,
     STATIONARY = 0x10000
-} Direction;
+};
 
 typedef struct ComponentHeader_ {
     s16 entId;
@@ -236,6 +243,17 @@ typedef struct ObjAffComponent_ {
     ComponentHeader header; // 4 bytes
     OBJ_AFFINE* objAff; // 4 bytes
 } ObjAffComponent;
+
+typedef struct DebugBlobComponent_ {
+    ComponentHeader header; // 4 bytes. we store posSourceCompType in the flags
+    Hitbox hitbox; // 4 bytes
+    u16* allocatedSprite; // 4 bytes
+    u16 originalAttr2; // 2 bytes. To restore the original sprite when we remove the debug blob
+    u8 originalSize;
+    u8 originalShape;
+    u8 size;
+    u8 shape;
+} DebugBlobComponent;
 
 typedef struct TileComponent_ {
     ComponentHeader header;
@@ -281,10 +299,11 @@ typedef struct SimplePhysicsComponent_ {
 
 typedef struct HitboxComponent_ {
     ComponentHeader header; // 4 bytes
-    u8 width; // 1 byte
-    u8 height; // 1 byte
-    s8 xOffset; // 1 byte. Whole hitbox offset on x axis
-    s8 yOffset; // 1 byte. Whole hitbox offset on y axis
+    // u8 width; // 1 byte
+    // u8 height; // 1 byte
+    // s8 xOffset; // 1 byte. Whole hitbox offset on x axis
+    // s8 yOffset; // 1 byte. Whole hitbox offset on y axis
+    Hitbox hitbox;
 } HitboxComponent;
 
 typedef struct AiRandComponent_ {
@@ -298,13 +317,19 @@ typedef struct TimerComponent_ {
     void(*callback)(); // 4 bytes
 } TimerComponent;
 
+typedef struct CounterComponent_ {
+    ComponentHeader header; // 4 bytes
+    u16 curr; // 2 bytes
+    u16 max; // 2 bytes
+} CounterComponent;
+
 typedef struct SpawnerComponent_ {
     ComponentHeader header; // 4 bytes
     Position pos; // 8 bytes
-    u16 entType; // 2 bytes
     u16 spawnerBehaviourIdx; // 2 bytes
-    u16 frequency; // 2 bytes
+    u16 frequency; // 2 bytes. How often it spawns
     u16 timer; // 2 bytes
+    enum EntityKind entKind; // 1 byte
 } SpawnerComponent;
 
 // member uses the header flags to determine what ent kind it is
@@ -317,11 +342,15 @@ typedef struct GroupComponent_ {
     ComponentHeader header; // 4 bytes
     u16 memberIds[MAX_MEMBERS_PER_GROUP]; // 48 bytes - max 24 members
     void (*onCollect)(struct MemberComponent_*, struct GroupComponent_*); // 4 bytes
+    u16 counter; // 2 bytes
     u8 numCollected; // 1 byte
     u8 numMembers; // 1 byte
 } GroupComponent;
 
-// star line entity has multiple star components, each with the same entId (obvs)
-// 
+typedef struct InputCheckerComponent_ {
+    ComponentHeader header; // 4 bytes
+    void (*onCheckedKeyPressed)(struct InputCheckerComponent_*); // 4 bytes
+    u16 keysToCheck; // 2 bytes
+} InputCheckerComponent;
 
 #endif

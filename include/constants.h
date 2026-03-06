@@ -1,12 +1,16 @@
 #ifndef CONSTANTS
-#define CONSTANTS        
+#define CONSTANTS
 
 #define ANGLE_MIN           0
 #define ANGLE_MAX           65535
 #define SPEED_DECAY         0x800
 #define MAX_ENTS            128
+
+#define MAX_EVENT_LISTENERS_PER_TYPE    32
+
 #define MAX_OBJ_COMPONENTS              128
 #define MAX_OBJ_AFF_COMPONENTS          32
+#define MAX_DEBUG_BLOB_COMPONENTS       128
 #define MAX_TILE_COMPONENTS             32
 #define MAX_INPUT_COMPONENTS            32
 #define MAX_AUDIO_COMPONENTS            32
@@ -15,9 +19,11 @@
 #define MAX_HITBOX_COMPONENTS           128
 #define MAX_AI_RAND_COMPONENTS          128
 #define MAX_TIMER_COMPONENTS            128
+#define MAX_COUNTER_COMPONENTS            128
 #define MAX_SPAWNER_COMPONENTS          128
 #define MAX_MEMBER_COMPONENTS           128
 #define MAX_GROUP_COMPONENTS            8
+#define MAX_INPUT_CHECKER_COMPONENTS    8
 
 #define MAX_GROUPS_PER_MEMBER           4
 #define MAX_MEMBERS_PER_GROUP           24

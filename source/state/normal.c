@@ -16,19 +16,24 @@ void updateNormal() {
     key_poll();
 
     updateInputComps();
+    updateInputCheckers();
     updateAiRand();
     updatePhysics();
     updateHitboxes();
     updatePhysicsSimple();
     updateObjs();
-    deleteMarkedEnts();
+    updateDebugBlobs();
+    updateSpawners();
     updateTimers();
+    updateEventListeners();
+
+    deleteMarkedEnts();
 
     VBlankIntrWait();
 
     gFrameCount++;
 }
 
-void exitNormal(GameStateEnum state) {
+void exitNormal(enum GameState state) {
     setGameState(state);
 }
