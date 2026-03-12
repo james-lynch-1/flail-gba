@@ -5,11 +5,7 @@ void updateHitboxes() {
     for (int i = 0; i < gNumCompsPerType[COMP_HITBOX]; i++) {
         HitboxComponent* hBox = &gHitboxCompsDense[i];
         if (checkPlayerToHitboxCollision(player, hBox)) {
-            markEntToBeDeleted(hBox->header.entId);
-            // if member of group, do that group's collection action
-            MemberComponent* mComp = getComponent(hBox->header.entId, COMP_MEMBER);
-            if (mComp)
-                doGroupCallbacks(hBox->header.entId);
+            doGroupCallbacks(hBox->header.entId);
         }
     }
     // todo: make this branch less. Maybe enable a flag that member components can use to

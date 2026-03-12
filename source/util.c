@@ -9,7 +9,7 @@ u8 attr1SizesArr[4][4] = {
 
 int getAppropriateSpriteSize(int width, int height) {
     if (width > 64 || height > 64) return 0;
-    int nextPowDimensions[2] = { nextPow2(width), nextPow2(height) };
+    int nextPowDimensions[2] = { max(8, nextPow2(width)), max(8, nextPow2(height)) };
     int arrIndexes[2] = { 0, 0 };
     for (int i = 0; i < 2; i++)
         for (int j = 3; j < 7; j++)
@@ -22,8 +22,8 @@ int getAppropriateSpriteSize(int width, int height) {
 
 int getAppropriateSpriteShape(int width, int height) {
     if (!in_range(width, 0, 64) || !in_range(height, 0, 64)) return 0;
-    int pow2Width = nextPow2(width);
-    int pow2Height = nextPow2(height);
+    int pow2Width = max(8, nextPow2(width));
+    int pow2Height = max(8, nextPow2(height));
     if (pow2Width > pow2Height)
         return ATTR0_WIDE >> ATTR0_SHAPE_SHIFT;
     if (pow2Width == pow2Height)

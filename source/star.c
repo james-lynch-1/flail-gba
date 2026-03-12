@@ -9,6 +9,7 @@ void timerCallback() {
 }
 
 void incrementNumCollectedAndLog(MemberComponent* m, GroupComponent* g) {
+    markEntToBeDeleted(m->header.entId);
     g->numCollected++;
     if (g->numCollected == g->numMembers)
         log(CHAR, "All collected!");

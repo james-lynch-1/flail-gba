@@ -43,7 +43,7 @@ void loadEncounter(Encounter* encounter) {
     if (encounter->length != -1) {
         s16 entId = reserveEntSlot();
         if (entId != -1)
-            addComponentTimer(entId, 0, encounter->length * 60, logSomething);
+            addComponentTimer(entId, 0, encounter->length, logSomething);
     }
     // music
 

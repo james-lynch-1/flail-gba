@@ -1,14 +1,16 @@
 #include "mem.h"
 
 int fetchSprite(const u16* tiles, int tilesLen) {
+    // searching gSpriteAllocList to see if we are already using this sprite
     for (int i = 0; i < gNumSpritesAllocated; i++) {
         if (gSpriteAllocList[i].tileData == tiles) {
             gSpriteAllocList[i].numUsing++;
             return gSpriteAllocList[i].arrIndex;
         }
     }
+    // couldn't find existing, so allocating a new sprite
     int index = allocateObj(tiles, tilesLen);
-    if (index == -1) return -1;
+    if (index == -1) return -1; // no space for a new sprite
     SpriteAllocList alloc = { tiles, index, 1 };
     gSpriteAllocList[gNumSpritesAllocated++] = alloc;
     return index;
@@ -20,11 +22,18 @@ void stopUsingSprite(int sprAllocListIndex) {
             gSpriteAllocList[i].numUsing--;
             if (gSpriteAllocList[i].numUsing == 0) {
                 deallocateObj(gSpriteAllocList[i].arrIndex);
-                gSpriteAllocList[i] = gSpriteAllocList[gNumSpritesAllocated-- - 1];
+                gSpriteAllocList[i] = gSpriteAllocList[--gNumSpritesAllocated];
             }
             break;
         }
     }
+}
+
+int getObjAllocArrIndex(int sprAllocListIndex) {
+    for (int i = 0; i < gNumSpritesAllocated; i++)
+        if (gSpriteAllocList[i].arrIndex == sprAllocListIndex)
+            return gSpriteAllocList[i].arrIndex;
+    return -1;
 }
 
 int allocateObj(const u16* tiles, int tilesLen) {
@@ -42,6 +51,8 @@ int allocateObj(const u16* tiles, int tilesLen) {
         }
         if (found) {
             index = i;
+            if (index == 0)
+                log(CHAR, "writing over slot 0");
             gObjAllocArr[i] = OBJ_SLOT_USED;
             for (++i; i < index + numBlocksReqd; i++)
                 gObjAllocArr[i] = OBJ_SLOT_CONTINUE;
@@ -54,6 +65,8 @@ int allocateObj(const u16* tiles, int tilesLen) {
 
 void deallocateObj(int index) {
     int i = index;
+    if (index == 0)
+        log(CHAR, "deallocating slot 0");
     gObjAllocArr[i++] = OBJ_SLOT_UNUSED;
     while (gObjAllocArr[i] == OBJ_SLOT_CONTINUE)
         gObjAllocArr[i++] = OBJ_SLOT_UNUSED;

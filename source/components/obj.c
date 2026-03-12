@@ -12,9 +12,10 @@ ObjComponent* addComponentObj(s16 entId, u16 flags, int posSourceCompType) {
 }
 
 void removeComponentObj(int entId) {
-    ObjComponent* o = &gObjCompsDense[gCompSetSparse[COMP_OBJ][entId]];
-    OBJ_ATTR* thisObjBufferPtr = o->obj;
-    stopUsingSprite(o->obj->attr2 & ATTR2_ID_MASK);
+    ObjComponent* objComp = getComponent(entId, COMP_OBJ);
+    removeComponentDebugBlob(entId);
+    OBJ_ATTR* thisObjBufferPtr = objComp->obj;
+    stopUsingSprite(objComp->obj->attr2 & ATTR2_ID_MASK);
     
     // replace this one with the last obj in the buffer,
     // also update that obj's obj comp to point to this new location

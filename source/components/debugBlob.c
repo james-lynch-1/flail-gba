@@ -20,13 +20,6 @@ void updateDebugBlobs() {
 }
 
 DebugBlobComponent* addComponentDebugBlob(int entId) {
-    // attach onto another ent that has an obj(aff) comp and a hitbox/phys comp
-    // in each update first look at the obj(aff) comp to get the posSourceCompType
-    // then look at that comp to get the position
-    // then update the position of the debug blob
-    // this blob should sit with the other objs i guess, but how to update it?
-    // debug blobs should exist starting from the index gNumCompsPerType(COMP_OBJ)
-    // and have its own counter. Blobs only spawn if there is enough space
     u32 width, height;
     ObjComponent* objComp = getComponent(entId, COMP_OBJ);
     DebugBlobComponent* existingBlob = getComponent(entId, COMP_DEBUG_BLOB);
@@ -35,25 +28,22 @@ DebugBlobComponent* addComponentDebugBlob(int entId) {
     PhysicsComponent* phys = getComponent(entId, COMP_PHYSICS);
     if (phys) {
         blob.hitbox = phys->archetype->hitbox;
-        width = blob.hitbox.width;
-        height = blob.hitbox.height;
     }
     else {
         HitboxComponent* hBox = getComponent(entId, COMP_HITBOX);
-        if (hBox) {
+        if (hBox)
             blob.hitbox = hBox->hitbox;
-            width = blob.hitbox.width;
-            height = blob.hitbox.height;
-        }
         else return NULL;
     }
-    blob.originalAttr2 = objComp->obj->attr2;
+    width = blob.hitbox.width;
+    height = blob.hitbox.height;
+    blob.originalAttr2 = objComp->obj->attr2 & 0xFFFF;
     blob.originalSize = objComp->obj->attr1 >> ATTR1_SIZE_SHIFT;
     blob.originalShape = objComp->obj->attr0 >> ATTR0_SHAPE_SHIFT;
     blob.size = getAppropriateSpriteSize(blob.hitbox.width, blob.hitbox.height);
     blob.shape = getAppropriateSpriteShape(blob.hitbox.width, blob.hitbox.height);
     blob.allocatedSprite = drawDebugBlob(width, height);
-    blob.header.flags = fetchSprite(blob.allocatedSprite, nextPow2(width) * nextPow2(height) / 2);
+    blob.header.flags = fetchSprite(blob.allocatedSprite, max(8, nextPow2(width)) * max(8, nextPow2(height)) / 2);
     objComp->obj->attr0 = (blob.shape << ATTR0_SHAPE_SHIFT) | (objComp->obj->attr0 & ATTR0_Y_MASK);
     objComp->obj->attr1 = (blob.size << ATTR1_SIZE_SHIFT) | (objComp->obj->attr1 & ATTR1_X_MASK);
     objComp->obj->attr2 = ATTR2_ID(blob.header.flags) | ATTR2_PALBANK(0);
@@ -64,9 +54,7 @@ DebugBlobComponent* addComponentDebugBlob(int entId) {
 void removeComponentDebugBlob(int entId) {
     DebugBlobComponent* blob = getComponent(entId, COMP_DEBUG_BLOB);
     if (!blob) return;
-    numComps(COMP_DEBUG_BLOB)--;
     ObjComponent* objComp = getComponent(entId, COMP_OBJ);
-    stopUsingSprite(objComp->obj->attr2 & ATTR2_ID_MASK);
     objComp->obj->attr2 = blob->originalAttr2;
     objComp->obj->attr1 &= ~ATTR1_SIZE_MASK;
     objComp->obj->attr1 |= blob->originalSize << ATTR1_SIZE_SHIFT;
@@ -74,15 +62,20 @@ void removeComponentDebugBlob(int entId) {
     objComp->obj->attr0 |= blob->originalShape << ATTR0_SHAPE_SHIFT;
     free(blob->allocatedSprite);
     removeComponent(entId, COMP_DEBUG_BLOB);
+    // u16 flags = objComp->header.flags;
+    // int posSourceCompType = objComp->posSourceCompType;
+    // removeComponentObj(entId);
+    // addComponentObj(entId, flags, posSourceCompType);
 }
 
 u16* drawDebugBlob(u32 width, u32 height) {
     if (width > 64 || width == 0 || height > 64 || height == 0) return NULL;
     // actual sprite size rounding to nearest power of 2
-    u32 blobDimension[2] = { nextPow2(width), nextPow2(height) };
+    u32 blobDimension[2] = { max(8, nextPow2(width)), max(8, nextPow2(height)) };
     // u16 is 4 px
     int sprSize = (blobDimension[0] * blobDimension[1]) / 2; // 4 bits per pixel
     u16* spr = malloc(sprSize);
+    memset32(spr, 0, sprSize / 4);
     u16* sprPtr = spr;
     int numTileRows = blobDimension[1] >> 3;
     int numTileCols = blobDimension[0] >> 3;

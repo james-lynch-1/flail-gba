@@ -30,7 +30,7 @@ s16 gPlayerId;
 
 OBJ_ATTR gObjBuffer[128];
 OBJ_AFFINE* gObjAffBuffer = (OBJ_AFFINE*)gObjBuffer;
-u8 gObjAllocArr[1024];
+enum ObjSlotEnum gObjAllocArr[1024];
 SpriteAllocList gSpriteAllocList[MAX_ALLOC_SPRITES];
 u8 gEntFlags[MAX_ENTS];
 u8 gEntsToDelete[MAX_ENTS];
@@ -82,9 +82,9 @@ const uint32_t gCompTable[NUM_COMP_TYPES][4] = {
 int gNumCompsPerType[NUM_COMP_TYPES];
 
 // physics component archetypes
-const PhysArchetype gPhysArchetypesStatic[MAX_PHYS_ARCHETYPES_STATIC] = {
+PhysArchetype gPhysArchetypesStatic[MAX_PHYS_ARCHETYPES_STATIC] = {
     { // player
-    {16, 16, 0, 0},
+    {5, 9, 0, 0},
     5,
     {0x00001000},
     SPEED_DECAY,

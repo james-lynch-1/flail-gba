@@ -11,9 +11,11 @@
 
 // obj allocation defines
 
-#define OBJ_SLOT_UNUSED     0
-#define OBJ_SLOT_USED       1
-#define OBJ_SLOT_CONTINUE   2
+enum __attribute__ ((__packed__)) ObjSlotEnum {
+    OBJ_SLOT_UNUSED,
+    OBJ_SLOT_USED,
+    OBJ_SLOT_CONTINUE
+};
 
 // archetype stuff
 

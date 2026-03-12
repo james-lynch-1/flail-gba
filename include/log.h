@@ -14,6 +14,7 @@
 #define REG_DEBUG_STRING (char *)0x4FFF600
 
 void mgbaLog(enum Type type, void* messagePtr);
+void logVal(char* prefix, int val);
 char* toHex(int num);
 
 #endif

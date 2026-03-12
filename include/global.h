@@ -21,7 +21,7 @@ extern s16 gPlayerId;
 
 extern OBJ_ATTR gObjBuffer[128];
 extern OBJ_AFFINE* gObjAffBuffer;
-extern u8 gObjAllocArr[1024];
+extern enum ObjSlotEnum gObjAllocArr[1024];
 extern SpriteAllocList gSpriteAllocList[MAX_ALLOC_SPRITES];
 extern u8 gEntFlags[MAX_ENTS];
 extern u8 gEntsToDelete[MAX_ENTS];
@@ -54,7 +54,7 @@ extern GroupComponent gGroupCompsDense [MAX_GROUP_COMPONENTS];
 extern InputCheckerComponent gInputCheckerCompsDense[MAX_INPUT_CHECKER_COMPONENTS];
 
 // physics component archetypes
-extern const PhysArchetype gPhysArchetypesStatic[MAX_PHYS_ARCHETYPES_STATIC];
+extern PhysArchetype gPhysArchetypesStatic[MAX_PHYS_ARCHETYPES_STATIC];
 extern PhysArchetype gPhysArchetypesCustom[MAX_PHYS_ARCHETYPES_CUSTOM];
 
 extern int gNumCompsPerType[NUM_COMP_TYPES];
