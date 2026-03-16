@@ -26,10 +26,8 @@ void handleInputNormal(s16 entId) { // coupled to PhysicsComponent
         physComp->archetype->hitbox.width = 16;
         physComp->archetype->hitbox.height = 16;
         removeComponentDebugBlob(gPlayerId);
-        if (numComps(COMP_PHYSICS_SIMPLE) == 0) {
-            PositionMini p = { 0, 0 };
-            addStarLine(0, p, 60);
-        }
+        PositionMini p = { 0, 0 };
+        addStarLine(0, p, 60);
         return;
     }
 
@@ -60,13 +58,13 @@ void handleInputNormal(s16 entId) { // coupled to PhysicsComponent
     // }
     if (key_hit(KEY_L | KEY_R)) {
         u8* hBoxDimension = (u8*)&physComp->archetype->hitbox;
-        // char dim[12];
+        char hPrefix[9] = "height: ";
+        char wPrefix[8] = "width: ";
+        char* dim = wPrefix;
         if (key_is_down(KEY_A)) {
             hBoxDimension++;
-            // strncpy(dim, "height: ", 12);
+            dim = hPrefix;
         }
-        // else
-        //     strncpy(dim, "width: ", 12);
         if (key_hit(KEY_R)) {
             if (*hBoxDimension < 64) *hBoxDimension += 1;
         }
@@ -75,8 +73,9 @@ void handleInputNormal(s16 entId) { // coupled to PhysicsComponent
         }
         removeComponentDebugBlob(gPlayerId);
         addComponentDebugBlob(gPlayerId);
-        logVal("numObjs: ", numComps(COMP_OBJ));
-        logVal("numBlobs: ", numComps(COMP_DEBUG_BLOB));
+        // logVal("numObjs: ", numComps(COMP_OBJ));
+        // logVal("numBlobs: ", numComps(COMP_DEBUG_BLOB));
+        logVal(dim, *hBoxDimension);
         return;
     }
 }

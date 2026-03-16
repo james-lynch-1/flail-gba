@@ -37,7 +37,7 @@ DebugBlobComponent* addComponentDebugBlob(int entId) {
     }
     width = blob.hitbox.width;
     height = blob.hitbox.height;
-    blob.originalAttr2 = objComp->obj->attr2 & 0xFFFF;
+    blob.originalAttr2 = objComp->obj->attr2;
     blob.originalSize = objComp->obj->attr1 >> ATTR1_SIZE_SHIFT;
     blob.originalShape = objComp->obj->attr0 >> ATTR0_SHAPE_SHIFT;
     blob.size = getAppropriateSpriteSize(blob.hitbox.width, blob.hitbox.height);
@@ -55,6 +55,7 @@ void removeComponentDebugBlob(int entId) {
     DebugBlobComponent* blob = getComponent(entId, COMP_DEBUG_BLOB);
     if (!blob) return;
     ObjComponent* objComp = getComponent(entId, COMP_OBJ);
+    stopUsingSprite(objComp->obj->attr2 & ATTR2_ID_MASK);
     objComp->obj->attr2 = blob->originalAttr2;
     objComp->obj->attr1 &= ~ATTR1_SIZE_MASK;
     objComp->obj->attr1 |= blob->originalSize << ATTR1_SIZE_SHIFT;

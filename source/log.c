@@ -99,7 +99,7 @@ void logVal(char* prefix, int val) {
     while (prefixChar != 0 && length < 47)
         prefixChar = prefix[++length];
     char string[64];
-    strncpy(string, prefix, length);
+    strncpy(string, prefix, length + 1);
     char valStr[16];
     char* str = strncat(string, __itoa(val, valStr, 10), 16);
     log(CHAR, *str);
