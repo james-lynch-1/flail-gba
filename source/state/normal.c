@@ -17,7 +17,9 @@ void updateNormal() {
 
     updateInputComps();
     updateInputCheckers();
+    updateAi();
     updateAiRand();
+    updatePlayerPhysics();
     updatePhysics();
     updateHitboxes();
     updatePhysicsSimple();
@@ -25,7 +27,6 @@ void updateNormal() {
     updateDebugBlobs();
     updateSpawners();
     updateTimers();
-    updateEventListeners();
 
     deleteMarkedEnts();
 

@@ -3,3 +3,7 @@
 void updateUINormal() {
     
 }
+
+void initialiseUi() {
+    
+}

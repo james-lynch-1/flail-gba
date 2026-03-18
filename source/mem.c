@@ -51,8 +51,6 @@ int allocateObj(const u16* tiles, int tilesLen) {
         }
         if (found) {
             index = i;
-            if (index == 0)
-                log(CHAR, "writing over slot 0");
             gObjAllocArr[i] = OBJ_SLOT_USED;
             for (++i; i < index + numBlocksReqd; i++)
                 gObjAllocArr[i] = OBJ_SLOT_CONTINUE;

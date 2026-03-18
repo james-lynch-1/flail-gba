@@ -18,7 +18,6 @@ void initialiseGame() {
     memset32(&gEntFlags, 0, sizeof(gEntFlags) / 4);
     memset16(gCompSetSparse, -1, NUM_COMP_TYPES * MAX_ENTS);
     memset32(gEntsToDelete, 0, sizeof(gEntsToDelete) / 4);
-    spawnPlayer(120 << 16, 80 << 16);
 
     loadEncounter(&firstEncounter);
     // loadBG(MAP_SBB, gradientPal, gradientPalLen, gradientTiles, gradientTilesLen, gradientMap, gradientMapLen);

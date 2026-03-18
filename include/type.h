@@ -21,7 +21,8 @@ enum __attribute__ ((__packed__)) ObjSlotEnum {
 
 enum __attribute__ ((__packed__)) PhysArchetypeEnum {
     ARCHETYPE_PLAYER,
-    ARCHETYPE_WEAK_ENEMY,
+    ARCHETYPE_ENEMY_WEAK,
+    ARCHETYPE_ENEMY,
     ARCHETYPE_ITEM,
     NUM_PHYS_ARCHETYPES
 };
@@ -45,6 +46,7 @@ enum __attribute__ ((__packed__)) ComponentType {
     COMP_PHYSICS,
     COMP_PHYSICS_SIMPLE,
     COMP_HITBOX,
+    COMP_AI,
     COMP_AI_RAND,
     COMP_TIMER,
     COMP_COUNTER,
@@ -144,7 +146,8 @@ typedef struct Event_ {
 
 typedef struct EventListener_ {
     u32 flags;
-    void (*callback)(void* data);
+    void (*callback)(int entId);
+    bool isRemovedAfterCallback;
 } EventListener;
 
 // stuff with only one instance
@@ -162,8 +165,8 @@ typedef struct Position_ {
 } Position;
 
 typedef struct PositionMini_ {
-    u8 x;
-    u8 y;
+    s16 x;
+    s16 y;
 } PositionMini;
 
 // data for spawning a star line, not the in-game object.
@@ -287,7 +290,6 @@ typedef struct PhysicsComponent_ {
     Position pos; // 8 bytes. should always be after header for updateObjs()
     PhysArchetype* archetype; // 4 bytes. should always be after header and pos for updateObjs()
     Vector vec; // 8 bytes
-    // void (*onCollide)(struct PhysicsComponent_);
     u16 angle; // 2 bytes
 } PhysicsComponent;
 
@@ -308,6 +310,10 @@ typedef struct HitboxComponent_ {
     Hitbox hitbox;
 } HitboxComponent;
 
+typedef struct AiComponent_ {
+    ComponentHeader header; // 4 bytes
+} AiComponent;
+
 typedef struct AiRandComponent_ {
     ComponentHeader header; // 4 bytes
 } AiRandComponent;
@@ -319,6 +325,10 @@ typedef struct TimerComponent_ {
     void(*callback)(); // 4 bytes
 } TimerComponent;
 
+// UI components use these to decide what meter this counter is for
+#define COUNTER_HEALTH_FLAG     1
+#define COUNTER_POWER_FLAG      2
+
 typedef struct CounterComponent_ {
     ComponentHeader header; // 4 bytes
     u16 curr; // 2 bytes
@@ -327,7 +337,6 @@ typedef struct CounterComponent_ {
 
 typedef struct SpawnerComponent_ {
     ComponentHeader header; // 4 bytes
-    Position pos; // 8 bytes
     u16 spawnerBehaviourIdx; // 2 bytes
     u16 frequency; // 2 bytes. How often it spawns
     u16 timer; // 2 bytes

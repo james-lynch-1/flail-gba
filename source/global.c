@@ -12,6 +12,7 @@ extern void removeComponentAudio(int entId);
 extern void removeComponentPhysics(int entId);
 extern void removeComponentPhysicsSimple(int entId);
 extern void removeComponentHitbox(int entId);
+extern void removeComponentAi(int entId);
 extern void removeComponentAiRand(int entId);
 extern void removeComponentTimer(int entId);
 extern void removeComponentCounter(int entId);
@@ -41,7 +42,7 @@ enum Direction gDPadDir = STATIONARY;
 
 // // events and listeners
 int gNumListenersPerType[NUM_COMP_TYPES];
-EventListener gEventListeners[NUM_COMP_TYPES][MAX_EVENT_LISTENERS_PER_TYPE];
+EWRAM_BSS EventListener gEventListeners[NUM_COMP_TYPES][MAX_EVENT_LISTENERS_PER_TYPE];
 
 // components
 EWRAM_BSS ObjComponent gObjCompsDense[MAX_OBJ_COMPONENTS];
@@ -51,8 +52,9 @@ EWRAM_BSS TileComponent gTileCompsDense[MAX_TILE_COMPONENTS];
 EWRAM_BSS InputComponent gInputCompsDense[MAX_INPUT_COMPONENTS];
 EWRAM_BSS AudioComponent gAudioCompsDense[MAX_AUDIO_COMPONENTS];
 EWRAM_BSS PhysicsComponent gPhysCompsDense[MAX_PHYSICS_COMPONENTS];
-EWRAM_BSS SimplePhysicsComponent gSimplePhysCompsDense[MAX_SIMPLE_PHYSICS_COMPONENTS];
+EWRAM_BSS SimplePhysicsComponent gSimplePhysCompsDense[MAX_PHYSICS_SIMPLE_COMPONENTS];
 EWRAM_BSS HitboxComponent gHitboxCompsDense[MAX_HITBOX_COMPONENTS];
+EWRAM_BSS AiComponent gAiCompsDense[MAX_AI_COMPONENTS];
 EWRAM_BSS AiRandComponent gAiRandCompsDense[MAX_AI_RAND_COMPONENTS];
 EWRAM_BSS TimerComponent gTimerCompsDense[MAX_TIMER_COMPONENTS];
 EWRAM_BSS CounterComponent gCounterCompsDense[MAX_COUNTER_COMPONENTS];
@@ -69,8 +71,9 @@ const uint32_t gCompTable[NUM_COMP_TYPES][4] = {
     {(uint32_t)&gInputCompsDense, sizeof(InputComponent), MAX_INPUT_COMPONENTS, (uint32_t)removeComponentInput},
     {(uint32_t)&gAudioCompsDense, sizeof(AudioComponent), MAX_AUDIO_COMPONENTS, (uint32_t)removeComponentAudio},
     {(uint32_t)&gPhysCompsDense, sizeof(PhysicsComponent), MAX_PHYSICS_COMPONENTS, (uint32_t)removeComponentPhysics},
-    {(uint32_t)&gSimplePhysCompsDense, sizeof(SimplePhysicsComponent), MAX_SIMPLE_PHYSICS_COMPONENTS, (uint32_t)removeComponentPhysicsSimple},
+    {(uint32_t)&gSimplePhysCompsDense, sizeof(SimplePhysicsComponent), MAX_PHYSICS_SIMPLE_COMPONENTS, (uint32_t)removeComponentPhysicsSimple},
     {(uint32_t)&gHitboxCompsDense, sizeof(HitboxComponent), MAX_HITBOX_COMPONENTS, (uint32_t)removeComponentHitbox},
+    {(uint32_t)&gAiCompsDense, sizeof(AiComponent), MAX_AI_COMPONENTS, (uint32_t)removeComponentAi},
     {(uint32_t)&gAiRandCompsDense, sizeof(AiRandComponent), MAX_AI_RAND_COMPONENTS, (uint32_t)removeComponentAiRand},
     {(uint32_t)&gTimerCompsDense, sizeof(TimerComponent), MAX_TIMER_COMPONENTS, (uint32_t)removeComponentTimer},
     {(uint32_t)&gCounterCompsDense, sizeof(CounterComponent), MAX_COUNTER_COMPONENTS, (uint32_t)removeComponentCounter},
@@ -93,6 +96,13 @@ PhysArchetype gPhysArchetypesStatic[MAX_PHYS_ARCHETYPES_STATIC] = {
     { // weak enemy
     {8, 8, 0, 0},
     1,
+    {0x00002000},
+    0,
+    true
+    },
+    { // enemy
+    {16, 16, 0, 0},
+    2,
     {0x00002000},
     0,
     true

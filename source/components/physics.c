@@ -1,5 +1,28 @@
 #include "component.h"
 
+void pullTowardsPosition(PhysicsComponent* physComp, int x, int y) {
+    Vector gravityVec = { {x - physComp->pos.x.WORD}, {y - physComp->pos.y.WORD} };
+    gravityVec = normaliseVec(gravityVec);
+    gravityVec = divVec(gravityVec, 4);
+    physComp->vec = addVec(physComp->vec, gravityVec);
+}
+
+void updatePlayerPhysics() {
+    PhysicsComponent* player = getComponent(gPlayerId, COMP_PHYSICS);
+    for (int i = 0; i < numComps(COMP_PHYSICS); i++) {
+        if (gPhysCompsDense[i].header.entId == player->header.entId) continue;
+        if (checkPhysCompToPhysCompCollision(player, &gPhysCompsDense[i])) {
+            logPos(player->pos);
+        }
+    }
+    bool isGravityOn = (gFlags & GFLAG_GRAVITY) && (player->header.flags & PHYS_GRAVITY_FLAG);
+    u32 mag = fastMagnitude(player->vec.x.WORD, player->vec.y.WORD);
+    if (!isGravityOn && mag < 0x1800 && !(key_is_down(KEY_UP | KEY_DOWN | KEY_LEFT | KEY_RIGHT))) {
+        player->vec.x.WORD = 0;
+        player->vec.y.WORD = 0;
+    }
+}
+
 // first use the input or ai components to add a vec to this vec, then clamp and decay speed, and apply gravity
 void updatePhysics() {
     for (int i = 0; i < gNumCompsPerType[COMP_PHYSICS]; i++) {
@@ -18,11 +41,7 @@ void updatePhysics() {
             ent->vec = scalarMultVec(ent->vec, ent->archetype->radius);
         }
         if (isGravityOn && !centredAndSufficientlySlow) {
-            Vector gravityVec = { {(120 << 16) - ent->pos.x.WORD},
-                                  {(80 << 16) - ent->pos.y.WORD} };
-            gravityVec = normaliseVec(gravityVec);
-            gravityVec = divVec(gravityVec, 4);
-            ent->vec = addVec(ent->vec, gravityVec);
+            pullTowardsPosition(ent, 120 << 16, 80 << 16);
         }
 
         // stop if centred and sufficiently slow
@@ -32,10 +51,6 @@ void updatePhysics() {
             ent->vec.y.WORD = 0;
             ent->pos.x.WORD = 120 << 16;
             ent->pos.y.WORD = 80 << 16;
-        }
-        if (!isGravityOn && mag < 0x1800 && !(key_is_down(KEY_UP | KEY_DOWN | KEY_LEFT | KEY_RIGHT))) {
-            ent->vec.x.WORD = 0;
-            ent->vec.y.WORD = 0;
         }
 
         if (!in_range(ent->pos.x.HALF.HI, 0 + ent->archetype->hitbox.width / 2, SCREEN_WIDTH - ent->archetype->hitbox.width / 2))
@@ -65,10 +80,24 @@ void updatePhysicsSimple() {
 
 bool checkPlayerToHitboxCollision(PhysicsComponent* ent, HitboxComponent* hBox) {
     SimplePhysicsComponent* simplePhys = getComponent(hBox->header.entId, COMP_PHYSICS_SIMPLE);
-    return ((ent->pos.x.HALF.HI + ent->archetype->hitbox.width / 2) > simplePhys->pos.x.HALF.HI - hBox->hitbox.width / 2) &&
-        ((ent->pos.x.HALF.HI - ent->archetype->hitbox.width / 2) < simplePhys->pos.x.HALF.HI + hBox->hitbox.width / 2) &&
-        ((ent->pos.y.HALF.HI + ent->archetype->hitbox.height / 2) > simplePhys->pos.y.HALF.HI - hBox->hitbox.height / 2) &&
-        ((ent->pos.y.HALF.HI - ent->archetype->hitbox.height / 2) < simplePhys->pos.y.HALF.HI + hBox->hitbox.height / 2);
+    int playerhBWidth = ent->archetype->hitbox.width, playerhBHeight = ent->archetype->hitbox.height;
+    return in_range(ent->pos.x.HALF.HI,
+        simplePhys->pos.x.HALF.HI - (playerhBWidth + hBox->hitbox.width) / 2,
+        simplePhys->pos.x.HALF.HI + (playerhBWidth + hBox->hitbox.width) / 2) &&
+        in_range(ent->pos.y.HALF.HI,
+            simplePhys->pos.y.HALF.HI - (playerhBHeight + hBox->hitbox.height) / 2,
+            simplePhys->pos.y.HALF.HI + (playerhBHeight + hBox->hitbox.height) / 2);
+}
+
+bool checkPhysCompToPhysCompCollision(PhysicsComponent* p1, PhysicsComponent* p2) {
+    int p1hBWidth = p1->archetype->hitbox.width, p2hBWidth = p2->archetype->hitbox.width;
+    int p1hBHeight = p1->archetype->hitbox.height, p2hBHeight = p2->archetype->hitbox.height;
+    return in_range(p1->pos.x.HALF.HI,
+        p2->pos.x.HALF.HI - (p1hBWidth + p2hBWidth) / 2,
+        p2->pos.x.HALF.HI + (p1hBWidth + p2hBWidth) / 2) &&
+        in_range(p1->pos.y.HALF.HI,
+            p2->pos.y.HALF.HI - (p1hBHeight + p2hBHeight) / 2,
+            p2->pos.y.HALF.HI + (p1hBHeight + p2hBHeight) / 2);
 }
 
 // utils

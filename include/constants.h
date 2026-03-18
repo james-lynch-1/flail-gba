@@ -15,8 +15,9 @@
 #define MAX_INPUT_COMPONENTS            32
 #define MAX_AUDIO_COMPONENTS            32
 #define MAX_PHYSICS_COMPONENTS          32
-#define MAX_SIMPLE_PHYSICS_COMPONENTS   128
+#define MAX_PHYSICS_SIMPLE_COMPONENTS   128
 #define MAX_HITBOX_COMPONENTS           128
+#define MAX_AI_COMPONENTS               16
 #define MAX_AI_RAND_COMPONENTS          128
 #define MAX_TIMER_COMPONENTS            128
 #define MAX_COUNTER_COMPONENTS            128

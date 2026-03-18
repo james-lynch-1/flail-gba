@@ -105,6 +105,15 @@ void logVal(char* prefix, int val) {
     log(CHAR, *str);
 }
 
+void logPos(Position pos) {
+    char posStr[13] = "x: ";
+    char buffer[4];
+    strncat(posStr, __itoa(pos.x.HALF.HI, buffer, 10), 4);
+    strncat(posStr, " y: ", 5);
+    strncat(posStr, __itoa(pos.y.HALF.HI, buffer, 10), 4);
+    log(CHAR, posStr);
+}
+
 char* toHex(int num) {
     char* hex = malloc(sizeof(char) * 9);
     hex[8] = '\n';

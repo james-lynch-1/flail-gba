@@ -1,7 +1,7 @@
 #include "star.h"
 
 const StarLine StarLines[] = { {
-    {{85, 46}, {120, 37}, {147, 52}, {140, 81}}
+    {{25, -10}, {30, 25}}
 } };
 
 void timerCallback() {
@@ -10,10 +10,10 @@ void timerCallback() {
 
 void incrementNumCollectedAndLog(MemberComponent* m, GroupComponent* g) {
     markEntToBeDeleted(m->header.entId);
+    notify(m->header.entId, COMP_PHYSICS, E_PHYS_TOUCHED);
     g->numCollected++;
     if (g->numCollected == g->numMembers)
         log(CHAR, "All collected!");
-    logSomething();
 }
 
 // spawns a line of stars. Takes as parameters a type of star line, its
@@ -28,12 +28,14 @@ void addStarLine(int starLineType, PositionMini pos, u32 freq) {
     addComponentGroup(entId, 0, NULL, incrementNumCollectedAndLog, 0, ENT_ITEM);
     // the below walks through the provided array of stars and spawns each one
     // until either it reaches the end of the array or reaches a value of zero (early end)
+    int starId = spawnStar(pos.x << 16, pos.y << 16);
+    addComponentMember(starId, 0, entId);
     u16* posPtr = (u16*)&sL;
     int i = 0;
     while (*posPtr != 0 && i++ < MAX_STARLINE_LENGTH) {
-        int starId = spawnStar((*(u8*)posPtr) << 16, (*(u8*)((u8*)posPtr + 1)) << 16);
+        starId = spawnStar((*posPtr + pos.x) << 16, (*(u16*)(posPtr + 1) + pos.y) << 16);
         addComponentMember(starId, 0, entId);
-        posPtr++;
+        posPtr += 2;
     }
 
     // addComponentCustom();
@@ -41,7 +43,7 @@ void addStarLine(int starLineType, PositionMini pos, u32 freq) {
 
 int spawnStar(int x, int y) {
     if ((numComps(COMP_OBJ) >= MAX_OBJ_COMPONENTS) ||
-        (numComps(COMP_PHYSICS_SIMPLE) >= MAX_SIMPLE_PHYSICS_COMPONENTS))
+        (numComps(COMP_PHYSICS_SIMPLE) >= MAX_PHYSICS_SIMPLE_COMPONENTS))
         return -1;
     s16 entId = reserveEntSlot();
     if (entId == -1) return -1;

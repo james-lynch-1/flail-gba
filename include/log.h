@@ -15,6 +15,7 @@
 
 void mgbaLog(enum Type type, void* messagePtr);
 void logVal(char* prefix, int val);
+void logPos(Position pos);
 char* toHex(int num);
 
 #endif

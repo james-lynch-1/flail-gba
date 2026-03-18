@@ -4,8 +4,8 @@ void updateSpawners() {
     
 }
 
-void addComponentSpawner(int entId, u16 flags, int x, int y, enum EntityKind entKind) {
-    // SpawnerComponent s = {{entId, flags}, {{x}, {y}}, entKind, };
+void addComponentSpawner(int entId, u16 flags, enum EntityKind entKind) {
+    // SpawnerComponent s = {{entId, flags}, entKind, };
 }
 
 void removeComponentSpawner(int entId) {

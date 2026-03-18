@@ -6,4 +6,6 @@
 
 int spawnEnemyWeak(int x, int y);
 
+int spawnEnemy(int x, int y);
+
 #endif

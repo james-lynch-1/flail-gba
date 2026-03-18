@@ -95,6 +95,10 @@ void initialiseArchetypeArrays();
 
 // Physics
 
+void pullTowardsPosition(PhysicsComponent* physComp, int x, int y);
+
+void updatePlayerPhysics();
+
 void updatePhysics();
 
 void updatePhysicsSimple();
@@ -103,6 +107,8 @@ void updatePhysicsSimple();
 
 /** Assumes the hBox haver also has a SimplePhysics component */
 bool checkPlayerToHitboxCollision(PhysicsComponent* ent, HitboxComponent* hBox);
+
+bool checkPhysCompToPhysCompCollision(PhysicsComponent* player, PhysicsComponent* physComp);
 
 Vector decaySpeed(Vector vec, int rate);
 
@@ -128,7 +134,11 @@ void removeComponentHitbox(int entId);
 
 // Ai
 
+void updateAi();
+
 void updateAiRand();
+
+void removeComponentAi(int entId);
 
 void removeComponentAiRand(int entId);
 
@@ -148,7 +158,7 @@ void removeComponentCounter(int entId);
 
 // Spawner
 
-void addComponentSpawner(int entId, u16 flags, int x, int y, enum EntityKind entKind);
+void addComponentSpawner(int entId, u16 flags, enum EntityKind entKind);
 
 void updateSpawners();
 
