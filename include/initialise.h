@@ -11,6 +11,4 @@
 
 void initialiseGame();
 
-void loadSprites();
-
 #endif

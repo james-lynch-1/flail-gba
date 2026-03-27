@@ -2,6 +2,9 @@
 #define UI
 
 #include "global.h"
+#include "mem.h"
+#include "graphics.h"
+#include "component.h"
 
 void updateUINormal();
 

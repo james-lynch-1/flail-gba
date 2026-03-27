@@ -12,7 +12,7 @@ void updatePlayerPhysics() {
     for (int i = 0; i < numComps(COMP_PHYSICS); i++) {
         if (gPhysCompsDense[i].header.entId == player->header.entId) continue;
         if (checkPhysCompToPhysCompCollision(player, &gPhysCompsDense[i])) {
-            logPos(player->pos);
+            notify(gPlayerId, COMP_PHYSICS, E_PHYS_TOUCHED);
         }
     }
     bool isGravityOn = (gFlags & GFLAG_GRAVITY) && (player->header.flags & PHYS_GRAVITY_FLAG);

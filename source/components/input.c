@@ -20,17 +20,12 @@ void handleInputNormal(s16 entId) { // coupled to PhysicsComponent
     }
 
     if (key_hit(KEY_START)) { // reset
-        // for (int i = 0; i < numComps(COMP_PHYSICS_SIMPLE); i++)
-        //     markEntToBeDeleted(gSimplePhysCompsDense[i].header.entId);
-
-        // physComp->archetype->hitbox.width = 16;
-        // physComp->archetype->hitbox.height = 16;
-        // removeComponentDebugBlob(gPlayerId);
-        // PositionMini p = { 0, 0 };
-        // addStarLine(0, p, 60);
-        log(CHAR, "resetting");
-        void (*reset)() = 0;
-        reset();
+        if (key_is_down(KEY_A)) {
+            log(CHAR, "resetting");
+            void (*reset)() = 0;
+            reset();
+        }
+        exitNormal(PAUSE);
         return;
     }
 

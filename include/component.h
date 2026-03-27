@@ -152,9 +152,14 @@ void removeComponentTimer(int entId);
 
 // Counter
 
-void addComponentCounter(int entId, u16 max);
+CounterComponent* addComponentCounter(int entId, u16 flags, u16 max);
 
 void removeComponentCounter(int entId);
+
+void decrementCounter(int entId);
+
+/** Used for entities that have member ents representing their health */
+void decrementCounterHealth(int entId);
 
 // Spawner
 

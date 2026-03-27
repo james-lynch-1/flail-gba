@@ -351,7 +351,7 @@ typedef struct MemberComponent_ {
 
 typedef struct GroupComponent_ {
     ComponentHeader header; // 4 bytes
-    u16 memberIds[MAX_MEMBERS_PER_GROUP]; // 48 bytes - max 24 members
+    s16 memberIds[MAX_MEMBERS_PER_GROUP]; // 48 bytes - max 24 members
     void (*onCollect)(struct MemberComponent_*, struct GroupComponent_*); // 4 bytes
     u16 counter; // 2 bytes
     u8 numCollected; // 1 byte

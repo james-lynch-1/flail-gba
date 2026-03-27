@@ -1,7 +1,7 @@
 #include "component.h"
 
 MemberComponent* addComponentMember(s16 entId, u16 flags, int groupId) {
-    MemberComponent m = { {entId, flags}, {groupId} };
+    MemberComponent m = { {entId, flags}, {groupId, -1, -1, -1} };
     MemberComponent* mAddr = (MemberComponent*)addComponentCustom(&m, COMP_MEMBER);
     GroupComponent* group = getComponent(groupId, COMP_GROUP);
     if (group) group->memberIds[group->numMembers++] = entId;
@@ -48,6 +48,6 @@ void doGroupCallbacks(int entId) {
     for (int i = 0; i < MAX_GROUPS_PER_MEMBER; i++) {
         GroupComponent* g = getComponent(m->groupIds[i], COMP_GROUP);
         if (!g) break;
-        g->onCollect(m, g);
+        if (g->onCollect) g->onCollect(m, g);
     }
 }

@@ -1,7 +1,7 @@
 #include "component.h"
 
 GroupComponent* addComponentGroup(s16 entId, u16 flags, s16* memberIds, void (*onCollect)(struct MemberComponent_*, struct GroupComponent_*), int numMembers, int entKind) {
-    GroupComponent g = { {entId, 0}, {}, NULL, 0, numMembers };
+    GroupComponent g = { {entId, 0}, {-1, -1, -1, -1}, NULL, 0, numMembers };
     if (memberIds && (numMembers > 0))
         for (int i = 0; i < numMembers; i++) {
             MemberComponent* mComp = getComponent(memberIds[i], COMP_MEMBER);

@@ -36,7 +36,7 @@ int spawnEnemy(int x, int y) {
     ObjComponent* objComp = addComponentObj(entId, 0, COMP_PHYSICS);
     objComp->obj->attr0 |= ATTR0_4BPP | ATTR0_SQUARE;
     objComp->obj->attr1 |= ATTR1_SIZE_16x16;
-    objComp->obj->attr2 |= ATTR2_ID(fetchSprite(magicBallTiles, magicBallTilesLen)) | ATTR2_PALBANK(1);
+    objComp->obj->attr2 |= ATTR2_ID(fetchSprite(magicBallTiles, magicBallTilesLen)) | ATTR2_PRIO(1) | ATTR2_PALBANK(1);
     PhysicsComponent phys = {
         {entId, 0},
         { (SWord)x, (SWord)y },

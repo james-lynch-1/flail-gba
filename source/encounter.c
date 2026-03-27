@@ -56,7 +56,17 @@ void loadEncounter(Encounter* encounter) {
 
     // objective
 
-    addEventListener(COMP_PHYSICS, E_PHYS_TOUCHED, logSomething, false);
+    addEventListener(COMP_PHYSICS, E_STAR_COLLECTED, logSomething, false);
+    if (hasComponent(gPlayerId, COMP_GROUP)) {
+        GroupComponent* group = getComponent(gPlayerId, COMP_GROUP);
+        for (int i = 0; i < group->numMembers; i++) {
+            CounterComponent* counter = getComponent(group->memberIds[i], COMP_COUNTER);
+            if (counter && (counter->header.flags & COUNTER_HEALTH_FLAG)) {
+                addEventListener(COMP_PHYSICS, E_PHYS_TOUCHED, decrementCounterHealth, false);
+                break;
+            }
+        }
+    }
     spawnEnemy(10 << 16, 10 << 16);
 
     // spawn schedule. what is it?

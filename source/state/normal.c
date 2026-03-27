@@ -4,12 +4,7 @@
 
 void enterNormal() {
     REG_DISPCNT |= DCNT_BG1;
-    REG_BG1CNT = BG_PRIO(3) | BG_CBB(0) | BG_SBB(UI_SBB) | BG_4BPP | BG_REG_32x32;
-    // todo: initialise stars
-        // need to select randomly from a list of star arrangements
-        // or select from a specific order
-        // have a queue of star lines to spawn? star data and timer
-    // todo: start star timers
+    REG_BG1CNT = BG_PRIO(0) | BG_CBB(0) | BG_SBB(UI_SBB) | BG_4BPP | BG_REG_32x32; // ui
 }
 
 void updateNormal() {
@@ -27,6 +22,8 @@ void updateNormal() {
     updateDebugBlobs();
     updateSpawners();
     updateTimers();
+
+    updateUINormal();
 
     deleteMarkedEnts();
 
