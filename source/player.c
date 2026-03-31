@@ -21,9 +21,11 @@ int spawnPlayer(int x, int y) {
     };
     addComponentGroup(gPlayerId, 0, NULL, NULL, 0, ENT_PLAYER);
     MemberComponent* healthMember = addComponentMember(reserveEntSlot(), 0, gPlayerId);
-    addComponentCounter(healthMember->header.entId, COUNTER_HEALTH_FLAG, 150);
+    addComponentCounter(healthMember->header.entId, COUNTER_HEALTH_FLAG, 150, 150);
     MemberComponent* powerMember = addComponentMember(reserveEntSlot(), 0, gPlayerId);
-    addComponentCounter(powerMember->header.entId, COUNTER_POWER_FLAG, 120);
+    addComponentCounter(powerMember->header.entId, COUNTER_POWER_FLAG, 0, 360);
+    MemberComponent* numDefeatedMember = addComponentMember(reserveEntSlot(), 0, gPlayerId);
+    addComponentCounter(numDefeatedMember->header.entId, COUNTER_NUM_DEFEATED_FLAG, 0, INT16_MAX);
     if (!addComponentCustom(&input, COMP_INPUT)) return -1;
     if (!addComponentCustom(&phys, COMP_PHYSICS)) return -1;
     return 1;

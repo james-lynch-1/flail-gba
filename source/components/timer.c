@@ -4,7 +4,7 @@ void updateTimers() {
     for (int i = 0; i < gNumCompsPerType[COMP_TIMER]; i++) {
         gTimerCompsDense[i].timeRemaining--;
         if (gTimerCompsDense[i].timeRemaining == 0) {
-            if (gTimerCompsDense[i].callback) gTimerCompsDense[i].callback();
+            if (gTimerCompsDense[i].callback) gTimerCompsDense[i].callback(gTimerCompsDense[i].header.entId);
             gTimerCompsDense[i].timeRemaining = gTimerCompsDense[i].time;
         }
     }

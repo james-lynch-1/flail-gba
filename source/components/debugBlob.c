@@ -63,10 +63,6 @@ void removeComponentDebugBlob(int entId) {
     objComp->obj->attr0 |= blob->originalShape << ATTR0_SHAPE_SHIFT;
     free(blob->allocatedSprite);
     removeComponent(entId, COMP_DEBUG_BLOB);
-    // u16 flags = objComp->header.flags;
-    // int posSourceCompType = objComp->posSourceCompType;
-    // removeComponentObj(entId);
-    // addComponentObj(entId, flags, posSourceCompType);
 }
 
 u16* drawDebugBlob(u32 width, u32 height) {

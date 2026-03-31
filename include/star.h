@@ -5,25 +5,23 @@
 #include "entity.h"
 #include "component.h"
 
-// a star pattern is an array of mini position structs. Each element
+// A star line is an array of mini position structs. Each element
 // is an offset from the first star. Therefore, spawning any given
 // star pattern at position p means that the first star will be at
 // p and all the other star's positions are given as offsets to
 // the first one.
-
 extern const StarLine StarLines[];
 
 void timerCallback();
 
-void incrementNumCollectedAndLog(MemberComponent * m, GroupComponent * g);
+void removeStarLine(int entId);
+
+void doGroupActionStarLine(MemberComponent * m, GroupComponent * g);
+
+void spawnStarLineRandomPos(int entId);
 
 void addStarLine(int starLineType, PositionMini pos, u32 freq);
 
 int spawnStar(int x, int y);
-
-// a star line has timer, progress, simplephysics components
-
-// MiniPosition patt[] = {{0, 5}};
-// int x = sizeof(MiniPosition);
 
 #endif

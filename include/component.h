@@ -77,9 +77,11 @@ void removeComponentInput(int entId);
 
 // Input Checker
 
+void logForInputChecker(int entId);
+
 void updateInputCheckers();
 
-void addComponentInputChecker(int entId, u16 keys);
+void addComponentInputChecker(int entId, u16 keys, void(*callback)(int));
 
 void removeComponentInputChecker(int entId);
 
@@ -89,6 +91,9 @@ void removeComponentAudio(int entId);
 
 // Phys archetypes
 
+extern PhysArchetype gPhysArchetypesStatic[MAX_PHYS_ARCHETYPES_STATIC];
+extern PhysArchetype gPhysArchetypesCustom[MAX_PHYS_ARCHETYPES_CUSTOM];
+
 int addPhysArchetypeCustom(void* data);
 
 void initialiseArchetypeArrays();
@@ -96,6 +101,8 @@ void initialiseArchetypeArrays();
 // Physics
 
 void pullTowardsPosition(PhysicsComponent* physComp, int x, int y);
+
+void pushAwayFromPosition(PhysicsComponent* physComp, int x, int y);
 
 void updatePlayerPhysics();
 
@@ -152,14 +159,19 @@ void removeComponentTimer(int entId);
 
 // Counter
 
-CounterComponent* addComponentCounter(int entId, u16 flags, u16 max);
+CounterComponent* addComponentCounter(int entId, u16 flags, s16 curr, s16 max);
 
 void removeComponentCounter(int entId);
 
-void decrementCounter(int entId);
+CounterComponent* getCounterByFlags(int entId, u16 flags);
 
 /** Used for entities that have member ents representing their health */
-void decrementCounterHealth(int entId);
+void handlePlayerToPhysCollision(int entId);
+
+void incrementPower(int entId);
+
+/** amount can be pos or neg */
+void incDecCounter(CounterComponent* counter, int amount);
 
 // Spawner
 

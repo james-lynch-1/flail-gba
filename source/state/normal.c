@@ -9,6 +9,13 @@ void enterNormal() {
 
 void updateNormal() {
     key_poll();
+    if (gFrameCount & 1) {
+        CounterComponent* power = getCounterByFlags(gPlayerId, COUNTER_POWER_FLAG);
+        if (power->curr < power->max) {
+            incDecCounter(power, -1);
+            power->curr = clamp(power->curr, 0, power->max);
+        }
+    }
 
     updateInputComps();
     updateInputCheckers();
@@ -19,7 +26,9 @@ void updateNormal() {
     updateHitboxes();
     updatePhysicsSimple();
     updateObjs();
+#ifdef DEBUG
     updateDebugBlobs();
+#endif
     updateSpawners();
     updateTimers();
 

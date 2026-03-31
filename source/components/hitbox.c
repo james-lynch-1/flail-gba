@@ -8,8 +8,6 @@ void updateHitboxes() {
             doGroupCallbacks(hBox->header.entId);
         }
     }
-    // todo: make this branch less. Maybe enable a flag that member components can use to
-    // check if they need to do their action or not, in the member update function
 }
 
 void removeComponentHitbox(int entId) {

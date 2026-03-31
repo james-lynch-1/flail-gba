@@ -39,6 +39,11 @@ void logSomething() {
     log(CHAR, "something");
 }
 
+void reset() {
+    log(CHAR, "resetting");
+    SoftReset();
+}
+
 int nextPow2(int num) {
     int x = num - 1;
     x |= x >> 1;

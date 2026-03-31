@@ -1,21 +1,35 @@
 # New GBA project - using ECS architecture
-Run the .gba file in a GBA emulator or on GBA hardware. Right now there's basically no gameplay. Fun will be added in future  
-# Controls:
+Run the .gba file in an emulator or on an actual Game Boy Advance.
+# Objective
+Power meter depletes over time.  
+Collecting one of the firefly/moth things will increment this meter a bit...  
+But leaving any behind before the whole group disappears will completely deplete your power meter.  
+The closer you are to the enemy when the firefly is picked up, the more power is bestowed. Take risks!  
+If your health is fully depleted by the enemy, the game soft resets and the points are reset to zero.  
+*ADVANCED:* If you collect a whole group of fireflies without pressing a direction, your power fills to maximum instantly.  
+When power is full, it stops depleting and the player can then defeat the enemy to gain one point and a bit of health back.  
+Collect ten points to win.  
+# Controls
 - Dpad to move
+- Start to pause game
+- Hold Select and press Start to reset game
+#### DEBUG FEATURES (Not enabled by default):
 - B to spawn a bunch of entities
 - L or R to turn on hitbox visualiser, then:
   - L to make hitbox smaller on x axis, R to make hitbox bigger on x axis
   - Hold A while pressing L or R for y axis
-- Start to reset game
 - Select to toggle gravity
 # Progress
-DONE:  
+### :) DONE:  
 - Implemented basic ECS architecture
 - Finished sprite and tile data allocation methods
+- Made a pretty fun game
+- Implemented basic UI
 
-TODO:
-- Make fun
-- Implement health, UI, fail state
+### :| TODO:
+- Implement better UI
+- Add "game over" and "you win" screens
+- Change the background image from Melee Island to something else
 # ECS architecture
 I started making this game to explore the benefits of a non-object oriented system for a game engine. Entity Component System describes an
 architecture where game entities are made up of individual components stored contiguously in separate arrays and connected via a common

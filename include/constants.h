@@ -20,7 +20,7 @@
 #define MAX_AI_COMPONENTS               16
 #define MAX_AI_RAND_COMPONENTS          128
 #define MAX_TIMER_COMPONENTS            128
-#define MAX_COUNTER_COMPONENTS            128
+#define MAX_COUNTER_COMPONENTS          128
 #define MAX_SPAWNER_COMPONENTS          128
 #define MAX_MEMBER_COMPONENTS           128
 #define MAX_GROUP_COMPONENTS            8
@@ -32,12 +32,12 @@
 #define MAX_PHYS_ARCHETYPES_STATIC      32
 #define MAX_PHYS_ARCHETYPES_CUSTOM      32
 
-#define MAX_STARLINE_LENGTH             32
+#define MAX_STARLINE_LENGTH             8
 
 #define MAX_ALLOC_SPRITES               128
 
-// time (in frames) after laying an egg in which you cannot hurt each other
-#define LAY_INVULN_TIME     60
+// player
+#define PLAYER_POWER_INCREMENT          60
 
 // enemy-related constants
 #define WEAK_TURN_FREQ      20

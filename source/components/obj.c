@@ -13,20 +13,23 @@ ObjComponent* addComponentObj(s16 entId, u16 flags, int posSourceCompType) {
 
 void removeComponentObj(int entId) {
     ObjComponent* objComp = getComponent(entId, COMP_OBJ);
+    if (!objComp) return;
+#ifdef DEBUG
     removeComponentDebugBlob(entId);
+#endif
     OBJ_ATTR* thisObjBufferPtr = objComp->obj;
     stopUsingSprite(objComp->obj->attr2 & ATTR2_ID_MASK);
-    
+
     // replace this one with the last obj in the buffer,
     // also update that obj's obj comp to point to this new location
     int replacementEntId = removeComponent(entId, COMP_OBJ);
     ObjComponent* replacementObj = getComponent(replacementEntId, COMP_OBJ);
 
-    // if there is only one obj left, just set its buffer value to 0
+    // if there is only one obj left, or if it is the last obj in the dense array, just clear its attrs
     if (replacementEntId == entId) {
-        replacementObj->obj->attr0 = 512;
-        replacementObj->obj->attr1 = 0;
-        replacementObj->obj->attr2 = 0;
+        objComp->obj->attr0 = 512;
+        objComp->obj->attr1 = 0;
+        objComp->obj->attr2 = 0;
         return;
     }
 
@@ -34,7 +37,7 @@ void removeComponentObj(int entId) {
     OBJ_ATTR* replacementObjBufferPtr = replacementObj->obj;
     memcpy32(thisObjBufferPtr, replacementObjBufferPtr, 2);
 
-    // finally, initialise the replacement's old obj buffer position to defaults
+    // finally, clear the replacement's old attrs
     replacementObj->obj->attr0 = 512;
     replacementObj->obj->attr1 = 0;
     replacementObj->obj->attr2 = 0;

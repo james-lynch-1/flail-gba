@@ -14,17 +14,14 @@ int removeComponent(int entId, enum ComponentType componentType) {
     if (!hasComponent(entId, componentType)) return -1; // in case component doesn't exist
     int denseIndex = gCompSetSparse[componentType][entId];
     gCompSetSparse[componentType][entId] = -1;
-    if (gNumCompsPerType[componentType] == 1) {
-        gNumCompsPerType[componentType]--;
-        return entId;
-    }
     int replacementEntId = ((ComponentHeader*)(denseSetAddr(componentType) +
         compSize(componentType) * (gNumCompsPerType[componentType] - 1)))->entId;
-    void* dst = (void*)(denseSetAddr(componentType) + compSize(componentType) * denseIndex);
-    void* src = (void*)(denseSetAddr(componentType) + compSize(componentType) * (gNumCompsPerType[componentType] - 1));
-    memcpy32(dst, src, compSize(componentType) / 4);
-
-    gCompSetSparse[componentType][replacementEntId] = denseIndex;
+    if (replacementEntId != entId) {
+        void* dst = (void*)(denseSetAddr(componentType) + compSize(componentType) * denseIndex);
+        void* src = (void*)(denseSetAddr(componentType) + compSize(componentType) * (gNumCompsPerType[componentType] - 1));
+        memcpy32(dst, src, compSize(componentType) / 4);
+        gCompSetSparse[componentType][replacementEntId] = denseIndex;
+    }
     gNumCompsPerType[componentType]--;
     return replacementEntId;
 }

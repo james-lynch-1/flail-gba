@@ -16,6 +16,8 @@ void doNothing();
 
 void logSomething();
 
+void reset();
+
 // https://jameshfisher.com/2018/03/30/round-up-power-2/
 int nextPow2(int num);
 

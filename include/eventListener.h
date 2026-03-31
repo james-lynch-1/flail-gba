@@ -9,7 +9,7 @@ enum __attribute__ ((__packed__)) EventFlags {
     E_STAR_COLLECTED
 };
 
-bool addEventListener(enum ComponentType eventType, u32 flags, void(*callback)(int), bool removeAfterCallback);
+bool addEventListener(enum ComponentType eventType, u32 flags, void(*callback)(int entId), bool removeAfterCallback);
 
 void removeEventListener(enum ComponentType compType, int listenerIndex);
 

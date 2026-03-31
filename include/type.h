@@ -303,10 +303,6 @@ typedef struct SimplePhysicsComponent_ {
 
 typedef struct HitboxComponent_ {
     ComponentHeader header; // 4 bytes
-    // u8 width; // 1 byte
-    // u8 height; // 1 byte
-    // s8 xOffset; // 1 byte. Whole hitbox offset on x axis
-    // s8 yOffset; // 1 byte. Whole hitbox offset on y axis
     Hitbox hitbox;
 } HitboxComponent;
 
@@ -322,17 +318,18 @@ typedef struct TimerComponent_ {
     ComponentHeader header; // 4 bytes
     const u16 time; // 2 bytes
     u16 timeRemaining; // 2 bytes
-    void(*callback)(); // 4 bytes
+    void(*callback)(int entId); // 4 bytes
 } TimerComponent;
 
 // UI components use these to decide what meter this counter is for
-#define COUNTER_HEALTH_FLAG     1
-#define COUNTER_POWER_FLAG      2
+#define COUNTER_HEALTH_FLAG         0b1
+#define COUNTER_POWER_FLAG          0b10
+#define COUNTER_NUM_DEFEATED_FLAG   0b100
 
 typedef struct CounterComponent_ {
     ComponentHeader header; // 4 bytes
-    u16 curr; // 2 bytes
-    u16 max; // 2 bytes
+    s16 curr; // 2 bytes
+    s16 max; // 2 bytes
 } CounterComponent;
 
 typedef struct SpawnerComponent_ {
@@ -360,7 +357,7 @@ typedef struct GroupComponent_ {
 
 typedef struct InputCheckerComponent_ {
     ComponentHeader header; // 4 bytes
-    void (*onCheckedKeyPressed)(struct InputCheckerComponent_*); // 4 bytes
+    void (*onCheckedKeyPressed)(int entId); // 4 bytes
     u16 keysToCheck; // 2 bytes
 } InputCheckerComponent;
 

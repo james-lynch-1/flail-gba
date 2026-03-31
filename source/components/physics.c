@@ -7,17 +7,24 @@ void pullTowardsPosition(PhysicsComponent* physComp, int x, int y) {
     physComp->vec = addVec(physComp->vec, gravityVec);
 }
 
+void pushAwayFromPosition(PhysicsComponent* physComp, int x, int y) {
+    Vector gravityVec = { {physComp->pos.x.WORD - x}, {physComp->pos.y.WORD - y} };
+    gravityVec = normaliseVec(gravityVec);
+    gravityVec = divVec(gravityVec, 4);
+    physComp->vec = addVec(physComp->vec, gravityVec);
+}
+
 void updatePlayerPhysics() {
     PhysicsComponent* player = getComponent(gPlayerId, COMP_PHYSICS);
     for (int i = 0; i < numComps(COMP_PHYSICS); i++) {
         if (gPhysCompsDense[i].header.entId == player->header.entId) continue;
         if (checkPhysCompToPhysCompCollision(player, &gPhysCompsDense[i])) {
-            notify(gPlayerId, COMP_PHYSICS, E_PHYS_TOUCHED);
+            notify(gPhysCompsDense[i].header.entId, COMP_PHYSICS, E_PHYS_TOUCHED);
         }
     }
     bool isGravityOn = (gFlags & GFLAG_GRAVITY) && (player->header.flags & PHYS_GRAVITY_FLAG);
     u32 mag = fastMagnitude(player->vec.x.WORD, player->vec.y.WORD);
-    if (!isGravityOn && mag < 0x1800 && !(key_is_down(KEY_UP | KEY_DOWN | KEY_LEFT | KEY_RIGHT))) {
+    if (!isGravityOn && mag < 0x1800 && !(key_is_down(KEY_DIR))) {
         player->vec.x.WORD = 0;
         player->vec.y.WORD = 0;
     }
@@ -29,7 +36,7 @@ void updatePhysics() {
         PhysicsComponent* ent = &gPhysCompsDense[i];
         bool isGravityOn = (gFlags & GFLAG_GRAVITY) && (ent->header.flags & PHYS_GRAVITY_FLAG);
         u32 mag = fastMagnitude(ent->vec.x.WORD, ent->vec.y.WORD);
-        bool centredAndSufficientlySlow =
+        bool isCentredAndSufficientlySlow =
             in_range(ent->pos.x.HALF.HI, 119, 121) &&
             in_range(ent->pos.y.HALF.HI, 79, 81) &&
             mag < 0x1800;
@@ -40,13 +47,12 @@ void updatePhysics() {
             ent->vec = normaliseVec(ent->vec);
             ent->vec = scalarMultVec(ent->vec, ent->archetype->radius);
         }
-        if (isGravityOn && !centredAndSufficientlySlow) {
+        if (isGravityOn && !isCentredAndSufficientlySlow) {
             pullTowardsPosition(ent, 120 << 16, 80 << 16);
         }
 
         // stop if centred and sufficiently slow
-        if (centredAndSufficientlySlow && isGravityOn) {
-            // ent->vec = scalarMultVec(ent->vec, 0);
+        if (isCentredAndSufficientlySlow && isGravityOn) {
             ent->vec.x.WORD = 0;
             ent->vec.y.WORD = 0;
             ent->pos.x.WORD = 120 << 16;

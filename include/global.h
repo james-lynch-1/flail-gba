@@ -3,6 +3,8 @@
 
 // basically every other header file includes this one; it has the constants, globals and types
 
+// #define DEBUG
+
 #include "tonc.h"
 #include <stdlib.h>
 #include <string.h>
@@ -10,6 +12,7 @@
 #include "type.h"
 #include "constants.h"
 #include "util.h"
+#include "graphics.h"
 
 extern int gFrameCount;
 extern int gNumEnts;
@@ -54,9 +57,7 @@ extern MemberComponent gMemberCompsDense[MAX_MEMBER_COMPONENTS];
 extern GroupComponent gGroupCompsDense [MAX_GROUP_COMPONENTS];
 extern InputCheckerComponent gInputCheckerCompsDense[MAX_INPUT_CHECKER_COMPONENTS];
 
-// physics component archetypes
-extern PhysArchetype gPhysArchetypesStatic[MAX_PHYS_ARCHETYPES_STATIC];
-extern PhysArchetype gPhysArchetypesCustom[MAX_PHYS_ARCHETYPES_CUSTOM];
+extern const u16* gNumTileArr[10];
 
 extern int gNumCompsPerType[NUM_COMP_TYPES];
 

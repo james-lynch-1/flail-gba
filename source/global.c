@@ -84,38 +84,8 @@ const uint32_t gCompTable[NUM_COMP_TYPES][4] = {
 };
 int gNumCompsPerType[NUM_COMP_TYPES];
 
-// physics component archetypes
-PhysArchetype gPhysArchetypesStatic[MAX_PHYS_ARCHETYPES_STATIC] = {
-    { // player
-    {5, 9, 0, 0},
-    5,
-    {0x00001000},
-    SPEED_DECAY,
-    true
-    },
-    { // weak enemy
-    {8, 8, 0, 0},
-    1,
-    {0x00002000},
-    0,
-    true
-    },
-    { // enemy
-    {16, 16, 0, 0},
-    2,
-    {0x00002000},
-    0,
-    true
-    },
-    { // item
-    {8, 8, 0, 0},
-    0,
-    {0},
-    0,
-    true
-    }
-};
-PhysArchetype gPhysArchetypesCustom[MAX_PHYS_ARCHETYPES_CUSTOM];
+const u16* gNumTileArr[10] = { zeroTiles, oneTiles, twoTiles, threeTiles,
+    fourTiles, fiveTiles, sixTiles, sevenTiles, eightTiles, nineTiles };
 
 // sparse sets for components. each element is an index into the dense array
 s16 gCompSetSparse[NUM_COMP_TYPES][MAX_ENTS];

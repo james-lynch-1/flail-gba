@@ -30,7 +30,7 @@ int deleteEnt(int index) {
 }
 
 void deleteMarkedEnts() {
-    int numToDelete = gNumEntsToDelete;
+    int numToDelete = gNumEntsToDelete; // because gNumEntsToDelete changes under us
     for (int i = 0; i < numToDelete; i++) {
         deleteEnt(gEntsToDelete[i]);
     }
