@@ -16,9 +16,15 @@ extern const unsigned short meleeSunsetTiles[6640];
 extern const unsigned short meleeSunsetMap[1024];
 #define meleeSunsetPalLen 32
 extern const unsigned short meleeSunsetPal[16];
-#define gradientTilesLen 1248
-extern const unsigned short gradientTiles[624];
+#define newgradientTilesLen 29856
+extern const unsigned short newgradientTiles[14928];
+#define newgradientMapLen 2048
+extern const unsigned short newgradientMap[1024];
+#define newgradientPalLen 32
+extern const unsigned short newgradientPal[16];
+#define gradientTilesLen 1024
+extern const unsigned short gradientTiles[512];
 #define gradientMapLen 2048
 extern const unsigned short gradientMap[1024];
-#define gradientPalLen 16
-extern const unsigned short gradientPal[8];
+#define gradientPalLen 32
+extern const unsigned short gradientPal[16];

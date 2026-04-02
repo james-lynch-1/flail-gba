@@ -1,7 +1,7 @@
 #include "component.h"
 
 CounterComponent* addComponentCounter(int entId, u16 flags, s16 curr, s16 max) {
-    CounterComponent c = { {entId, flags}, curr, max };
+    CounterComponent c = { {entId, flags}, curr, max, (SWord)0x10000 };
     CounterComponent* cAddr = (CounterComponent*)addComponentCustom(&c, COMP_COUNTER);
     return cAddr;
 }
@@ -42,7 +42,9 @@ void handlePlayerToPhysCollision(int entId) {
     }
     if (!health) return;
     if (health->curr > 0) incDecCounter(health, -8);
-    if (health->curr == 0) reset();
+    if (health->curr <= 0) {
+        notify(gPlayerId, COMP_COUNTER, E_PLAYER_DIED);
+    }
 }
 
 void incrementPower(int entId) {
@@ -53,7 +55,9 @@ void incrementPower(int entId) {
     Vector vec = { {playerPos.x.WORD - enemyPos.x.WORD}, {playerPos.y.WORD - enemyPos.y.WORD} };
     int distance = fastMagnitude(vec.x.HALF.HI, vec.y.HALF.HI);
     
-    power->curr += clamp(140 - distance, 20, power->max / 2);
+    SWord distPwrModifier = {.HALF.HI = 140 - distance, .HALF.LO = 0};
+    distPwrModifier = multSWord(distPwrModifier, power->incrementModifier);
+    power->curr += clamp(distPwrModifier.HALF.HI, 20, power->max / 2);
     power->curr = clamp(power->curr, 0, power->max + 1);
 }
 

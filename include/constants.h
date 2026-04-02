@@ -53,6 +53,7 @@
 
 // SBB defines
 #define UI_SBB              26
+#define TEXT_SBB            27
 #define MAP_SBB             31
 
 // global flags (gFlags)

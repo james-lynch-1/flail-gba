@@ -17,6 +17,11 @@ void setGameState(enum GameState state) {
             gGameState.updateFunction = updateTitle;
             gGameState.exitFunction = exitTitle;
             break;
+        case GAMEOVER:
+            gGameState.enterFunction = enterGameOver;
+            gGameState.updateFunction = updateGameOver;
+            gGameState.exitFunction = exitGameOver;
+            break;
     }
     gGameState.enterFunction();
 }

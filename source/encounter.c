@@ -8,6 +8,12 @@ BGData melee = {
     meleeSunsetBrightMap, meleeSunsetBrightMapLen
 };
 
+BGData gradient = {
+    gradientPal, gradientPalLen,
+    gradientTiles, gradientTilesLen,
+    gradientMap, gradientMapLen
+};
+
 // palette sets
 
 PaletteSet defaultPaletteSet = {
@@ -17,7 +23,7 @@ PaletteSet defaultPaletteSet = {
 // encounters
 
 Encounter firstEncounter = {
-    &melee,
+    &gradient,
     &defaultPaletteSet,
     -1,
     NULL,
@@ -57,6 +63,7 @@ void loadEncounter(Encounter* encounter) {
     // objective
 
     addEventListener(COMP_PHYSICS, E_STAR_COLLECTED, incrementPower, false);
+    addEventListener(COMP_COUNTER, E_PLAYER_DIED, handlePlayerDied, false);
     if (hasComponent(gPlayerId, COMP_GROUP)) {
         GroupComponent* group = getComponent(gPlayerId, COMP_GROUP);
         for (int i = 0; i < group->numMembers; i++) {
@@ -72,6 +79,6 @@ void loadEncounter(Encounter* encounter) {
     // spawn schedule. what is it?
     // do we define it statically here, or define a spawner object that can refer to a spawn schedule
     // then the object can be changed mid-level if we want
-    PositionMini p = { 110, 60 };
-    addStarLine(0, p, 60);
+    PositionMini p = { 128, 70 };
+    spawnStarLine(0, p, 60);
 }

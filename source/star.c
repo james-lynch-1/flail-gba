@@ -1,8 +1,8 @@
 #include "star.h"
 
 const StarLine StarLines[] = {
-    {{{25, -10}, {30, 25}}},
-    {{{25, 5}, {50, -10}}}
+    {{{-18, -10}, {7, -20}, {12, 15}, {UINT16_MAX, UINT16_MAX}}},
+    {{{-25, 0}, {0, 5}, {25, 0}, {UINT16_MAX, UINT16_MAX}}}
 };
 
 void timerCallback() {
@@ -23,37 +23,63 @@ void removeStarLine(int entId) {
 
 void handleStarLineTimerExpire(int entId) {
     CounterComponent* power = getCounterByFlags(gPlayerId, COUNTER_POWER_FLAG);
-    if (power->curr != power->max) power->curr = 0;
+    power->curr = 0;
     removeStarLine(entId);
-    addComponentTimer(reserveEntSlot(), 0, 2, spawnStarLineRandomPos);
+    bool spawnerExists = false;
+    for (int i = 0; i < numComps(COMP_TIMER); i++) {
+        if (gTimerCompsDense[i].callback == spawnStarLineRandomPos) {
+            spawnerExists = true;
+            break;
+        }
+    }
+    if (!spawnerExists) addComponentTimer(reserveEntSlot(), 0, 2, spawnStarLineRandomPos);
 }
 
 void doGroupActionStarLine(MemberComponent* m, GroupComponent* g) {
     removeComponentObj(m->header.entId);
     removeComponentPhysicsSimple(m->header.entId);
     removeComponentHitbox(m->header.entId);
+    CounterComponent* power = getCounterByFlags(gPlayerId, COUNTER_POWER_FLAG);
+    if (!key_is_down(KEY_DIR)) {
+        power->incrementModifier = setSWord(1, 0x8000);
+    }
+    else power->incrementModifier = setSWord(1, 0);
     notify(m->header.entId, COMP_PHYSICS, E_STAR_COLLECTED);
     g->numCollected++;
     g->counter++; // this is the no. of stars collected without input
     if (g->numCollected == g->numMembers) {
-        if (g->numMembers == g->counter) {
-            CounterComponent* power = getCounterByFlags(gPlayerId, COUNTER_POWER_FLAG);
-            if (power) power->curr = power->max;
-        }
+        // if (g->numMembers == g->counter) { // if whole group collected without input, max power
+        //     if (power) power->curr = power->max;
+        // }
         removeStarLine(g->header.entId);
-        addComponentTimer(reserveEntSlot(), 0, 2, spawnStarLineRandomPos);
+        bool spawnerExists = false;
+        for (int i = 0; i < numComps(COMP_TIMER); i++) {
+            if (gTimerCompsDense[i].callback == spawnStarLineRandomPos) {
+                spawnerExists = true;
+                break;
+            }
+        }
+        if (!spawnerExists) addComponentTimer(reserveEntSlot(), 0, 2, spawnStarLineRandomPos);
     }
 }
 
 void spawnStarLineRandomPos(int entId) {
-    PositionMini pos = { qran_range(40, 200), qran_range(40, 120) };
-    addStarLine(qran_range(0, sizeof(StarLines) / sizeof(StarLine)), pos, 1);
+    CounterComponent* numDefeated = getCounterByFlags(gPlayerId, COUNTER_NUM_DEFEATED_FLAG);
+    int xModifier = numDefeated->curr * 9;
+    int yModifier = numDefeated->curr * 8;
+    // bool isXAxisModified = qran_range(0, 2);
+    int xRanges[2] = { qran_range(20, 120 - xModifier), qran_range(120 + xModifier, 220) };
+    int yRanges[2] = { qran_range(20, 80 - yModifier), qran_range(80 + yModifier, 120) };
+    PositionMini pos = { xRanges[qran_range(0, 2)], yRanges[qran_range(0, 2)] };
+    // PositionMini pos = { isXAxisModified ? xRanges[qran_range(0, 2)] : qran_range(20, 220),
+    //     !isXAxisModified ? yRanges[qran_range(0, 2)] : qran_range(20, 140) };
+    spawnStarLine(qran_range(0, sizeof(StarLines) / sizeof(StarLine)), pos, 1);
     markEntToBeDeleted(entId);
 }
 
 // spawns a line of stars. Takes as parameters a type of star line, its
 // position, and the frequency with which it spawns
-void addStarLine(int starLineType, PositionMini pos, u32 freq) {
+void spawnStarLine(int starLineType, PositionMini pos, u32 freq) {
     s16 entId = reserveEntSlot();
     if (entId == -1) return;
     StarLine sL = StarLines[starLineType];
@@ -62,14 +88,14 @@ void addStarLine(int starLineType, PositionMini pos, u32 freq) {
     addComponentTimer(entId, 0, 3, handleStarLineTimerExpire);
     // the below walks through the provided array of stars and spawns each one
     // until either it reaches the end of the array or reaches a value of zero (early end)
-    int starId = spawnStar(pos.x << 16, pos.y << 16);
-    addComponentMember(starId, 0, entId);
-    u16* posPtr = (u16*)&sL;
+    // int starId = spawnStar(pos.x << 16, pos.y << 16);
+    // addComponentMember(starId, 0, entId);
+    PositionMini* posPtr = (PositionMini*)&sL;
     int i = 0;
-    while (*posPtr != 0 && i++ < MAX_STARLINE_LENGTH) {
-        starId = spawnStar((*posPtr + pos.x) << 16, (*(u16*)(posPtr + 1) + pos.y) << 16);
+    while (*(u32*)posPtr != UINT32_MAX && i++ < MAX_STARLINE_LENGTH) {
+        int starId = spawnStar((pos.x + *(s16*)posPtr) << 16, (pos.y + *((s16*)posPtr + 1)) << 16);
         addComponentMember(starId, 0, entId);
-        posPtr += 2;
+        posPtr++;
     }
 }
 
@@ -82,7 +108,7 @@ int spawnStar(int x, int y) {
     if (entId == -1) return -1;
     ObjComponent* objComp = addComponentObj(entId, 0, COMP_PHYSICS_SIMPLE);
     objComp->obj->attr0 |= ATTR0_4BPP;
-    objComp->obj->attr2 |= ATTR2_ID(fetchSprite(sprite1Tiles, sprite1TilesLen)) | ATTR2_PALBANK(0);
+    objComp->obj->attr2 |= ATTR2_ID(fetchSprite(sprite1Tiles, sprite1TilesLen)) | ATTR2_PALBANK(0) | ATTR2_PRIO(1);
     SimplePhysicsComponent phys = {
         {entId, 0},
         { (SWord)x, (SWord)y },

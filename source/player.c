@@ -30,3 +30,18 @@ int spawnPlayer(int x, int y) {
     if (!addComponentCustom(&phys, COMP_PHYSICS)) return -1;
     return 1;
 }
+
+void updatePlayerStuff() {
+    // deplete power
+    CounterComponent* power = getCounterByFlags(gPlayerId, COUNTER_POWER_FLAG);
+    if (power && gFrameCount & 1) {
+        if (power->curr < power->max) {
+            incDecCounter(power, -1);
+            power->curr = clamp(power->curr, 0, power->max);
+        }
+    }
+}
+
+void handlePlayerDied() {
+    exitNormal(GAMEOVER);
+}

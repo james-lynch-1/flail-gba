@@ -1,6 +1,7 @@
 #include "ui.h"
 
 void updateUINormal() {
+    tte_erase_screen();
     memset32(&se_mem[UI_SBB], 0, SCREEN_WIDTH_T / 2);
     memset32((void*)(int)&se_mem[UI_SBB] + sizeof(SCR_ENTRY) * SBB_WIDTH_T * (SCREEN_HEIGHT_T - 1),
         0,
@@ -19,11 +20,10 @@ void updateUINormal() {
             numTilesRemaining);
     }
     if (numDefeated) {
-        if (numDefeated->curr >= 10) numDefeated->curr = 0;
-        memset16((void*)(int)&se_mem[UI_SBB] + sizeof(SCR_ENTRY) * SBB_WIDTH_T,
-            SE_ID(513 + numDefeated->curr) | SE_PALBANK(1),
-            1
-        );
+        char numDefStr[7];
+        sprintf(numDefStr, "%d", numDefeated->curr);
+        tte_set_pos(8, TILE_WIDTH);
+        tte_write(numDefStr);
     }
 }
 
@@ -34,4 +34,13 @@ void initialiseUi() {
         memcpy32((void*)(int)&tile_mem[1] + healthBarTilesLen + i * oneTilesLen,
             gNumTileArr[i],
             oneTilesLen / sizeof(u32));
+    tte_init_se(
+        2,
+        BG_CBB(2) | BG_SBB(TEXT_SBB),
+        0,
+        CLR_MONEYGREEN,
+        14,
+        NULL,
+        NULL
+    );
 }

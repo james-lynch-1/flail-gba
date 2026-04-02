@@ -29,4 +29,10 @@ void updateTitle();
 
 void exitTitle(enum GameState state);
 
+void enterGameOver();
+
+void updateGameOver();
+
+void exitGameOver(enum GameState state);
+
 #endif

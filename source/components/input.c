@@ -8,7 +8,6 @@ void handleInputNormal(s16 entId) { // coupled to PhysicsComponent
     physComp->vec = addVec(physComp->vec, dirVec);
 
     if (key_hit(KEY_START)) { // reset
-        if (key_is_down(KEY_SELECT)) reset();
         exitNormal(PAUSE);
         return;
     }

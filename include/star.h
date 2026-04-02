@@ -20,7 +20,7 @@ void doGroupActionStarLine(MemberComponent * m, GroupComponent * g);
 
 void spawnStarLineRandomPos(int entId);
 
-void addStarLine(int starLineType, PositionMini pos, u32 freq);
+void spawnStarLine(int starLineType, PositionMini pos, u32 freq);
 
 int spawnStar(int x, int y);
 

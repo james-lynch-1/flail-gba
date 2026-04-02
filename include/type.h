@@ -128,7 +128,8 @@ typedef union SplitHWord {
 enum __attribute__ ((__packed__)) GameState {
     NORMAL,
     TITLE,
-    PAUSE
+    PAUSE,
+    GAMEOVER,
 };
 
 typedef struct gGameState { // for game states (FSM)
@@ -170,7 +171,7 @@ typedef struct PositionMini_ {
 } PositionMini;
 
 // data for spawning a star line, not the in-game object.
-// Terminated by a [255, 255] position
+// Terminated by a {UINT16_MAX, UINT16_MAX} position
 typedef struct StarLine_ {
     PositionMini starPos[MAX_STARLINE_LENGTH];
 } StarLine;
@@ -330,6 +331,7 @@ typedef struct CounterComponent_ {
     ComponentHeader header; // 4 bytes
     s16 curr; // 2 bytes
     s16 max; // 2 bytes
+    SWord incrementModifier; // 4 bytes
 } CounterComponent;
 
 typedef struct SpawnerComponent_ {

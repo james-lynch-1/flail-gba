@@ -7,8 +7,6 @@
 #include "component.h"
 #include "star.h"
 
-extern BGData melee;
-
 extern PaletteSet defaultPaletteSet;
 
 extern Encounter firstEncounter;

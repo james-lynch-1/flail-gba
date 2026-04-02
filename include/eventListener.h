@@ -3,11 +3,10 @@
 
 #include "global.h"
 
-enum __attribute__ ((__packed__)) EventFlags {
-    E_NO_EVENT,
-    E_PHYS_TOUCHED,
-    E_STAR_COLLECTED
-};
+#define E_NO_EVENT          0
+#define E_PHYS_TOUCHED      0b1
+#define E_STAR_COLLECTED    0b10
+#define E_PLAYER_DIED       0b100
 
 bool addEventListener(enum ComponentType eventType, u32 flags, void(*callback)(int entId), bool removeAfterCallback);
 

@@ -53,3 +53,14 @@ int nextPow2(int num) {
     x |= x >> 16;
     return x + 1;
 }
+
+SWord setSWord(s16 hi, u16 lo) {
+    SWord sWord = {.HALF.HI = hi, .HALF.LO = lo};
+    return sWord;
+}
+
+SWord multSWord(SWord a, SWord b) {
+    SWord result;
+    result.WORD = ((s64)a.WORD * (s64)b.WORD) >> 16;
+    return result;
+}

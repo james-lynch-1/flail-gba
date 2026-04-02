@@ -3,7 +3,7 @@
 // physics component archetypes
 PhysArchetype gPhysArchetypesStatic[MAX_PHYS_ARCHETYPES_STATIC] = {
     { // player
-    {14, 14, 0, 0},
+    {10, 10, 0, 0},
     5,
     {0x00001000},
     SPEED_DECAY,
@@ -24,7 +24,7 @@ PhysArchetype gPhysArchetypesStatic[MAX_PHYS_ARCHETYPES_STATIC] = {
     true
     },
     { // item
-    {8, 8, 0, 0},
+    {12, 12, 0, 0},
     0,
     {0},
     0,
