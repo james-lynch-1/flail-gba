@@ -233,24 +233,24 @@ enum Direction {
     STATIONARY = 0x10000
 };
 
-typedef struct ComponentHeader_ {
+typedef struct ALIGN4 ComponentHeader_ {
     s16 entId;
     // u8 componentType;
     u16 flags;
 } ComponentHeader;
 
-typedef struct ObjComponent_ {
+typedef struct ALIGN4 ObjComponent_ {
     ComponentHeader header; // 4 bytes
-    OBJ_ATTR* obj; // 4 bytes
+    u8 objIndex; // 1 byte. Index into gObjBuffer
     u8 posSourceCompType; // 1 byte. The componentType of the obj holding the ent's position
 } ObjComponent;
 
-typedef struct ObjAffComponent_ {
+typedef struct ALIGN4 ObjAffComponent_ {
     ComponentHeader header; // 4 bytes
-    OBJ_AFFINE* objAff; // 4 bytes
+    u8 objAffIndex; // 1 byte. Index into gObjAffBuffer
 } ObjAffComponent;
 
-typedef struct DebugBlobComponent_ {
+typedef struct ALIGN4 DebugBlobComponent_ {
     ComponentHeader header; // 4 bytes. we store posSourceCompType in the flags
     Hitbox hitbox; // 4 bytes
     u16* allocatedSprite; // 4 bytes
@@ -261,16 +261,16 @@ typedef struct DebugBlobComponent_ {
     u8 shape;
 } DebugBlobComponent;
 
-typedef struct TileComponent_ {
+typedef struct ALIGN4 TileComponent_ {
     ComponentHeader header;
     int tileIndex;
 } TileComponent;
 
-typedef struct AudioComponent_ {
+typedef struct ALIGN4 AudioComponent_ {
     ComponentHeader header;
 } AudioComponent;
 
-typedef struct InputComponent_ {
+typedef struct ALIGN4 InputComponent_ {
     ComponentHeader header;
     void (*inputHandler)(s16 entId);
 } InputComponent;
@@ -278,7 +278,7 @@ typedef struct InputComponent_ {
 #define PHYS_GRAVITY_FLAG        0b10000000
 #define CUSTOM_ARCHETYPE_FLAG    0b00000001
 
-typedef struct PhysArchetype_ {
+typedef struct ALIGN4 PhysArchetype_ {
     Hitbox hitbox; // 4 bytes
     int radius; // 4 bytes
     SWord accel; // 4 bytes
@@ -286,7 +286,7 @@ typedef struct PhysArchetype_ {
     u16 inUse; // 2 bytes
 } PhysArchetype;
 
-typedef struct PhysicsComponent_ {
+typedef struct ALIGN4 PhysicsComponent_ {
     ComponentHeader header; // 4 bytes
     Position pos; // 8 bytes. should always be after header for updateObjs()
     PhysArchetype* archetype; // 4 bytes. should always be after header and pos for updateObjs()
@@ -294,7 +294,7 @@ typedef struct PhysicsComponent_ {
     u16 angle; // 2 bytes
 } PhysicsComponent;
 
-typedef struct SimplePhysicsComponent_ {
+typedef struct ALIGN4 SimplePhysicsComponent_ {
     ComponentHeader header; // 4 bytes
     Position pos; // 8 bytes. should always be after header for updateObjs()
     PhysArchetype* archetype; // 4 bytes. should always be after header and pos for updateObjs()
@@ -302,20 +302,20 @@ typedef struct SimplePhysicsComponent_ {
     u16 angle; // 2 bytes
 } SimplePhysicsComponent;
 
-typedef struct HitboxComponent_ {
+typedef struct ALIGN4 HitboxComponent_ {
     ComponentHeader header; // 4 bytes
     Hitbox hitbox;
 } HitboxComponent;
 
-typedef struct AiComponent_ {
+typedef struct ALIGN4 AiComponent_ {
     ComponentHeader header; // 4 bytes
 } AiComponent;
 
-typedef struct AiRandComponent_ {
+typedef struct ALIGN4 AiRandComponent_ {
     ComponentHeader header; // 4 bytes
 } AiRandComponent;
 
-typedef struct TimerComponent_ {
+typedef struct ALIGN4 TimerComponent_ {
     ComponentHeader header; // 4 bytes
     const u16 time; // 2 bytes
     u16 timeRemaining; // 2 bytes
@@ -327,14 +327,14 @@ typedef struct TimerComponent_ {
 #define COUNTER_POWER_FLAG          0b10
 #define COUNTER_NUM_DEFEATED_FLAG   0b100
 
-typedef struct CounterComponent_ {
+typedef struct ALIGN4 CounterComponent_ {
     ComponentHeader header; // 4 bytes
     s16 curr; // 2 bytes
     s16 max; // 2 bytes
     SWord incrementModifier; // 4 bytes
 } CounterComponent;
 
-typedef struct SpawnerComponent_ {
+typedef struct ALIGN4 SpawnerComponent_ {
     ComponentHeader header; // 4 bytes
     u16 spawnerBehaviourIdx; // 2 bytes
     u16 frequency; // 2 bytes. How often it spawns
@@ -343,12 +343,12 @@ typedef struct SpawnerComponent_ {
 } SpawnerComponent;
 
 // member uses the header flags to determine what ent kind it is
-typedef struct MemberComponent_ {
+typedef struct ALIGN4 MemberComponent_ {
     ComponentHeader header; // 4 bytes
     s8 groupIds[MAX_GROUPS_PER_MEMBER]; // 4 bytes. Can be in up to 4 groups. Each id defaults to -1
 } MemberComponent;
 
-typedef struct GroupComponent_ {
+typedef struct ALIGN4 GroupComponent_ {
     ComponentHeader header; // 4 bytes
     s16 memberIds[MAX_MEMBERS_PER_GROUP]; // 48 bytes - max 24 members
     void (*onCollect)(struct MemberComponent_*, struct GroupComponent_*); // 4 bytes
@@ -357,7 +357,7 @@ typedef struct GroupComponent_ {
     u8 numMembers; // 1 byte
 } GroupComponent;
 
-typedef struct InputCheckerComponent_ {
+typedef struct ALIGN4 InputCheckerComponent_ {
     ComponentHeader header; // 4 bytes
     void (*onCheckedKeyPressed)(int entId); // 4 bytes
     u16 keysToCheck; // 2 bytes

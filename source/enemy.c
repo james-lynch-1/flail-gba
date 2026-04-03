@@ -8,8 +8,8 @@ int spawnEnemyWeak(int x, int y) {
     s16 entId = reserveEntSlot();
     if (entId == -1) return -1;
     ObjComponent* objComp = addComponentObj(entId, 0, COMP_PHYSICS_SIMPLE);
-    objComp->obj->attr0 |= ATTR0_4BPP;
-    objComp->obj->attr2 |= ATTR2_ID(fetchSprite(sprite1Tiles, sprite1TilesLen)) | ATTR2_PALBANK(0);
+    getObj(objComp)->attr0 |= ATTR0_4BPP;
+    getObj(objComp)->attr2 |= ATTR2_ID(fetchSprite(sprite1Tiles, sprite1TilesLen)) | ATTR2_PALBANK(0);
     SimplePhysicsComponent phys = {
         {entId, 0},
         { (SWord)x, (SWord)y },
@@ -34,9 +34,9 @@ int spawnEnemy(int x, int y) {
     s16 entId = reserveEntSlot();
     if (entId == -1) return -1;
     ObjComponent* objComp = addComponentObj(entId, 0, COMP_PHYSICS);
-    objComp->obj->attr0 |= ATTR0_4BPP | ATTR0_SQUARE;
-    objComp->obj->attr1 |= ATTR1_SIZE_16x16;
-    objComp->obj->attr2 |= ATTR2_ID(fetchSprite(magicBallTiles, magicBallTilesLen)) | ATTR2_PRIO(1) | ATTR2_PALBANK(1);
+    getObj(objComp)->attr0 |= ATTR0_4BPP | ATTR0_SQUARE;
+    getObj(objComp)->attr1 |= ATTR1_SIZE_16x16;
+    getObj(objComp)->attr2 |= ATTR2_ID(fetchSprite(magicBallTiles, magicBallTilesLen)) | ATTR2_PRIO(1) | ATTR2_PALBANK(1);
     PhysicsComponent phys = {
         {entId, 0},
         { (SWord)x, (SWord)y },

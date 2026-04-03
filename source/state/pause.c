@@ -19,7 +19,7 @@ void updatePause() {
 }
 
 void exitPause(enum GameState state) {
-    REG_BG1CNT |= BG_PRIO(2);
+    REG_BG1CNT |= BG_PRIO(1);
     REG_BG2CNT |= BG_PRIO(2);
     setGameState(state);
     tte_erase_screen();

@@ -36,7 +36,7 @@ void initialiseUi() {
             oneTilesLen / sizeof(u32));
     tte_init_se(
         2,
-        BG_CBB(2) | BG_SBB(TEXT_SBB),
+        BG_CBB(2) | BG_SBB(TEXT_SBB) | BG_PRIO(2),
         0,
         CLR_MONEYGREEN,
         14,

@@ -4,8 +4,7 @@
 
 void enterNormal() {
     REG_DISPCNT |= DCNT_BG1;
-    REG_BG1CNT = BG_PRIO(2) | BG_CBB(0) | BG_SBB(UI_SBB) | BG_4BPP | BG_REG_32x32; // ui
-    REG_BG2CNT |= BG_PRIO(2);
+    REG_BG1CNT = BG_PRIO(1) | BG_CBB(0) | BG_SBB(UI_SBB) | BG_4BPP | BG_REG_32x32; // ui
 }
 
 void updateNormal() {

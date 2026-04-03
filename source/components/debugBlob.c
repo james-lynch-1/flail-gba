@@ -8,14 +8,14 @@ void updateDebugBlobs() {
         ComponentHeader* posSrcComp = getComponent(blob->header.entId, objComp->posSourceCompType);
         Position pos = { {0}, {0} };
         pos = ((PhysicsComponent*)posSrcComp)->pos;
-        objComp->obj->attr0 = ATTR0_REG | (blob->shape << ATTR0_SHAPE_SHIFT) | (ATTR0_Y(pos.y.HALF.HI - blob->hitbox.height / 2) & ATTR0_Y_MASK);
-        objComp->obj->attr1 = (blob->size << ATTR1_SIZE_SHIFT) | (ATTR1_X(pos.x.HALF.HI - blob->hitbox.width / 2) & ATTR1_X_MASK);
-        objComp->obj->attr2 = ATTR2_ID(blob->header.flags) | ATTR2_PALBANK(0);
-        if (!in_range(pos.x.HALF.HI, 0 - blob->hitbox.width / 2, SCREEN_WIDTH + blob->hitbox.height / 2) ||
-            !in_range(pos.y.HALF.HI, 0 - blob->hitbox.width / 2, SCREEN_HEIGHT + blob->hitbox.height / 2))
-            gObjCompsDense[i].obj->attr0 |= ATTR0_HIDE;
-        else
-            gObjCompsDense[i].obj->attr0 &= ~ATTR0_AFF_DBL;
+        getObj(objComp)->attr0 = ATTR0_REG | (blob->shape << ATTR0_SHAPE_SHIFT) | (ATTR0_Y(pos.y.HALF.HI - blob->hitbox.height / 2) & ATTR0_Y_MASK);
+        getObj(objComp)->attr1 = (blob->size << ATTR1_SIZE_SHIFT) | (ATTR1_X(pos.x.HALF.HI - blob->hitbox.width / 2) & ATTR1_X_MASK);
+        getObj(objComp)->attr2 = ATTR2_ID(blob->header.flags) | ATTR2_PALBANK(0);
+        // if (!in_range(pos.x.HALF.HI, 0 - blob->hitbox.width / 2, SCREEN_WIDTH + blob->hitbox.height / 2) ||
+        //     !in_range(pos.y.HALF.HI, 0 - blob->hitbox.width / 2, SCREEN_HEIGHT + blob->hitbox.height / 2))
+        //     gObjCompsDense[i].obj->attr0 |= ATTR0_HIDE;
+        // else
+        //     gObjCompsDense[i].obj->attr0 &= ~ATTR0_AFF_DBL;
     }
 }
 
@@ -37,16 +37,16 @@ DebugBlobComponent* addComponentDebugBlob(int entId) {
     }
     width = blob.hitbox.width;
     height = blob.hitbox.height;
-    blob.originalAttr2 = objComp->obj->attr2;
-    blob.originalSize = objComp->obj->attr1 >> ATTR1_SIZE_SHIFT;
-    blob.originalShape = objComp->obj->attr0 >> ATTR0_SHAPE_SHIFT;
+    blob.originalAttr2 = getObj(objComp)->attr2;
+    blob.originalSize = getObj(objComp)->attr1 >> ATTR1_SIZE_SHIFT;
+    blob.originalShape = getObj(objComp)->attr0 >> ATTR0_SHAPE_SHIFT;
     blob.size = getAppropriateSpriteSize(blob.hitbox.width, blob.hitbox.height);
     blob.shape = getAppropriateSpriteShape(blob.hitbox.width, blob.hitbox.height);
     blob.allocatedSprite = drawDebugBlob(width, height);
     blob.header.flags = fetchSprite(blob.allocatedSprite, max(8, nextPow2(width)) * max(8, nextPow2(height)) / 2);
-    objComp->obj->attr0 = (blob.shape << ATTR0_SHAPE_SHIFT) | (objComp->obj->attr0 & ATTR0_Y_MASK);
-    objComp->obj->attr1 = (blob.size << ATTR1_SIZE_SHIFT) | (objComp->obj->attr1 & ATTR1_X_MASK);
-    objComp->obj->attr2 = ATTR2_ID(blob.header.flags) | ATTR2_PALBANK(0);
+    getObj(objComp)->attr0 = (blob.shape << ATTR0_SHAPE_SHIFT) | (getObj(objComp)->attr0 & ATTR0_Y_MASK);
+    getObj(objComp)->attr1 = (blob.size << ATTR1_SIZE_SHIFT) | (getObj(objComp)->attr1 & ATTR1_X_MASK);
+    getObj(objComp)->attr2 = ATTR2_ID(blob.header.flags) | ATTR2_PALBANK(0);
     DebugBlobComponent* ptr = (DebugBlobComponent*)addComponentCustom(&blob, COMP_DEBUG_BLOB);
     return ptr;
 }
@@ -55,12 +55,12 @@ void removeComponentDebugBlob(int entId) {
     DebugBlobComponent* blob = getComponent(entId, COMP_DEBUG_BLOB);
     if (!blob) return;
     ObjComponent* objComp = getComponent(entId, COMP_OBJ);
-    stopUsingSprite(objComp->obj->attr2 & ATTR2_ID_MASK);
-    objComp->obj->attr2 = blob->originalAttr2;
-    objComp->obj->attr1 &= ~ATTR1_SIZE_MASK;
-    objComp->obj->attr1 |= blob->originalSize << ATTR1_SIZE_SHIFT;
-    objComp->obj->attr0 &= ~ATTR0_SHAPE_MASK;
-    objComp->obj->attr0 |= blob->originalShape << ATTR0_SHAPE_SHIFT;
+    stopUsingSprite(getObj(objComp)->attr2 & ATTR2_ID_MASK);
+    getObj(objComp)->attr2 = blob->originalAttr2;
+    getObj(objComp)->attr1 &= ~ATTR1_SIZE_MASK;
+    getObj(objComp)->attr1 |= blob->originalSize << ATTR1_SIZE_SHIFT;
+    getObj(objComp)->attr0 &= ~ATTR0_SHAPE_MASK;
+    getObj(objComp)->attr0 |= blob->originalShape << ATTR0_SHAPE_SHIFT;
     free(blob->allocatedSprite);
     removeComponent(entId, COMP_DEBUG_BLOB);
 }

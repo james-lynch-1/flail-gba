@@ -107,12 +107,12 @@ int spawnStar(int x, int y) {
     s16 entId = reserveEntSlot();
     if (entId == -1) return -1;
     ObjComponent* objComp = addComponentObj(entId, 0, COMP_PHYSICS_SIMPLE);
-    objComp->obj->attr0 |= ATTR0_4BPP;
-    objComp->obj->attr2 |= ATTR2_ID(fetchSprite(sprite1Tiles, sprite1TilesLen)) | ATTR2_PALBANK(0) | ATTR2_PRIO(1);
+    getObj(objComp)->attr0 |= ATTR0_4BPP;
+    getObj(objComp)->attr2 |= ATTR2_ID(fetchSprite(sprite1Tiles, sprite1TilesLen)) | ATTR2_PALBANK(0) | ATTR2_PRIO(1);
     HitboxComponent hBox = { {entId, 0}, {12, 8, 0, 0} };
     addComponentCustom(&hBox, COMP_HITBOX);
-    int width = obj_get_width(objComp->obj);
-    int height = obj_get_height(objComp->obj);
+    int width = obj_get_width(getObj(objComp));
+    int height = obj_get_height(getObj(objComp));
     SimplePhysicsComponent phys = {
         {entId, 0},
         {

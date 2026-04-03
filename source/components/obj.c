@@ -4,7 +4,7 @@ ObjComponent* addComponentObj(s16 entId, u16 flags, int posSourceCompType) {
     if (gNumCompsPerType[COMP_OBJ] >= MAX_OBJ_COMPONENTS || entId < 0) return NULL;
     ObjComponent o = {
         {entId, 0},
-        &gObjBuffer[gNumCompsPerType[COMP_OBJ]],
+        gNumCompsPerType[COMP_OBJ],
         posSourceCompType
     };
     ObjComponent* objComp = (ObjComponent*)addComponentCustom(&o, COMP_OBJ);
@@ -17,8 +17,9 @@ void removeComponentObj(int entId) {
 #ifdef DEBUG
     removeComponentDebugBlob(entId);
 #endif
-    OBJ_ATTR* thisObjBufferPtr = objComp->obj;
-    stopUsingSprite(objComp->obj->attr2 & ATTR2_ID_MASK);
+    int objIndex = objComp->objIndex;
+    OBJ_ATTR* thisObjBufferPtr = getObj(objComp);
+    stopUsingSprite(getObj(objComp)->attr2 & ATTR2_ID_MASK);
 
     // replace this one with the last obj in the buffer,
     // also update that obj's obj comp to point to this new location
@@ -27,23 +28,23 @@ void removeComponentObj(int entId) {
 
     // if there is only one obj left, or if it is the last obj in the dense array, just clear its attrs
     if (replacementEntId == entId) {
-        objComp->obj->attr0 = 512;
-        objComp->obj->attr1 = 0;
-        objComp->obj->attr2 = 0;
+        getObj(objComp)->attr0 = 512;
+        getObj(objComp)->attr1 = 0;
+        getObj(objComp)->attr2 = 0;
         return;
     }
 
     // move the replacement obj buffer attrs to their new location
-    OBJ_ATTR* replacementObjBufferPtr = replacementObj->obj;
+    OBJ_ATTR* replacementObjBufferPtr = getObj(replacementObj);
     memcpy32(thisObjBufferPtr, replacementObjBufferPtr, 2);
 
     // finally, clear the replacement's old attrs
-    replacementObj->obj->attr0 = 512;
-    replacementObj->obj->attr1 = 0;
-    replacementObj->obj->attr2 = 0;
+    getObj(replacementObj)->attr0 = 512;
+    getObj(replacementObj)->attr1 = 0;
+    getObj(replacementObj)->attr2 = 0;
 
     // make the replacement obj component point to this buffer location
-    replacementObj->obj = thisObjBufferPtr;
+    replacementObj->objIndex = objIndex;
 }
 
 // updates the pos based on the pos provided by corresponding comp of type posSourceCompType
@@ -53,16 +54,16 @@ void updateObjs() {
         int posSourceCompType = objComp->posSourceCompType;
         PhysicsComponent* physComp = getComponent(objComp->header.entId, posSourceCompType);
         Position pos = *(Position*)((uint32_t)physComp + sizeof(ComponentHeader));
-        const u8* sizes = obj_get_size(objComp->obj);
+        const u8* sizes = obj_get_size(getObj(objComp));
         if (!in_range(pos.x.HALF.HI, 0 - sizes[0] / 2, SCREEN_WIDTH + sizes[1] / 2) ||
             !in_range(pos.y.HALF.HI, 0 - sizes[0] / 2, SCREEN_HEIGHT + sizes[1] / 2))
-            gObjCompsDense[i].obj->attr0 |= ATTR0_HIDE;
+            getObj(objComp)->attr0 |= ATTR0_HIDE;
         else
-            gObjCompsDense[i].obj->attr0 &= ~ATTR0_AFF_DBL;
+            getObj(objComp)->attr0 &= ~ATTR0_AFF_DBL;
 
-        objComp->obj->attr0 &= ~ATTR0_Y_MASK;
-        objComp->obj->attr0 |= ATTR0_Y(pos.y.HALF.HI - sizes[1] / 2) & ATTR0_Y_MASK;
-        objComp->obj->attr1 &= ~ATTR1_X_MASK;
-        objComp->obj->attr1 |= ATTR1_X(pos.x.HALF.HI - sizes[0] / 2) & ATTR1_X_MASK;
+        getObj(objComp)->attr0 &= ~ATTR0_Y_MASK;
+        getObj(objComp)->attr0 |= ATTR0_Y(pos.y.HALF.HI - sizes[1] / 2) & ATTR0_Y_MASK;
+        getObj(objComp)->attr1 &= ~ATTR1_X_MASK;
+        getObj(objComp)->attr1 |= ATTR1_X(pos.x.HALF.HI - sizes[0] / 2) & ATTR1_X_MASK;
     }
 }

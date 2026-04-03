@@ -6,9 +6,9 @@ int spawnPlayer(int x, int y) {
     if (index == -1) return -1;
 
     ObjComponent* o = addComponentObj(index, 0, COMP_PHYSICS);
-    o->obj->attr0 = ATTR0_REG | ATTR0_Y(x >> 16);
-    o->obj->attr1 = ATTR1_SIZE_16x16 | ATTR1_X(y >> 16);
-    o->obj->attr2 = ATTR2_ID(fetchSprite(magicBallYellowTiles, magicBallYellowTilesLen)) | ATTR2_PRIO(1) | ATTR2_PALBANK(0);
+    getObj(o)->attr0 = ATTR0_REG | ATTR0_Y(x >> 16);
+    getObj(o)->attr1 = ATTR1_SIZE_16x16 | ATTR1_X(y >> 16);
+    getObj(o)->attr2 = ATTR2_ID(fetchSprite(magicBallYellowTiles, magicBallYellowTilesLen)) | ATTR2_PRIO(1) | ATTR2_PALBANK(0);
 
     InputComponent input = { {index, 0}, handleInputNormal };
 

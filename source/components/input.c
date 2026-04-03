@@ -41,7 +41,7 @@ void handleInputNormal(s16 entId) { // coupled to PhysicsComponent
     if (key_hit(KEY_SELECT)) {
         gFlags ^= GFLAG_GRAVITY;
         ObjComponent* objComp = getComponent(gPlayerId, COMP_OBJ);
-        objComp->obj->attr2 ^= ATTR2_PALBANK(1);
+        getObj(objComp)->attr2 ^= ATTR2_PALBANK(1);
         return;
     }
 #endif

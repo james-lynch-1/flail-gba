@@ -65,9 +65,10 @@ extern int gNumCompsPerType[NUM_COMP_TYPES];
 enum gCompTableIndexes { COMP_DSET_ADDRESSES, COMP_SIZES, COMP_MAX_PER_TYPE, COMP_REMOVERS };
 
 #define denseSetAddr(x) (void*)gCompTable[x][COMP_DSET_ADDRESSES]
-#define compSize(x) (int)gCompTable[x][COMP_SIZES]
-#define maxComps(x) (int)gCompTable[x][COMP_MAX_PER_TYPE]
-#define numComps(x) gNumCompsPerType[x]
+#define compSize(x)     (int)gCompTable[x][COMP_SIZES]
+#define maxComps(x)     (int)gCompTable[x][COMP_MAX_PER_TYPE]
+#define numComps(x)     gNumCompsPerType[x]
+#define getObj(x)       (&gObjBuffer[x->objIndex]) // x is an ObjComponent pointer
 
 extern const uint32_t gCompTable[NUM_COMP_TYPES][4];
 
