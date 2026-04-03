@@ -60,9 +60,9 @@ void updatePhysics() {
         }
 
         if (!in_range(ent->pos.x.HALF.HI, 0 + ent->archetype->hitbox.width / 2, SCREEN_WIDTH - ent->archetype->hitbox.width / 2))
-            ent->vec.x.WORD += (reflect(ent->pos.x.HALF.HI, 0, SCREEN_WIDTH) - ent->pos.x.HALF.HI) << 14;
+            ent->vec.x.WORD += ((reflect(ent->pos.x.HALF.HI, 0, SCREEN_WIDTH) - ent->pos.x.HALF.HI) << 16) / 4;
         if (!in_range(ent->pos.y.HALF.HI, 0 + ent->archetype->hitbox.height / 2, SCREEN_HEIGHT - ent->archetype->hitbox.height / 2))
-            ent->vec.y.WORD += (reflect(ent->pos.y.HALF.HI, 0, SCREEN_HEIGHT) - ent->pos.y.HALF.HI) << 14;
+            ent->vec.y.WORD += ((reflect(ent->pos.y.HALF.HI, 0, SCREEN_HEIGHT) - ent->pos.y.HALF.HI) << 16) / 4;
         ent->pos.x.WORD += ent->vec.x.WORD;
         ent->pos.y.WORD += ent->vec.y.WORD;
     }
@@ -76,9 +76,9 @@ void updatePhysicsSimple() {
         ent->vec.x.WORD = ent->archetype->radius * lu_cos(ent->angle) << 4;
         ent->vec.y.WORD = ent->archetype->radius * -lu_sin(ent->angle) << 4;
         if (!in_range(ent->pos.x.HALF.HI, 0 + ent->archetype->hitbox.width / 2, SCREEN_WIDTH - ent->archetype->hitbox.width / 2))
-            ent->vec.x.WORD += (reflect(ent->pos.x.HALF.HI, 0, SCREEN_WIDTH) - ent->pos.x.HALF.HI) << 14;
+            ent->vec.x.WORD += ((reflect(ent->pos.x.HALF.HI, 0, SCREEN_WIDTH) - ent->pos.x.HALF.HI) << 16) / 4;
         if (!in_range(ent->pos.y.HALF.HI, 0 + ent->archetype->hitbox.height / 2, SCREEN_HEIGHT - ent->archetype->hitbox.height / 2))
-            ent->vec.y.WORD += (reflect(ent->pos.y.HALF.HI, 0, SCREEN_HEIGHT) - ent->pos.y.HALF.HI) << 14;
+            ent->vec.y.WORD += ((reflect(ent->pos.y.HALF.HI, 0, SCREEN_HEIGHT) - ent->pos.y.HALF.HI) << 16) / 4;
         ent->pos.x.WORD += ent->vec.x.WORD;
         ent->pos.y.WORD += ent->vec.y.WORD;
     }

@@ -1,7 +1,8 @@
 #include "state.h"
 
 void enterGameOver() {
-    REG_BG2CNT |= BG_PRIO(0);
+    REG_BG1CNT &= ~BG_PRIO_MASK;
+    REG_BG2CNT &= ~BG_PRIO_MASK;
 }
 
 void updateGameOver() {
@@ -17,7 +18,8 @@ void updateGameOver() {
 }
 
 void exitGameOver(enum GameState state) {
-    tte_erase_screen();
+    REG_BG1CNT |= BG_PRIO(2);
     REG_BG2CNT |= BG_PRIO(2);
+    tte_erase_screen();
     reset();
 }

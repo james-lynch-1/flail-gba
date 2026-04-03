@@ -109,15 +109,20 @@ int spawnStar(int x, int y) {
     ObjComponent* objComp = addComponentObj(entId, 0, COMP_PHYSICS_SIMPLE);
     objComp->obj->attr0 |= ATTR0_4BPP;
     objComp->obj->attr2 |= ATTR2_ID(fetchSprite(sprite1Tiles, sprite1TilesLen)) | ATTR2_PALBANK(0) | ATTR2_PRIO(1);
+    HitboxComponent hBox = { {entId, 0}, {12, 8, 0, 0} };
+    addComponentCustom(&hBox, COMP_HITBOX);
+    int width = obj_get_width(objComp->obj);
+    int height = obj_get_height(objComp->obj);
     SimplePhysicsComponent phys = {
         {entId, 0},
-        { (SWord)x, (SWord)y },
+        {
+            (SWord)(clamp(x >> 16, 0 + width / 2, SCREEN_WIDTH - width / 2) << 16),
+            (SWord)(clamp(y >> 16, 0 + height / 2, SCREEN_HEIGHT - height / 2) << 16)
+        },
         (PhysArchetype*)&gPhysArchetypesStatic[ARCHETYPE_ITEM],
         {{0}, {0}},
         0xF000
     };
     addComponentCustom(&phys, COMP_PHYSICS_SIMPLE);
-    HitboxComponent hBox = { {entId, 0}, {8, 8, 0, 0} };
-    addComponentCustom(&hBox, COMP_HITBOX);
     return entId;
 }
