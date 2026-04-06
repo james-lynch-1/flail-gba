@@ -41,7 +41,7 @@ void handlePlayerToPhysCollision(int entId) {
         return;
     }
     if (!health) return;
-    if (health->curr > 0) incDecCounter(health, -8);
+    if (health->curr > 0) incDecCounter(health, PLAYER_HEALTH_DECREMENT);
     if (health->curr <= 0) {
         notify(gPlayerId, COMP_COUNTER, E_PLAYER_DIED);
     }

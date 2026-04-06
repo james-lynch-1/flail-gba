@@ -32,7 +32,7 @@ void handleStarLineTimerExpire(int entId) {
             break;
         }
     }
-    if (!spawnerExists) addComponentTimer(reserveEntSlot(), 0, 2, spawnStarLineRandomPos);
+    if (!spawnerExists) addComponentTimer(reserveEntSlot(), 0, 2 * 60, spawnStarLineRandomPos);
 }
 
 void doGroupActionStarLine(MemberComponent* m, GroupComponent* g) {
@@ -59,7 +59,7 @@ void doGroupActionStarLine(MemberComponent* m, GroupComponent* g) {
                 break;
             }
         }
-        if (!spawnerExists) addComponentTimer(reserveEntSlot(), 0, 2, spawnStarLineRandomPos);
+        if (!spawnerExists) addComponentTimer(reserveEntSlot(), 0, 2 * 60, spawnStarLineRandomPos);
     }
 }
 
@@ -85,7 +85,7 @@ void spawnStarLine(int starLineType, PositionMini pos, u32 freq) {
     StarLine sL = StarLines[starLineType];
     addComponentGroup(entId, 0, NULL, doGroupActionStarLine, 0, ENT_ITEM);
     addComponentInputChecker(entId, KEY_DIR, setGroupCompCounterToZero);
-    addComponentTimer(entId, 0, 3, handleStarLineTimerExpire);
+    addComponentTimer(entId, 0, 4 * 60, handleStarLineTimerExpire);
     // the below walks through the provided array of stars and spawns each one
     // until either it reaches the end of the array or reaches a value of zero (early end)
     // int starId = spawnStar(pos.x << 16, pos.y << 16);

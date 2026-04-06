@@ -36,7 +36,7 @@ void updatePlayerStuff() {
     CounterComponent* power = getCounterByFlags(gPlayerId, COUNTER_POWER_FLAG);
     if (power && gFrameCount & 1) {
         if (power->curr < power->max) {
-            incDecCounter(power, -1);
+            incDecCounter(power, PLAYER_POWER_DECREMENT);
             power->curr = clamp(power->curr, 0, power->max);
         }
     }

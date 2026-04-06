@@ -63,8 +63,6 @@ int allocateObj(const u16* tiles, int tilesLen) {
 
 void deallocateObj(int index) {
     int i = index;
-    if (index == 0)
-        log(CHAR, "deallocating slot 0");
     gObjAllocArr[i++] = OBJ_SLOT_UNUSED;
     while (gObjAllocArr[i] == OBJ_SLOT_CONTINUE)
         gObjAllocArr[i++] = OBJ_SLOT_UNUSED;

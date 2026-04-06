@@ -11,7 +11,7 @@ void updateTimers() {
 }
 
 void addComponentTimer(s16 entId, u16 flags, u16 length, void(*callback)) {
-    TimerComponent t = { {entId, 0}, length * 60, length * 60, callback };
+    TimerComponent t = { {entId, flags}, length, length, callback };
     addComponentCustom(&t, COMP_TIMER);
 }
 

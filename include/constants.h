@@ -8,7 +8,7 @@
 
 #define MAX_EVENT_LISTENERS_PER_TYPE    32
 
-#define MAX_OBJ_COMPONENTS              128
+#define MAX_OBJ_COMPONENTS              126
 #define MAX_OBJ_AFF_COMPONENTS          32
 #define MAX_DEBUG_BLOB_COMPONENTS       128
 #define MAX_TILE_COMPONENTS             32
@@ -38,6 +38,8 @@
 
 // player
 #define PLAYER_POWER_INCREMENT          60
+#define PLAYER_POWER_DECREMENT          -1
+#define PLAYER_HEALTH_DECREMENT         -8
 
 // enemy-related constants
 #define WEAK_TURN_FREQ      20

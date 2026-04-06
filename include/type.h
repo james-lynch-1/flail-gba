@@ -209,7 +209,7 @@ typedef struct BGData_ {
 typedef struct Encounter_ {
     BGData* bgData;
     PaletteSet* paletteSet;
-    int length; // in seconds
+    int length; // in frames
     void* music;
     enum Objective objective;
     int spawnScheduleIndex;

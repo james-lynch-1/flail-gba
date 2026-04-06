@@ -1,4 +1,4 @@
-#define healthBarTilesLen 32
+#define healthBarTilesLen 64
 extern const unsigned short healthBarTiles[16];
 #define healthBarPalLen 16
 extern const unsigned short healthBarPal[8];
