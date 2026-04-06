@@ -25,12 +25,4 @@ SWord setSWord(s16 hi, u16 lo);
 
 SWord multSWord(SWord a, SWord b);
 
-int rand();
-
-uint32_t pcg32(void);
-
-void pcg32_init(uint64_t seed);
-
-int randRange(int min, int max);
-
 #endif

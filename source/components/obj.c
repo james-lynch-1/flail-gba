@@ -36,7 +36,7 @@ void removeComponentObj(int entId) {
 
     // move the replacement obj buffer attrs to their new location
     OBJ_ATTR* replacementObjBufferPtr = getObj(replacementObj);
-    memcpy32(thisObjBufferPtr, replacementObjBufferPtr, 2);
+    memcpy16(thisObjBufferPtr, replacementObjBufferPtr, 3);
 
     // finally, clear the replacement's old attrs
     getObj(replacementObj)->attr0 = 512;
@@ -56,14 +56,18 @@ void updateObjs() {
         Position pos = *(Position*)((uint32_t)physComp + sizeof(ComponentHeader));
         const u8* sizes = obj_get_size(getObj(objComp));
         if (!in_range(pos.x.HALF.HI, 0 - sizes[0] / 2, SCREEN_WIDTH + sizes[1] / 2) ||
-            !in_range(pos.y.HALF.HI, 0 - sizes[0] / 2, SCREEN_HEIGHT + sizes[1] / 2))
+            !in_range(pos.y.HALF.HI, 0 - sizes[0] / 2, SCREEN_HEIGHT + sizes[1] / 2)) {
+            getObj(objComp)->attr0 &= ~ATTR0_MODE_MASK;
             getObj(objComp)->attr0 |= ATTR0_HIDE;
-        else
-            getObj(objComp)->attr0 &= ~ATTR0_AFF_DBL;
-
+        }
+        else {
+            getObj(objComp)->attr0 &= ~ATTR0_MODE_MASK;
+            getObj(objComp)->attr0 |= objComp->header.flags & ATTR0_MODE_MASK;
+        }
+        bool isDbl = (((getObj(objComp)->attr0 & ATTR0_MODE_MASK) >> ATTR0_MODE_SHIFT) + 1) >> 2;
         getObj(objComp)->attr0 &= ~ATTR0_Y_MASK;
-        getObj(objComp)->attr0 |= ATTR0_Y(pos.y.HALF.HI - sizes[1] / 2) & ATTR0_Y_MASK;
+        getObj(objComp)->attr0 |= ATTR0_Y((pos.y.HALF.HI - (sizes[1] >> (1 - isDbl)))) & ATTR0_Y_MASK;
         getObj(objComp)->attr1 &= ~ATTR1_X_MASK;
-        getObj(objComp)->attr1 |= ATTR1_X(pos.x.HALF.HI - sizes[0] / 2) & ATTR1_X_MASK;
+        getObj(objComp)->attr1 |= ATTR1_X((pos.x.HALF.HI - (sizes[0] >> (1 - isDbl)))) & ATTR1_X_MASK;
     }
 }

@@ -235,9 +235,13 @@ enum Direction {
 
 typedef struct ALIGN4 ComponentHeader_ {
     s16 entId;
-    // u8 componentType;
     u16 flags;
 } ComponentHeader;
+
+#define OBJ_REG_FLAG            ATTR0_REG
+#define OBJ_AFF_FLAG            ATTR0_AFF
+#define OBJ_HIDE_FLAG           ATTR0_HIDE
+#define OBJ_AFF_DBL_FLAG        ATTR0_AFF_DBL
 
 typedef struct ALIGN4 ObjComponent_ {
     ComponentHeader header; // 4 bytes

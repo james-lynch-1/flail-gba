@@ -46,6 +46,12 @@ void removeComponentObj(int entId);
 
 void updateObjs();
 
+// ObjAff
+
+ObjAffComponent* addComponentObjAff(s16 entId, u16 flags, bool isDblSize);
+
+void removeComponentObjAff(int entId);
+
 // Debug blob
 
 void updateDebugBlobs();

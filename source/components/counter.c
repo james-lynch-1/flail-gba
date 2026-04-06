@@ -54,8 +54,8 @@ void incrementPower(int entId) {
     Position enemyPos = gPhysCompsDense[1].pos;
     Vector vec = { {playerPos.x.WORD - enemyPos.x.WORD}, {playerPos.y.WORD - enemyPos.y.WORD} };
     int distance = fastMagnitude(vec.x.HALF.HI, vec.y.HALF.HI);
-    
-    SWord distPwrModifier = {.HALF.HI = 140 - distance, .HALF.LO = 0};
+
+    SWord distPwrModifier = { .HALF.HI = 140 - distance, .HALF.LO = 0 };
     distPwrModifier = multSWord(distPwrModifier, power->incrementModifier);
     power->curr += clamp(distPwrModifier.HALF.HI, 20, power->max / 2);
     power->curr = clamp(power->curr, 0, power->max + 1);

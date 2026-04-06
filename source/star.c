@@ -85,11 +85,9 @@ void spawnStarLine(int starLineType, PositionMini pos, u32 freq) {
     StarLine sL = StarLines[starLineType];
     addComponentGroup(entId, 0, NULL, doGroupActionStarLine, 0, ENT_ITEM);
     addComponentInputChecker(entId, KEY_DIR, setGroupCompCounterToZero);
-    addComponentTimer(entId, 0, 4 * 60, handleStarLineTimerExpire);
+    addComponentTimer(entId, 0, 3 * 60 + 30, handleStarLineTimerExpire);
     // the below walks through the provided array of stars and spawns each one
     // until either it reaches the end of the array or reaches a value of zero (early end)
-    // int starId = spawnStar(pos.x << 16, pos.y << 16);
-    // addComponentMember(starId, 0, entId);
     PositionMini* posPtr = (PositionMini*)&sL;
     int i = 0;
     while (*(u32*)posPtr != UINT32_MAX && i++ < MAX_STARLINE_LENGTH) {

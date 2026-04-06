@@ -22,13 +22,13 @@ extern void removeComponentGroup(int entId);
 extern void removeComponentInputChecker(int entId);
 
 int gFrameCount = 0;
+int gHitstunFrameCount = 0;
 int gNumEnts = 0;
 int gNumCustomPhysArchetypes = 0;
 int gNumSpritesAllocated = 0;
 int gNumEntsToDelete = 0;
 
 s16 gPlayerId;
-
 OBJ_ATTR gObjBuffer[128];
 OBJ_AFFINE* gObjAffBuffer = (OBJ_AFFINE*)gObjBuffer;
 enum ObjSlotEnum gObjAllocArr[1024];

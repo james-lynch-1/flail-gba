@@ -15,6 +15,7 @@
 #include "graphics.h"
 
 extern int gFrameCount;
+extern int gHitstunFrameCount;
 extern int gNumEnts;
 extern int gNumCustomPhysArchetypes;
 extern int gNumSpritesAllocated;
@@ -32,7 +33,6 @@ extern u8 gEntsToDelete[MAX_ENTS];
 extern GameState gGameState;
 extern u32 gFlags;
 extern enum Direction gDPadDir;
-
 
 // // events and listeners
 extern int gNumListenersPerType[NUM_COMP_TYPES];
@@ -69,6 +69,7 @@ enum gCompTableIndexes { COMP_DSET_ADDRESSES, COMP_SIZES, COMP_MAX_PER_TYPE, COM
 #define maxComps(x)     (int)gCompTable[x][COMP_MAX_PER_TYPE]
 #define numComps(x)     gNumCompsPerType[x]
 #define getObj(x)       (&gObjBuffer[x->objIndex]) // x is an ObjComponent pointer
+#define getObjAff(x)    (&gObjAffBuffer[x->objAffIndex]) // x is an ObjAffComponent pointer
 
 extern const uint32_t gCompTable[NUM_COMP_TYPES][4];
 

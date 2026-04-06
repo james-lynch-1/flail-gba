@@ -8,6 +8,13 @@ void enterNormal() {
 }
 
 void updateNormal() {
+    if (gHitstunFrameCount) {
+        gHitstunFrameCount--;
+        VBlankIntrWait();
+        gFrameCount--;
+        return;
+    }
+    // doTasks();
     updatePlayerStuff();
     updateInputComps();
     updateInputCheckers();
