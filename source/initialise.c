@@ -24,7 +24,7 @@ void initialiseGame() {
     initialiseUi();
     loadEncounter(&firstEncounter);
 
-    setGameState(NORMAL);
+    setGameState(TITLE);
 
     gGameState.enterFunction();
 }

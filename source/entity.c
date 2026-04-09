@@ -8,7 +8,7 @@ int reserveEntSlot() {
     if (gNumEnts == MAX_ENTS) return -1;
     int i = 0;
     while (gEntFlags[i] != 0) i++;
-    gEntFlags[i] = true;
+    gEntFlags[i] = 1;
     gNumEnts++;
     return i;
 }
