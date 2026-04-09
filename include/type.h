@@ -139,6 +139,19 @@ typedef struct gGameState { // for game states (FSM)
     void (*updateFunction)();
 } GameState;
 
+// Tasks
+
+typedef struct Task_ {
+    void (*task)(int entId);
+    s16 timeRemaining;
+    s16 entId;
+} Task;
+
+typedef struct ALIGN4 TaskData_ {
+    void (*fn)(int entId);
+    s16 length;
+} TaskData;
+
 // Events and Listeners
 
 typedef struct Event_ {

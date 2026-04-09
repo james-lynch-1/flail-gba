@@ -14,7 +14,6 @@ void updateNormal() {
         gFrameCount--;
         return;
     }
-    // doTasks();
     updatePlayerStuff();
     updateInputComps();
     updateInputCheckers();
@@ -33,6 +32,7 @@ void updateNormal() {
 
     updateUINormal();
 
+    doTasks();
     deleteMarkedEnts();
 
     VBlankIntrWait();

@@ -6,6 +6,8 @@
 #define SPEED_DECAY         0x800
 #define MAX_ENTS            128
 
+#define MAX_TASKS           128
+
 #define MAX_EVENT_LISTENERS_PER_TYPE    32
 
 #define MAX_OBJ_COMPONENTS              126

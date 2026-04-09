@@ -21,6 +21,9 @@ extern int gNumCustomPhysArchetypes;
 extern int gNumSpritesAllocated;
 extern int gNumEntsToDelete;
 
+extern int gNumTasks;
+extern Task gTasks[MAX_TASKS];
+
 extern s16 gPlayerId;
 
 extern OBJ_ATTR gObjBuffer[128];

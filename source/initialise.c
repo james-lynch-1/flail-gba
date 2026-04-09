@@ -10,6 +10,8 @@ void initialiseGame() {
 
     memset32(&gNumListenersPerType, 0, sizeof(gNumListenersPerType) / 4);
 
+    memset32(gTasks, 0, sizeof(gTasks) / 4);
+
     // components stuff
     initialiseComponentArrays();
     initialiseArchetypeArrays();

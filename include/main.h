@@ -12,6 +12,7 @@
 #include "state.h"
 #include "ui.h"
 #include "eventListener.h"
+#include "task.h"
 #include "util.h"
 
 #include "component.h"
