@@ -56,5 +56,5 @@ int spawnPlayer(int x, int y) {
 }
 
 void handlePlayerDied() {
-    exitNormal(GAMEOVER);
+    setGameState(GAMEOVER);
 }

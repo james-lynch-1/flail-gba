@@ -2,6 +2,7 @@
 #define PLAYER
 
 #include "component.h"
+#include "eventListener.h"
 
 void doPlayerHurtAnimation();
 

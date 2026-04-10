@@ -9,7 +9,7 @@ void enterPause() {
 
 void updatePause() {
     if (key_hit(KEY_START)) {
-        exitPause(NORMAL);
+        setGameState(NORMAL);
         return;
     }
     if (key_hit(KEY_SELECT)) reset();
@@ -21,6 +21,5 @@ void updatePause() {
 void exitPause(enum GameState state) {
     REG_BG1CNT |= BG_PRIO(1);
     REG_BG2CNT |= BG_PRIO(2);
-    setGameState(state);
     tte_erase_screen();
 }

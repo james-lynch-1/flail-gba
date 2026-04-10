@@ -41,5 +41,4 @@ void updateNormal() {
 }
 
 void exitNormal(enum GameState state) {
-    setGameState(state);
 }

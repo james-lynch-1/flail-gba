@@ -5,7 +5,7 @@
 #include "mem.h"
 
 #include "enemy.h"
-#include "state.h"
+#include "eventListener.h"
 
 ComponentHeader* addComponentCustom(void* data, enum ComponentType componentType);
 

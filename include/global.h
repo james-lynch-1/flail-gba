@@ -83,4 +83,6 @@ extern s16 gCompSetSparse[NUM_COMP_TYPES][MAX_ENTS];
 
 extern int (*gEntSpawners[NUM_ENT_KINDS])(int x, int y);
 
+extern void setGameState(enum GameState state);
+
 #endif

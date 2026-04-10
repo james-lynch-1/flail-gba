@@ -31,11 +31,10 @@ void updateTitle() {
         displayLevel(8, 16);
     }
     if (key_hit(KEY_START)) {
-        exitTitle(NORMAL);
+        setGameState(NORMAL);
     }
 }
 
 void exitTitle(enum GameState state) {
     tte_erase_screen();
-    setGameState(state);
 }

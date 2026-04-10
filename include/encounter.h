@@ -6,6 +6,9 @@
 #include "mem.h"
 #include "component.h"
 #include "star.h"
+#include "eventListener.h"
+#include "player.h"
+#include "ui.h"
 
 extern PaletteSet defaultPaletteSet;
 

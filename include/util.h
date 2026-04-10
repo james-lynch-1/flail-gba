@@ -3,6 +3,7 @@
 
 #include "global.h"
 #include "log.h"
+#include "luts.h"
 
 extern u8 attr1SizesArr[4][4];
 

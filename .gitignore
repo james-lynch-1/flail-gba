@@ -5,3 +5,5 @@ tiled-project/
 /graphics/
 build/
 notes/
+*.venv*
+lut.c

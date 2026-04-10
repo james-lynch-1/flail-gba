@@ -24,6 +24,7 @@ void initialiseGame() {
     initialiseUi();
     loadEncounter(&firstEncounter);
 
+    gGameState.gameStateEnum = INT8_MAX;
     setGameState(TITLE);
 
     gGameState.enterFunction();

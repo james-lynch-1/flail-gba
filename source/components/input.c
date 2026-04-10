@@ -8,7 +8,7 @@ void handleInputNormal(s16 entId) { // coupled to PhysicsComponent
     physComp->vec = addVec(physComp->vec, dirVec);
 
     if (key_hit(KEY_START)) { // reset
-        exitNormal(PAUSE);
+        setGameState(PAUSE);
         return;
     }
 #ifdef DEBUG

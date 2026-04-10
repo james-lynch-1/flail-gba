@@ -7,7 +7,7 @@ void enterGameOver() {
 
 void updateGameOver() {
     if (key_hit(KEY_START)) {
-        exitGameOver(NORMAL);
+        setGameState(NORMAL);
         return;
     }
     tte_erase_screen();

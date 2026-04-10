@@ -1,6 +1,8 @@
 #include "state.h"
 
 void setGameState(enum GameState state) {
+    if (gGameState.gameStateEnum < NUM_GAME_STATES) gGameState.exitFunction(gGameState.gameStateEnum);
+    gGameState.gameStateEnum = state;
     switch (state) {
         case NORMAL:
             gGameState.enterFunction = enterNormal;
@@ -21,6 +23,8 @@ void setGameState(enum GameState state) {
             gGameState.enterFunction = enterGameOver;
             gGameState.updateFunction = updateGameOver;
             gGameState.exitFunction = exitGameOver;
+            break;
+        default:
             break;
     }
     gGameState.enterFunction();

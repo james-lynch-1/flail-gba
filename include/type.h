@@ -130,6 +130,7 @@ enum __attribute__ ((__packed__)) GameState {
     TITLE,
     PAUSE,
     GAMEOVER,
+    NUM_GAME_STATES
 };
 
 typedef struct gGameState { // for game states (FSM)
@@ -260,6 +261,8 @@ typedef struct ALIGN4 ObjComponent_ {
     ComponentHeader header; // 4 bytes
     u8 objIndex; // 1 byte. Index into gObjBuffer
     u8 posSourceCompType; // 1 byte. The componentType of the obj holding the ent's position
+    u8 numAnimFrames; // 1 byte
+    u8 animSpeed; // 1 byte
 } ObjComponent;
 
 typedef struct ALIGN4 ObjAffComponent_ {

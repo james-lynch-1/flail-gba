@@ -29,6 +29,8 @@ void updateTitle();
 
 void exitTitle(enum GameState state);
 
+// game over state functions
+
 void enterGameOver();
 
 void updateGameOver();

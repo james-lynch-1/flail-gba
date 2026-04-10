@@ -3,6 +3,7 @@
 
 #include "component.h"
 #include "graphics.h"
+#include "entity.h"
 
 int spawnEnemyWeak(int x, int y);
 
