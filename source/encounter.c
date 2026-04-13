@@ -47,9 +47,8 @@ void loadEncounter(Encounter* encounter) {
         encounter->bgData->map, encounter->bgData->mapLen
     );
 
-    // player, ui
+    // player
     spawnPlayer(120 << 16, 80 << 16);
-    initialiseUi();
 
     // length
     if (encounter->length != -1) {
@@ -64,6 +63,7 @@ void loadEncounter(Encounter* encounter) {
 
     addEventListener(COMP_PHYSICS, E_STAR_COLLECTED, incrementPower, false);
     addEventListener(COMP_COUNTER, E_PLAYER_DIED, handlePlayerDied, false);
+    addEventListener(COMP_COUNTER, E_POWER_FULL, handlePowerFull, false);
     if (hasComponent(gPlayerId, COMP_GROUP)) {
         GroupComponent* group = getComponent(gPlayerId, COMP_GROUP);
         for (int i = 0; i < group->numMembers; i++) {

@@ -6,7 +6,9 @@ void initialiseGame() {
     oam_init(gObjBuffer, 128);
     memset32(&gObjAllocArr, OBJ_SLOT_UNUSED, sizeof(gObjAllocArr) / 4);
     REG_DISPCNT = DCNT_MODE0 | DCNT_BG0 | DCNT_BG1 | DCNT_BG2 | DCNT_OBJ | DCNT_OBJ_1D;
-    REG_BG0CNT = BG_PRIO(3) | BG_CBB(0) | BG_SBB(MAP_SBB) | BG_4BPP | BG_REG_32x32; // map
+    REG_BG0CNT = BG_PRIO(PRIO_MAP) | BG_CBB(CBB_MAP) | BG_SBB(MAP_SBB) | BG_4BPP | BG_REG_32x32;
+    REG_BG1CNT = BG_PRIO(PRIO_UI) | BG_CBB(CBB_UI) | BG_SBB(UI_SBB) | BG_4BPP | BG_REG_32x32;
+    REG_BG2CNT = BG_PRIO(PRIO_TEXT) | BG_CBB(CBB_TEXT) | BG_SBB(TEXT_SBB) | BG_4BPP | BG_REG_32x32;
 
     memset32(&gNumListenersPerType, 0, sizeof(gNumListenersPerType) / 4);
 
@@ -21,8 +23,8 @@ void initialiseGame() {
     memset16(gCompSetSparse, -1, NUM_COMP_TYPES * MAX_ENTS);
     memset32(gEntsToDelete, 0, sizeof(gEntsToDelete) / 4);
 
-    initialiseUi();
     loadEncounter(&firstEncounter);
+    initialiseUi();
 
     gGameState.gameStateEnum = INT8_MAX;
     setGameState(TITLE);

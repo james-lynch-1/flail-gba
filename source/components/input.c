@@ -1,5 +1,12 @@
 #include "component.h"
 
+int alpha = 0;
+
+void handlePalTimerExpire(int entId) {
+    memcpy16(&pal_bg_bank[MAP_PAL], gradientPal, gradientPalLen / sizeof(u16));
+    markEntToBeDeleted(entId);
+}
+
 void handleInputNormal(s16 entId) { // coupled to PhysicsComponent
     PhysicsComponent* physComp = getComponent(entId, COMP_PHYSICS);
     if (!physComp) return;
@@ -45,7 +52,7 @@ void handleInputNormal(s16 entId) { // coupled to PhysicsComponent
         return;
     }
 #endif
-}
+    }
 
 void updateInputComps() {
     for (int i = 0; i < gNumCompsPerType[COMP_INPUT]; i++) {

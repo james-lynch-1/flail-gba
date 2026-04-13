@@ -5,11 +5,10 @@ void updatePlayerStuff() {
     CounterComponent* power = getCounterByFlags(gPlayerId, COUNTER_POWER_FLAG);
     if (power && gFrameCount & 1) {
         if (power->curr < power->max) {
-            incDecCounter(power, PLAYER_POWER_DECREMENT);
+            incrementCounter(power, PLAYER_POWER_DECREMENT);
             power->curr = clamp(power->curr, 0, power->max);
         }
     }
-    obj_aff_identity(getObjAff(((ObjAffComponent*)getComponent(gPlayerId, COMP_OBJ_AFF))));
 }
 
 void doPlayerHurtAnimation() {
@@ -51,7 +50,7 @@ int spawnPlayer(int x, int y) {
     if (!addComponentCustom(&input, COMP_INPUT)) return -1;
     if (!addComponentCustom(&phys, COMP_PHYSICS)) return -1;
 
-    addEventListener(COMP_PHYSICS, E_PHYS_TOUCHED, doPlayerHurtAnimation, false);
+    // addEventListener(COMP_PHYSICS, E_PHYS_TOUCHED, doPlayerHurtAnimation, false);
     return 1;
 }
 

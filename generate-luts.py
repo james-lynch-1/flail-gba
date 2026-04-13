@@ -1,22 +1,24 @@
-import sys, math
+import sys, math, numpy as np
 from fpbinary import FpBinary
-import numpy as np
 
 def main():
-    if len(sys.argv) != 2:
-        print("need an argument (a quoted string representing the math function you want a LUT for)")
+    if len(sys.argv) != 4:
+        print("Failed. Required args: a quoted string representing the math function you want a LUT for, the function's period, and a boolean representing whether the LUT's length should be 256 or 512.")
         return
     func = sys.argv[1]
-    x = FpBinary(int_bits=16, frac_bits=16, signed=False, bit_field=0)
-    iter = FpBinary(int_bits=16, frac_bits=16, signed=False, bit_field=0x100)
+    period = int(sys.argv[2])
+    trueStatements = {"True", "true", "1", "512"}
+    isLrg = 1 if trueStatements.__contains__(sys.argv[3]) else 0
+    x = FpBinary(int_bits=4, frac_bits=12, signed=True, value=0)
+    iter = FpBinary(int_bits=4, frac_bits=12, signed=True, bit_field=(period) << (4 - isLrg))
     try:
         f = open("lut.c", "w")
     except:
         print("lut.c already exists. Exiting")
         return
     with open("lut.c", "a") as f:
-        f.write("const u16 lut[] = {\n")
-        while x < 1:
+        f.write("const s16 lut[] = {\n")
+        while x < period:
             y = FpBinary(format_inst=x, value=eval(func))
             f.write("    0b" + np.binary_repr(y) + ",\n")
             x += iter

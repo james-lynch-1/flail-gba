@@ -24,9 +24,8 @@ void removeComponentObj(int entId) {
     // replace this one with the last obj in the buffer,
     // also update that obj's obj comp to point to this new location
     int replacementEntId = removeComponent(entId, COMP_OBJ);
-    ObjComponent* replacementObj = getComponent(replacementEntId, COMP_OBJ);
 
-    // if there is only one obj left, or if it is the last obj in the dense array, just clear its attrs
+    // if there's one obj left, or it's the last obj in the dense array, just clear its attrs
     if (replacementEntId == entId) {
         getObj(objComp)->attr0 = 512;
         getObj(objComp)->attr1 = 0;
@@ -35,6 +34,7 @@ void removeComponentObj(int entId) {
     }
 
     // move the replacement obj buffer attrs to their new location
+    ObjComponent* replacementObj = getComponent(replacementEntId, COMP_OBJ);
     OBJ_ATTR* replacementObjBufferPtr = getObj(replacementObj);
     memcpy16(thisObjBufferPtr, replacementObjBufferPtr, 3);
 

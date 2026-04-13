@@ -13,6 +13,7 @@
 #include "constants.h"
 #include "util.h"
 #include "graphics.h"
+#include "animations.h"
 
 extern int gFrameCount;
 extern int gHitstunFrameCount;
@@ -72,7 +73,8 @@ enum gCompTableIndexes { COMP_DSET_ADDRESSES, COMP_SIZES, COMP_MAX_PER_TYPE, COM
 #define maxComps(x)     (int)gCompTable[x][COMP_MAX_PER_TYPE]
 #define numComps(x)     gNumCompsPerType[x]
 #define getObj(x)       (&gObjBuffer[x->objIndex]) // x is an ObjComponent pointer
-#define getObjAff(x)    (&gObjAffBuffer[x->objAffIndex]) // x is an ObjAffComponent pointer
+// #define getObjAff(x)    (&gObjAffBuffer[x->objAffIndex]) // x is an ObjAffComponent pointer
+#define getObjAff(x)    (&gObjAffBuffer[(getObj(((ObjComponent*)getComponent(x->header.entId, COMP_OBJ)))->attr1 & ATTR1_AFF_ID_MASK) >> ATTR1_AFF_ID_SHIFT]) // x is an ObjAffComponent pointer
 
 extern const uint32_t gCompTable[NUM_COMP_TYPES][4];
 

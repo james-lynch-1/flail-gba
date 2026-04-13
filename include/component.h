@@ -18,7 +18,7 @@ int removeComponent(int entId, enum ComponentType componentType);
 
 bool hasComponent(s16 entId, enum ComponentType componentType);
 
-/** Gets the first component of a given type on an entity */
+/** Gets the component of a given type on an entity */
 void* getComponent(s16 entId, enum ComponentType componentType);
 
 void* getComponentFromDenseIndex(int denseIndex, enum ComponentType componentType);
@@ -49,6 +49,8 @@ void updateObjs();
 // ObjAff
 
 ObjAffComponent* addComponentObjAff(s16 entId, u16 flags, bool isDblSize);
+
+void updateObjAffs();
 
 void removeComponentObjAff(int entId);
 
@@ -169,6 +171,8 @@ CounterComponent* addComponentCounter(int entId, u16 flags, s16 curr, s16 max);
 
 void removeComponentCounter(int entId);
 
+void handlePowerFull();
+
 CounterComponent* getCounterByFlags(int entId, u16 flags);
 
 /** Used for entities that have member ents representing their health */
@@ -177,7 +181,7 @@ void handlePlayerToPhysCollision(int entId);
 void incrementPower(int entId);
 
 /** amount can be pos or neg */
-void incDecCounter(CounterComponent* counter, int amount);
+void incrementCounter(CounterComponent* counter, int amount);
 
 // Spawner
 

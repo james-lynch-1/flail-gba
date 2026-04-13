@@ -33,6 +33,8 @@ void handleStarLineTimerExpire(int entId) {
         }
     }
     if (!spawnerExists) addComponentTimer(reserveEntSlot(), 0, 2 * 60, spawnStarLineRandomPos);
+    memcpy32(&pal_bg_bank[MAP_PAL], gradientPal, gradientPalLen / sizeof(u32));
+    finishAffineAnimation(getComponent(gPlayerId, COMP_OBJ_AFF));
 }
 
 void doGroupActionStarLine(MemberComponent* m, GroupComponent* g) {

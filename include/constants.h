@@ -55,10 +55,30 @@
 #define SBB_HEIGHT_T        32
 #define TILES_PER_SBB       1024
 
+// BG defines
+#define BG_MAP              0
+#define BG_UI               1
+#define BG_TEXT             2
+
 // SBB defines
 #define UI_SBB              26
 #define TEXT_SBB            27
 #define MAP_SBB             31
+
+// CBB defines
+#define CBB_MAP             0
+#define CBB_UI              1
+#define CBB_TEXT            2
+
+// BG palette defines
+#define TEXT_PAL            0
+#define UI_PAL              1
+#define MAP_PAL             2
+
+// BG priority defines
+#define PRIO_MAP            3
+#define PRIO_UI             2
+#define PRIO_TEXT           1
 
 // global flags (gFlags)
 #define GFLAG_GRAVITY       0x80000000

@@ -252,6 +252,13 @@ typedef struct ALIGN4 ComponentHeader_ {
     u16 flags;
 } ComponentHeader;
 
+typedef struct LutStruct_ {
+    const s16* lut;
+    int length;
+    int minX;
+    int period;
+} LutStruct;
+
 #define OBJ_REG_FLAG            ATTR0_REG
 #define OBJ_AFF_FLAG            ATTR0_AFF
 #define OBJ_HIDE_FLAG           ATTR0_HIDE
@@ -267,8 +274,44 @@ typedef struct ALIGN4 ObjComponent_ {
 
 typedef struct ALIGN4 ObjAffComponent_ {
     ComponentHeader header; // 4 bytes
-    u8 objAffIndex; // 1 byte. Index into gObjAffBuffer
+    u8 animIndex; // UINT8_MAX means no animation
+    u8 currentStep; // UINT8_MAX means no stages
+    u8 speed;
+    u8 framesElapsed;
+    const LutStruct* lutStruct;    
 } ObjAffComponent;
+
+
+#define OBJ_AFF_LUT_SML         0b0000000100000000
+#define OBJ_AFF_LUT_LRG         0b0000001000000000
+#define OBJ_AFF_LUT_SIZE_MASK   0b0000001100000000
+
+#define ANIM_NO_RESET           0b0000010000000000
+
+#define ANIM_ROTATE             0b0000000000001000
+#define ANIM_SCALE_X            0b0000000000010000
+#define ANIM_SCALE_Y            0b0000000000100000
+#define ANIM_SHEAR_X            0b0000000001000000
+#define ANIM_SHEAR_Y            0b0000000010000000
+#define ANIM_POS_MASK           0b0000000011111000
+
+#define ANIM_ROTATE_NEG         0b0000100000001000
+#define ANIM_SCALE_X_NEG        0b0001000000010000
+#define ANIM_SCALE_Y_NEG        0b0010000000100000
+#define ANIM_SHEAR_X_NEG        0b0100000001000000
+#define ANIM_SHEAR_Y_NEG        0b1000000010000000
+#define ANIM_NEG_MASK           0b1111100000000000
+
+typedef const struct AnimationStep_ {
+    const LutStruct* lutStruct;
+    const u16 flags;
+    const u16 length;
+} AnimationStep;
+
+typedef struct Animation_ {
+    const AnimationStep animStep[4];
+    const int numSteps;
+} Animation;
 
 typedef struct ALIGN4 DebugBlobComponent_ {
     ComponentHeader header; // 4 bytes. we store posSourceCompType in the flags

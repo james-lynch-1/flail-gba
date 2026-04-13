@@ -18,8 +18,8 @@ void updateGameOver() {
 }
 
 void exitGameOver(enum GameState state) {
-    REG_BG1CNT |= BG_PRIO(2);
-    REG_BG2CNT |= BG_PRIO(2);
+    REG_BG1CNT |= BG_PRIO(PRIO_UI);
+    REG_BG2CNT |= BG_PRIO(PRIO_TEXT);
     tte_erase_screen();
     reset();
 }

@@ -29,19 +29,22 @@ void handlePlayerToPhysCollision(int entId) {
         // delete this fella
         markEntToBeDeleted(entId);
 
+        memcpy32(&pal_bg_bank[MAP_PAL], gradientPal, gradientPalLen / sizeof(u32));
+        finishAffineAnimation(getComponent(gPlayerId, COMP_OBJ_AFF));
+
         // spawn a new fella
         spawnEnemy(120 << 16, 80 << 16);
 
         // reset power and health
         power->curr = 0;
-        if (health) incDecCounter(health, 50);
+        if (health) incrementCounter(health, 50);
 
         CounterComponent* numDefeated = getCounterByFlags(gPlayerId, COUNTER_NUM_DEFEATED_FLAG);
-        if (numDefeated) incDecCounter(numDefeated, 1);
+        if (numDefeated) incrementCounter(numDefeated, 1);
         return;
     }
     if (!health) return;
-    if (health->curr > 0) incDecCounter(health, PLAYER_HEALTH_DECREMENT);
+    if (health->curr > 0) incrementCounter(health, PLAYER_HEALTH_DECREMENT);
     if (health->curr <= 0) {
         notify(gPlayerId, COMP_COUNTER, E_PLAYER_DIED);
     }
@@ -49,7 +52,7 @@ void handlePlayerToPhysCollision(int entId) {
 
 void incrementPower(int entId) {
     CounterComponent* power = getCounterByFlags(gPlayerId, COUNTER_POWER_FLAG);
-    if (!power) return;
+    if (!power || power->curr >= power->max) return;
     Position playerPos = ((PhysicsComponent*)getComponent(gPlayerId, COMP_PHYSICS))->pos;
     Position enemyPos = gPhysCompsDense[1].pos;
     Vector vec = { {playerPos.x.WORD - enemyPos.x.WORD}, {playerPos.y.WORD - enemyPos.y.WORD} };
@@ -59,9 +62,15 @@ void incrementPower(int entId) {
     distPwrModifier = multSWord(distPwrModifier, power->incrementModifier);
     power->curr += clamp(distPwrModifier.HALF.HI, 20, power->max / 2);
     power->curr = clamp(power->curr, 0, power->max + 1);
+    if (power->curr >= power->max) notify(gPlayerId, COMP_COUNTER, E_POWER_FULL);
 }
 
-void incDecCounter(CounterComponent* counter, int amount) {
+void incrementCounter(CounterComponent* counter, int amount) {
     counter->curr += amount;
     counter->curr = clamp(counter->curr, 0, counter->max + 1);
+}
+
+void handlePowerFull() {
+    lightenBgPalette(0x4000);
+    addAffineAnimation(getComponent(gPlayerId, COMP_OBJ_AFF), AFF_ANIM_GROW, 1);
 }
