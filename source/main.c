@@ -6,6 +6,10 @@ int main() {
         key_poll();
         qran();
         __qran_seed += key_curr_state();
+        if (gGameState.justChanged) {
+            gGameState.enterFunction();
+            gGameState.justChanged = false;
+        }
         gGameState.updateFunction();
         oam_copy(oam_mem, gObjBuffer, 128);
     }

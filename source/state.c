@@ -3,6 +3,7 @@
 void setGameState(enum GameState state) {
     if (gGameState.gameStateEnum < NUM_GAME_STATES) gGameState.exitFunction(gGameState.gameStateEnum);
     gGameState.gameStateEnum = state;
+    gGameState.justChanged = true;
     switch (state) {
         case NORMAL:
             gGameState.enterFunction = enterNormal;
@@ -27,5 +28,4 @@ void setGameState(enum GameState state) {
         default:
             break;
     }
-    gGameState.enterFunction();
 }

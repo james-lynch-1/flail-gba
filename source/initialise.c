@@ -28,6 +28,4 @@ void initialiseGame() {
 
     gGameState.gameStateEnum = INT8_MAX;
     setGameState(TITLE);
-
-    gGameState.enterFunction();
 }

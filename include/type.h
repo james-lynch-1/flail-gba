@@ -137,6 +137,7 @@ typedef struct gGameState { // for game states (FSM)
     void (*enterFunction)();
     void (*exitFunction)(enum GameState state);
     void (*updateFunction)();
+    bool justChanged;
 } GameState;
 
 // Tasks
