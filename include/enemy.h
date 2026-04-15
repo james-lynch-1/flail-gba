@@ -9,4 +9,6 @@ int spawnEnemyWeak(int x, int y);
 
 int spawnEnemy(int x, int y);
 
+void spawnEnemyCentred();
+
 #endif

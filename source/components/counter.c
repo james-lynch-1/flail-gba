@@ -30,10 +30,12 @@ void handlePlayerToPhysCollision(int entId) {
         markEntToBeDeleted(entId);
 
         memcpy32(&pal_bg_bank[MAP_PAL], gradientPal, gradientPalLen / sizeof(u32));
-        finishAffineAnimation(getComponent(gPlayerId, COMP_OBJ_AFF));
+        ObjAffComponent* objAff = getComponent(gPlayerId, COMP_OBJ_AFF);
+        finishAffineAnimation(objAff);
+        obj_aff_identity(getObjAff(objAff));
 
         // spawn a new fella
-        spawnEnemy(120 << 16, 80 << 16);
+        addComponentTimer(reserveEntSlot(), TIMER_DELETE_ENT, 120, spawnEnemyCentred);
 
         // reset power and health
         power->curr = 0;
@@ -56,7 +58,7 @@ void incrementPower(int entId) {
     Position playerPos = ((PhysicsComponent*)getComponent(gPlayerId, COMP_PHYSICS))->pos;
     Position enemyPos = gPhysCompsDense[1].pos;
     Vector vec = { {playerPos.x.WORD - enemyPos.x.WORD}, {playerPos.y.WORD - enemyPos.y.WORD} };
-    int distance = fastMagnitude(vec.x.HALF.HI, vec.y.HALF.HI);
+    int distance = numComps(COMP_PHYSICS) > 1 ? fastMagnitude(vec.x.HALF.HI, vec.y.HALF.HI) : 120;
 
     SWord distPwrModifier = { .WORD = lu_div(clamp(distance, 0, 240)) << 12 };
     distPwrModifier = multSWord(distPwrModifier, power->incrementModifier);

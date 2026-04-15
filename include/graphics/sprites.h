@@ -1,5 +1,5 @@
 #define healthBarTilesLen 64
-extern const unsigned short healthBarTiles[16];
+extern const unsigned short healthBarTiles[32];
 #define healthBarPalLen 16
 extern const unsigned short healthBarPal[8];
 #define sixTilesLen 32
@@ -8,6 +8,8 @@ extern const unsigned short sixTiles[16];
 extern const unsigned short magicBallYellowTiles[64];
 #define magicBallYellowPalLen 32
 extern const unsigned short magicBallYellowPal[16];
+#define plusTilesLen 32
+extern const unsigned short plusTiles[16];
 #define oneTilesLen 32
 extern const unsigned short oneTiles[16];
 #define healthBallTilesLen 512

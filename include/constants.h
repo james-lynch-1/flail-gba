@@ -23,7 +23,6 @@
 #define MAX_AI_RAND_COMPONENTS          128
 #define MAX_TIMER_COMPONENTS            128
 #define MAX_COUNTER_COMPONENTS          128
-#define MAX_SPAWNER_COMPONENTS          128
 #define MAX_MEMBER_COMPONENTS           128
 #define MAX_GROUP_COMPONENTS            8
 #define MAX_INPUT_CHECKER_COMPONENTS    8

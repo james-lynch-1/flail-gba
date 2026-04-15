@@ -50,7 +50,6 @@ enum __attribute__ ((__packed__)) ComponentType {
     COMP_AI_RAND,
     COMP_TIMER,
     COMP_COUNTER,
-    COMP_SPAWNER,
     COMP_MEMBER,
     COMP_GROUP,
     COMP_INPUT_CHECKER,
@@ -378,6 +377,8 @@ typedef struct ALIGN4 AiRandComponent_ {
     ComponentHeader header; // 4 bytes
 } AiRandComponent;
 
+#define TIMER_DELETE_ENT            0b1
+
 typedef struct ALIGN4 TimerComponent_ {
     ComponentHeader header; // 4 bytes
     const u16 time; // 2 bytes
@@ -396,14 +397,6 @@ typedef struct ALIGN4 CounterComponent_ {
     s16 max; // 2 bytes
     SWord incrementModifier; // 4 bytes
 } CounterComponent;
-
-typedef struct ALIGN4 SpawnerComponent_ {
-    ComponentHeader header; // 4 bytes
-    u16 spawnerBehaviourIdx; // 2 bytes
-    u16 frequency; // 2 bytes. How often it spawns
-    u16 timer; // 2 bytes
-    enum EntityKind entKind; // 1 byte
-} SpawnerComponent;
 
 // member uses the header flags to determine what ent kind it is
 typedef struct ALIGN4 MemberComponent_ {

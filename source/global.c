@@ -16,7 +16,6 @@ extern void removeComponentAi(int entId);
 extern void removeComponentAiRand(int entId);
 extern void removeComponentTimer(int entId);
 extern void removeComponentCounter(int entId);
-extern void removeComponentSpawner(int entId);
 extern void removeComponentMember(int entId);
 extern void removeComponentGroup(int entId);
 extern void removeComponentInputChecker(int entId);
@@ -61,7 +60,6 @@ EWRAM_BSS AiComponent gAiCompsDense[MAX_AI_COMPONENTS];
 EWRAM_BSS AiRandComponent gAiRandCompsDense[MAX_AI_RAND_COMPONENTS];
 EWRAM_BSS TimerComponent gTimerCompsDense[MAX_TIMER_COMPONENTS];
 EWRAM_BSS CounterComponent gCounterCompsDense[MAX_COUNTER_COMPONENTS];
-EWRAM_BSS SpawnerComponent gSpawnerCompsDense[MAX_SPAWNER_COMPONENTS];
 EWRAM_BSS MemberComponent gMemberCompsDense[MAX_MEMBER_COMPONENTS];
 EWRAM_BSS GroupComponent gGroupCompsDense[MAX_GROUP_COMPONENTS];
 EWRAM_BSS InputCheckerComponent gInputCheckerCompsDense[MAX_INPUT_CHECKER_COMPONENTS];
@@ -80,7 +78,6 @@ const uint32_t gCompTable[NUM_COMP_TYPES][4] = {
     {(uint32_t)&gAiRandCompsDense, sizeof(AiRandComponent), MAX_AI_RAND_COMPONENTS, (uint32_t)removeComponentAiRand},
     {(uint32_t)&gTimerCompsDense, sizeof(TimerComponent), MAX_TIMER_COMPONENTS, (uint32_t)removeComponentTimer},
     {(uint32_t)&gCounterCompsDense, sizeof(CounterComponent), MAX_COUNTER_COMPONENTS, (uint32_t)removeComponentCounter},
-    {(uint32_t)&gSpawnerCompsDense, sizeof(SpawnerComponent), MAX_SPAWNER_COMPONENTS, (uint32_t)removeComponentSpawner},
     {(uint32_t)&gMemberCompsDense, sizeof(MemberComponent), MAX_MEMBER_COMPONENTS, (uint32_t)removeComponentMember},
     {(uint32_t)&gGroupCompsDense, sizeof(GroupComponent), MAX_GROUP_COMPONENTS, (uint32_t)removeComponentGroup},
     {(uint32_t)&gInputCheckerCompsDense, sizeof(InputCheckerComponent), MAX_INPUT_CHECKER_COMPONENTS, (uint32_t)removeComponentInputChecker}

@@ -114,6 +114,8 @@ void pushAwayFromPosition(PhysicsComponent* physComp, int x, int y);
 
 void updatePlayerPhysics();
 
+void addComponentSimplePhysics(int entId, u16 flags, int x, int y, int archetypeIndex, int vecX, int vecY, int angle);
+
 void updatePhysics();
 
 void updatePhysicsSimple();
@@ -182,14 +184,6 @@ void incrementPower(int entId);
 
 /** amount can be pos or neg */
 void incrementCounter(CounterComponent* counter, int amount);
-
-// Spawner
-
-void addComponentSpawner(int entId, u16 flags, enum EntityKind entKind);
-
-void updateSpawners();
-
-void removeComponentSpawner(int entId);
 
 // Member
 

@@ -56,7 +56,6 @@ extern AiComponent gAiCompsDense[MAX_AI_COMPONENTS];
 extern AiRandComponent gAiRandCompsDense[MAX_AI_RAND_COMPONENTS];
 extern TimerComponent gTimerCompsDense[MAX_TIMER_COMPONENTS];
 extern CounterComponent gCounterCompsDense[MAX_COUNTER_COMPONENTS];
-extern SpawnerComponent gSpawnerCompsDense[MAX_SPAWNER_COMPONENTS];
 extern MemberComponent gMemberCompsDense[MAX_MEMBER_COMPONENTS];
 extern GroupComponent gGroupCompsDense [MAX_GROUP_COMPONENTS];
 extern InputCheckerComponent gInputCheckerCompsDense[MAX_INPUT_CHECKER_COMPONENTS];
@@ -73,7 +72,6 @@ enum gCompTableIndexes { COMP_DSET_ADDRESSES, COMP_SIZES, COMP_MAX_PER_TYPE, COM
 #define maxComps(x)     (int)gCompTable[x][COMP_MAX_PER_TYPE]
 #define numComps(x)     gNumCompsPerType[x]
 #define getObj(x)       (&gObjBuffer[x->objIndex]) // x is an ObjComponent pointer
-// #define getObjAff(x)    (&gObjAffBuffer[x->objAffIndex]) // x is an ObjAffComponent pointer
 #define getObjAff(x)    (&gObjAffBuffer[(getObj(((ObjComponent*)getComponent(x->header.entId, COMP_OBJ)))->attr1 & ATTR1_AFF_ID_MASK) >> ATTR1_AFF_ID_SHIFT]) // x is an ObjAffComponent pointer
 
 extern const uint32_t gCompTable[NUM_COMP_TYPES][4];

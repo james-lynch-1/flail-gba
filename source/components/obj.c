@@ -3,7 +3,7 @@
 ObjComponent* addComponentObj(s16 entId, u16 flags, int posSourceCompType) {
     if (gNumCompsPerType[COMP_OBJ] >= MAX_OBJ_COMPONENTS || entId < 0) return NULL;
     ObjComponent o = {
-        {entId, 0},
+        {entId, flags},
         gNumCompsPerType[COMP_OBJ],
         posSourceCompType
     };

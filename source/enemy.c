@@ -50,3 +50,7 @@ int spawnEnemy(int x, int y) {
     addComponentCustom(&ai, COMP_AI);
     return entId;
 }
+
+void spawnEnemyCentred() {
+    spawnEnemy(120 << 16, 80 << 16);
+}

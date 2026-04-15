@@ -28,7 +28,6 @@ void updateNormal() {
 #ifdef DEBUG
     updateDebugBlobs();
 #endif
-    updateSpawners();
     updateTimers();
 
     updateUINormal();

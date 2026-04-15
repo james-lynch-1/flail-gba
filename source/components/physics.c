@@ -30,6 +30,11 @@ void updatePlayerPhysics() {
     }
 }
 
+void addComponentSimplePhysics(int entId, u16 flags, int x, int y, int archetypeIndex, int vecX, int vecY, int angle) {
+    SimplePhysicsComponent sP = { {entId, flags}, {{x}, {y}}, &gPhysArchetypesStatic[archetypeIndex], {{x}, {y}}, angle };
+    addComponentCustom((void*)&sP, COMP_PHYSICS_SIMPLE);
+}
+
 // first use the input or ai components to add a vec to this vec, then clamp and decay speed, and apply gravity
 void updatePhysics() {
     for (int i = 0; i < gNumCompsPerType[COMP_PHYSICS]; i++) {
