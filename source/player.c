@@ -9,13 +9,25 @@ void updatePlayerStuff() {
             power->curr = clamp(power->curr, 0, power->max);
         }
     }
+
+    CounterComponent* health = getCounterByFlags(gPlayerId, COUNTER_HEALTH_FLAG);
+    CounterComponent* numDefeated = getCounterByFlags(gPlayerId, COUNTER_NUM_DEFEATED_FLAG);
+    if (health && (numDefeated->curr >= 10)) {
+        int frameCountMod60 = Mod(gFrameCount, 60);
+        if ((frameCountMod60 == 0)) {
+            int numDefeatedModifier = clamp(((numDefeated->curr * lu_div(10)) >> 16), 0, 9);
+            incrementCounter(health, -numDefeatedModifier);
+        }
+    }
+    if (health->curr <= 0)
+        notify(gPlayerId, COMP_COUNTER, E_PLAYER_DIED);
 }
 
 void doPlayerHurtAnimation() {
     int dir = 1 - (gFrameCount & 1) * 2;
     obj_aff_scale(getObjAff(((ObjAffComponent*)getComponent(gPlayerId, COMP_OBJ_AFF))),
-    0x100 + dir,
-    0x100 + dir);
+        0x100 + dir,
+        0x100 + dir);
 }
 
 int spawnPlayer(int x, int y) {
@@ -42,7 +54,7 @@ int spawnPlayer(int x, int y) {
     };
     addComponentGroup(gPlayerId, 0, NULL, NULL, 0, ENT_PLAYER);
     MemberComponent* healthMember = addComponentMember(reserveEntSlot(), 0, gPlayerId);
-    addComponentCounter(healthMember->header.entId, COUNTER_HEALTH_FLAG, 150, 150);
+    addComponentCounter(healthMember->header.entId, COUNTER_HEALTH_FLAG, 255, 255);
     MemberComponent* powerMember = addComponentMember(reserveEntSlot(), 0, gPlayerId);
     addComponentCounter(powerMember->header.entId, COUNTER_POWER_FLAG, 0, 360);
     MemberComponent* numDefeatedMember = addComponentMember(reserveEntSlot(), 0, gPlayerId);

@@ -24,6 +24,7 @@ CounterComponent* getCounterByFlags(int entId, u16 flags) {
 void handlePlayerToPhysCollision(int entId) {
     CounterComponent* power = getCounterByFlags(gPlayerId, COUNTER_POWER_FLAG);
     CounterComponent* health = getCounterByFlags(gPlayerId, COUNTER_HEALTH_FLAG);
+    CounterComponent* numDefeated = getCounterByFlags(gPlayerId, COUNTER_NUM_DEFEATED_FLAG);
     bool powerIsMax = power && (power->curr == power->max);
     if (powerIsMax) {
         // delete this fella
@@ -39,32 +40,40 @@ void handlePlayerToPhysCollision(int entId) {
 
         // reset power and health
         power->curr = 0;
-        if (health) incrementCounter(health, 50);
+        if (health) health->curr = health->max;
 
         CounterComponent* numDefeated = getCounterByFlags(gPlayerId, COUNTER_NUM_DEFEATED_FLAG);
-        if (numDefeated) incrementCounter(numDefeated, 1);
+        if (numDefeated && numDefeated->curr < 255) incrementCounter(numDefeated, 1);
+        else numDefeated->curr = 255;
         return;
     }
     if (!health) return;
-    if (health->curr > 0) incrementCounter(health, PLAYER_HEALTH_DECREMENT);
-    if (health->curr <= 0) {
-        notify(gPlayerId, COMP_COUNTER, E_PLAYER_DIED);
-    }
+    int nDDiv = clamp((numDefeated->curr * lu_div(20)) >> 16, 0, 3);
+    if (health->curr > 0) incrementCounter(health, PLAYER_HEALTH_DECREMENT - nDDiv);
 }
 
 void incrementPower(int entId) {
     CounterComponent* power = getCounterByFlags(gPlayerId, COUNTER_POWER_FLAG);
+    CounterComponent* numDefeated = getCounterByFlags(gPlayerId, COUNTER_NUM_DEFEATED_FLAG);
     if (!power || power->curr >= power->max) return;
     Position playerPos = ((PhysicsComponent*)getComponent(gPlayerId, COMP_PHYSICS))->pos;
     Position enemyPos = gPhysCompsDense[1].pos;
     Vector vec = { {playerPos.x.WORD - enemyPos.x.WORD}, {playerPos.y.WORD - enemyPos.y.WORD} };
-    int distance = numComps(COMP_PHYSICS) > 1 ? fastMagnitude(vec.x.HALF.HI, vec.y.HALF.HI) : 120;
-
+    int distance = numComps(COMP_PHYSICS) > 1 ?
+        (fastMagnitude(vec.x.HALF.HI, vec.y.HALF.HI) + 10 * clamp((numDefeated->curr * lu_div(10)) >> 16, 0, 5))
+        : 120;
     SWord distPwrModifier = { .WORD = lu_div(clamp(distance, 0, 240)) << 12 };
     distPwrModifier = multSWord(distPwrModifier, power->incrementModifier);
-    power->curr += clamp(distPwrModifier.HALF.HI, 20, power->max / 2);
-    power->curr = clamp(power->curr, 0, power->max + 1);
+    incrementCounter(power, clamp(distPwrModifier.HALF.HI, 20, power->max / 2));
     if (power->curr >= power->max) notify(gPlayerId, COMP_COUNTER, E_POWER_FULL);
+}
+
+void incrementHealthConditional() {
+    CounterComponent* health = getCounterByFlags(gPlayerId, COUNTER_HEALTH_FLAG);
+    CounterComponent* numDefeated = getCounterByFlags(gPlayerId, COUNTER_NUM_DEFEATED_FLAG);
+    if(!health || !numDefeated) return;
+    // if (numDefeated->curr >= 10)
+        incrementCounter(health, 0x20);
 }
 
 void incrementCounter(CounterComponent* counter, int amount) {

@@ -63,13 +63,11 @@ void loadEncounter(Encounter* encounter) {
             addComponentTimer(entId, 0, encounter->length, logSomething);
     }
 
-    // music
-
-    // objective
-
     addEventListener(COMP_PHYSICS, E_STAR_COLLECTED, incrementPower, false);
+    addEventListener(COMP_PHYSICS, E_STAR_COLLECTED, incrementHealthConditional, false);
     addEventListener(COMP_COUNTER, E_PLAYER_DIED, handlePlayerDied, false);
     addEventListener(COMP_COUNTER, E_POWER_FULL, handlePowerFull, false);
+
     if (hasComponent(gPlayerId, COMP_GROUP)) {
         GroupComponent* group = getComponent(gPlayerId, COMP_GROUP);
         for (int i = 0; i < group->numMembers; i++) {

@@ -14,6 +14,12 @@ void handleInputNormal(s16 entId) { // coupled to PhysicsComponent
         {key_tri_vert() * physComp->archetype->radius * physComp->archetype->accel.WORD} };
     physComp->vec = addVec(physComp->vec, dirVec);
 
+    if (key_is_down(KEY_DIR)) {
+        CounterComponent* health = getCounterByFlags(gPlayerId, COUNTER_HEALTH_FLAG);
+        CounterComponent* numDefeated = getCounterByFlags(gPlayerId, COUNTER_NUM_DEFEATED_FLAG);
+        if (health && !(gFrameCount & 3)) incrementCounter(health, numDefeated ? -(clamp((numDefeated->curr * lu_div(10)) >> 16, 0, 5)) : -1);
+    }
+
     if (key_hit(KEY_START)) { // reset
         setGameState(PAUSE);
         return;
@@ -52,7 +58,7 @@ void handleInputNormal(s16 entId) { // coupled to PhysicsComponent
         return;
     }
 #endif
-    }
+}
 
 void updateInputComps() {
     for (int i = 0; i < gNumCompsPerType[COMP_INPUT]; i++) {

@@ -42,8 +42,11 @@ void doGroupActionStarLine(MemberComponent* m, GroupComponent* g) {
     removeComponentPhysicsSimple(m->header.entId);
     removeComponentHitbox(m->header.entId);
     CounterComponent* power = getCounterByFlags(gPlayerId, COUNTER_POWER_FLAG);
+    CounterComponent* numDefeated = getCounterByFlags(gPlayerId, COUNTER_NUM_DEFEATED_FLAG);
     if (!key_is_down(KEY_DIR)) {
-        power->incrementModifier = setSWord(1, 0x8000);
+        int numDefeatedModifier = 0x600 * clamp(((numDefeated->curr * lu_div(20)) >> 16), 0, 9);
+        // stops being effective after level 160
+        power->incrementModifier = setSWord(1, 0x8000 - numDefeatedModifier);
     }
     else power->incrementModifier = setSWord(1, 0);
     notify(m->header.entId, COMP_PHYSICS, E_STAR_COLLECTED);
@@ -67,14 +70,12 @@ void doGroupActionStarLine(MemberComponent* m, GroupComponent* g) {
 
 void spawnStarLineRandomPos(int entId) {
     CounterComponent* numDefeated = getCounterByFlags(gPlayerId, COUNTER_NUM_DEFEATED_FLAG);
-    int xModifier = numDefeated->curr * 9;
-    int yModifier = numDefeated->curr * 8;
-    // bool isXAxisModified = qran_range(0, 2);
+    int numDefeatedMod10 = Mod(numDefeated->curr, 10);
+    int xModifier = numDefeatedMod10 * 9;
+    int yModifier = numDefeatedMod10 * 8;
     int xRanges[2] = { qran_range(20, 120 - xModifier), qran_range(120 + xModifier, 220) };
     int yRanges[2] = { qran_range(20, 80 - yModifier), qran_range(80 + yModifier, 120) };
     PositionMini pos = { xRanges[qran_range(0, 2)], yRanges[qran_range(0, 2)] };
-    // PositionMini pos = { isXAxisModified ? xRanges[qran_range(0, 2)] : qran_range(20, 220),
-    //     !isXAxisModified ? yRanges[qran_range(0, 2)] : qran_range(20, 140) };
     spawnStarLine(qran_range(0, sizeof(StarLines) / sizeof(StarLine)), pos, 1);
     markEntToBeDeleted(entId);
 }

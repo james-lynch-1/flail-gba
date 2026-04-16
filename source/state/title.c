@@ -26,9 +26,15 @@ void enterTitle() {
 
 void updateTitle() {
     CounterComponent* numDefeated = getCounterByFlags(gPlayerId, COUNTER_NUM_DEFEATED_FLAG);
-    if (key_hit(KEY_LEFT | KEY_RIGHT)) {
-        if (numDefeated) numDefeated->curr += key_tri_horz();
-        displayLevel(8, 16);
+    if (key_hit(KEY_DIR)) {
+        if (numDefeated) {
+            if (key_hit(KEY_LEFT | KEY_RIGHT))
+                numDefeated->curr += key_tri_horz();
+            else if (key_hit(KEY_DOWN | KEY_UP))
+                numDefeated->curr += -10 * key_tri_vert();
+            numDefeated->curr = clamp(numDefeated->curr, 0, 256);
+            displayLevel(8, 16);
+        }
     }
     if (key_hit(KEY_START)) {
         setGameState(NORMAL);

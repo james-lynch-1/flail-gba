@@ -40,7 +40,7 @@
 // player
 #define PLAYER_POWER_INCREMENT          60
 #define PLAYER_POWER_DECREMENT          -1
-#define PLAYER_HEALTH_DECREMENT         -8
+#define PLAYER_HEALTH_DECREMENT         -5
 
 // enemy-related constants
 #define WEAK_TURN_FREQ      20

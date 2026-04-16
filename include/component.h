@@ -182,6 +182,8 @@ void handlePlayerToPhysCollision(int entId);
 
 void incrementPower(int entId);
 
+void incrementHealthConditional();
+
 /** amount can be pos or neg */
 void incrementCounter(CounterComponent* counter, int amount);
 
