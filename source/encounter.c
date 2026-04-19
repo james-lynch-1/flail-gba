@@ -49,7 +49,7 @@ void loadEncounter(Encounter* encounter) {
 
     // centre point
     int centreEntId = reserveEntSlot();
-    addComponentSimplePhysics(centreEntId, 0, 120 << 16, 80 << 16, ARCHETYPE_ITEM, 0, 0, 0);
+    addComponentSimplePhysics(centreEntId, 0, 120 << 16, 80 << 16, ARCHETYPE_NON_INTERACTABLE, 0, 0);
     ObjComponent* centreObj = addComponentObj(centreEntId, 0, COMP_PHYSICS_SIMPLE);
     getObj(centreObj)->attr2 = ATTR2_PALBANK(1) | fetchSprite(plusTiles, plusTilesLen) | ATTR2_PRIO(3);
 

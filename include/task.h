@@ -3,7 +3,11 @@
 
 #include "global.h"
 
-bool addTask(void (*task)(int), int entId, int length);
+void spawnParticlesEnemyDefeat(PhysicsComponent* enemyPhys);
+
+void taskExplodeWhenWallIsHit(Task* task, int entId);
+
+bool addTask(void (*task)(Task*, int), int entId, int length);
 
 void doTasks();
 

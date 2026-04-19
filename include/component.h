@@ -6,6 +6,7 @@
 
 #include "enemy.h"
 #include "eventListener.h"
+#include "task.h"
 
 ComponentHeader* addComponentCustom(void* data, enum ComponentType componentType);
 
@@ -77,7 +78,11 @@ void removeComponentTile(int entId);
 
 // Input
 
-void handleInputNormal(s16 entId);
+void addComponentInput(int entId, int flags, void (*inputHandler)(int entId));
+
+void handleInputNormal(int entId);
+
+void handleInputGameover(int entId);
 
 void updateInputComps();
 
@@ -114,20 +119,18 @@ void pushAwayFromPosition(PhysicsComponent* physComp, int x, int y);
 
 void updatePlayerPhysics();
 
-void addComponentSimplePhysics(int entId, u16 flags, int x, int y, int archetypeIndex, int vecX, int vecY, int angle);
+void addComponentSimplePhysics(int entId, u16 flags, int x, int y, int archetypeIndex, int vecX, int vecY);
 
 void updatePhysics();
 
 void updatePhysicsSimple();
-
-// bool checkPhysToSimplePhysCollision(PhysicsComponent* ent, SimplePhysicsComponent* simpleEnt);
 
 /** Assumes the hBox haver also has a SimplePhysics component */
 bool checkPlayerToHitboxCollision(PhysicsComponent* ent, HitboxComponent* hBox);
 
 bool checkPhysCompToPhysCompCollision(PhysicsComponent* player, PhysicsComponent* physComp);
 
-Vector decaySpeed(Vector vec, int rate);
+Vector decaySpeed(Vector vec, u32 rate);
 
 u32 fastMagnitude(int x, int y);
 

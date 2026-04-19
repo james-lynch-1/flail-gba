@@ -23,6 +23,8 @@ void updateNormal() {
     updatePhysics();
     updateHitboxes();
     updatePhysicsSimple();
+
+    VBlankIntrWait();
     updateObjs();
     updateObjAffs();
 #ifdef DEBUG
@@ -34,8 +36,6 @@ void updateNormal() {
 
     doTasks();
     deleteMarkedEnts();
-
-    VBlankIntrWait();
 
     gFrameCount++;
 }

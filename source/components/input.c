@@ -7,7 +7,12 @@ void handlePalTimerExpire(int entId) {
     markEntToBeDeleted(entId);
 }
 
-void handleInputNormal(s16 entId) { // coupled to PhysicsComponent
+void addComponentInput(int entId, int flags, void (*inputHandler)(int entId)) {
+    InputComponent inputComp = {{entId, flags}, inputHandler};
+    addComponentCustom((void*)&inputComp, COMP_INPUT);
+}
+
+void handleInputNormal(int entId) { // coupled to PhysicsComponent
     PhysicsComponent* physComp = getComponent(entId, COMP_PHYSICS);
     if (!physComp) return;
     Vector dirVec = { {key_tri_horz() * physComp->archetype->radius * physComp->archetype->accel.WORD},
@@ -17,7 +22,11 @@ void handleInputNormal(s16 entId) { // coupled to PhysicsComponent
     if (key_is_down(KEY_DIR)) {
         CounterComponent* health = getCounterByFlags(gPlayerId, COUNTER_HEALTH_FLAG);
         CounterComponent* numDefeated = getCounterByFlags(gPlayerId, COUNTER_NUM_DEFEATED_FLAG);
-        if (health && !(gFrameCount & 3)) incrementCounter(health, numDefeated ? -(clamp((numDefeated->curr * lu_div(10)) >> 16, 0, 5)) : -1);
+        if (health && !(gFrameCount & 3)) incrementCounter(health, numDefeated ? -(clamp((numDefeated->curr * lu_div(10)) >> 16, 0, 4)) : -1);
+    }
+
+    if (key_hit(KEY_A)) {
+        doNothing();
     }
 
     if (key_hit(KEY_START)) { // reset
@@ -26,10 +35,8 @@ void handleInputNormal(s16 entId) { // coupled to PhysicsComponent
     }
 #ifdef DEBUG
     if (key_hit(KEY_B)) {
-        if (gNumEnts < 50)
-            for (int i = 0; i < 50; i++)
-                spawnEnemyWeak(0, 0);
-        return;
+        if (numComps(COMP_PHYSICS_SIMPLE) < 64)
+            spawnParticlesEnemyDefeat(physComp);
     }
     if (key_hit(KEY_L | KEY_R)) {
         u8* hBoxDimension = (u8*)&physComp->archetype->hitbox;
@@ -58,6 +65,12 @@ void handleInputNormal(s16 entId) { // coupled to PhysicsComponent
         return;
     }
 #endif
+}
+
+void handleInputGameover(int entId) {
+    if (numComps(COMP_TIMER) == 0 && key_hit(KEY_START)) {
+        setGameState(NORMAL);
+    }
 }
 
 void updateInputComps() {

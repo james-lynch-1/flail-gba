@@ -23,7 +23,10 @@ enum __attribute__ ((__packed__)) PhysArchetypeEnum {
     ARCHETYPE_PLAYER,
     ARCHETYPE_ENEMY_WEAK,
     ARCHETYPE_ENEMY,
+    ARCHETYPE_ENEMY_DEAD,
     ARCHETYPE_ITEM,
+    ARCHETYPE_NON_INTERACTABLE,
+    ARCHETYPE_PARTICLE,
     NUM_PHYS_ARCHETYPES
 };
 
@@ -143,7 +146,7 @@ typedef struct gGameState { // for game states (FSM)
 // Tasks
 
 typedef struct Task_ {
-    void (*task)(int entId);
+    void (*task)(struct Task_* task, int entId);
     s16 timeRemaining;
     s16 entId;
 } Task;
@@ -335,7 +338,7 @@ typedef struct ALIGN4 AudioComponent_ {
 
 typedef struct ALIGN4 InputComponent_ {
     ComponentHeader header;
-    void (*inputHandler)(s16 entId);
+    void (*inputHandler)(int entId);
 } InputComponent;
 
 #define PHYS_GRAVITY_FLAG        0b10000000
@@ -362,7 +365,6 @@ typedef struct ALIGN4 SimplePhysicsComponent_ {
     Position pos; // 8 bytes. should always be after header for updateObjs()
     PhysArchetype* archetype; // 4 bytes. should always be after header and pos for updateObjs()
     Vector vec; // 8 bytes
-    u16 angle; // 2 bytes
 } SimplePhysicsComponent;
 
 typedef struct ALIGN4 HitboxComponent_ {

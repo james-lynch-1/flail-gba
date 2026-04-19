@@ -5,15 +5,13 @@ Power meter depletes over time.
 Collecting one of the firefly/moth things will increment this meter a bit...  
 But leaving any behind before the whole group disappears will completely deplete your power meter.  
 The closer you are to the enemy when the firefly is picked up, the more power is bestowed. Take risks!  
-If your health is fully depleted by the enemy, the game soft resets and the points are reset to zero.  
-***TIP:*** If you collect a firefly while not pressing a direction, your power fills to maximum instantly.  
+***TIP:*** Collecting a firefly while not pressing a direction bestows a 1.5x bonus to your pwoer meter.  
 When power is full, it stops depleting and the player can then defeat the enemy to gain one point and a bit of health back.  
-Collect ten points to win.  
 # Controls
 - D-pad to move
 - Start to pause
 #### DEBUG FEATURES (Not enabled by default):
-- B to spawn a bunch of entities
+- B to spawn a bunch of particles
 - L or R to turn on hitbox visualiser, then:
   - L to make hitbox smaller on x axis, R to make hitbox bigger on x axis
   - Hold A while pressing L or R for y axis

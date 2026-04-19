@@ -14,8 +14,7 @@ int spawnEnemyWeak(int x, int y) {
         {entId, 0},
         { (SWord)x, (SWord)y },
         (PhysArchetype*)&gPhysArchetypesStatic[ARCHETYPE_ENEMY_WEAK],
-        {{0}, {0}},
-        0xF000
+        {{0}, {0}}
     };
     AiRandComponent ai = { {entId, 0} };
     HitboxComponent hBox = { {entId, 0}, {8, 8, 0, 0} };

@@ -2,33 +2,54 @@
 
 // physics component archetypes
 PhysArchetype gPhysArchetypesStatic[MAX_PHYS_ARCHETYPES_STATIC] = {
-    { // player
-    {10, 10, 0, 0},
-    5,
-    {0x00001000},
-    SPEED_DECAY,
-    true
+    { // ARCHETYPE_PLAYER
+        {10, 10, 0, 0},
+        5,
+        {0x00001000},
+        SPEED_DECAY,
+        true
     },
-    { // weak enemy
-    {8, 8, 0, 0},
-    1,
-    {0x00002000},
-    0,
-    true
+    { // ARCHETYPE_ENEMY_WEAK
+        {8, 8, 0, 0},
+        1,
+        {0x00002000},
+        0,
+        true
     },
-    { // enemy
-    {16, 16, 0, 0},
-    2,
-    {0x00002000},
-    0,
-    true
+    { // ARCHETYPE_ENEMY
+        {16, 16, 0, 0},
+        2,
+        {0x00002000},
+        0,
+        true
     },
-    { // item
-    {12, 12, 0, 0},
-    0,
-    {0},
-    0,
-    true
+    { // ARCHETYPE_ENEMY_DEAD
+        {16, 16, 0, 0},
+        64,
+        {0x00002000},
+        0,
+        true
+    },
+    { // ARCHETYPE_ITEM
+        {12, 16, 0, 0},
+        0,
+        {0},
+        0xFFFF,
+        true
+    },
+    { // ARCHETYPE_NON_INTERACTABLE
+        {0, 0, 0, 0},
+        0,
+        {0},
+        0xFFFF,
+        true
+    },
+    { // ARCHETYPE_PARTICLE
+        {2, 2, 0, 0},
+        1,
+        {0x2000},
+        0x400,
+        true
     }
 };
 PhysArchetype gPhysArchetypesCustom[MAX_PHYS_ARCHETYPES_CUSTOM];

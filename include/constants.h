@@ -4,7 +4,7 @@
 #define ANGLE_MIN           0
 #define ANGLE_MAX           65535
 #define SPEED_DECAY         0x800
-#define MAX_ENTS            128
+#define MAX_ENTS            125
 
 #define MAX_TASKS           128
 

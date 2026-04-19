@@ -12,7 +12,7 @@ void updatePlayerStuff() {
 
     CounterComponent* health = getCounterByFlags(gPlayerId, COUNTER_HEALTH_FLAG);
     CounterComponent* numDefeated = getCounterByFlags(gPlayerId, COUNTER_NUM_DEFEATED_FLAG);
-    if (health && (numDefeated->curr >= 10)) {
+    if (numComps(COMP_PHYSICS) > 1 && health && (numDefeated->curr >= 10)) {
         int frameCountMod60 = Mod(gFrameCount, 60);
         if ((frameCountMod60 == 0)) {
             int numDefeatedModifier = clamp(((numDefeated->curr * lu_div(10)) >> 16), 0, 9);

@@ -51,6 +51,11 @@ void initialiseUi() {
         NULL,
         se_drawg_w8h8
     );
+    // health bar 1/4 marker
+    gObjBuffer[125].attr2 = ATTR2_ID(fetchSprite(markerTiles, markerTilesLen)) | ATTR2_PRIO(1) | ATTR2_PALBANK(0);
+    gObjBuffer[125].attr0 = ATTR0_Y(0);
+    gObjBuffer[125].attr1 = ATTR1_X(SCREEN_WIDTH / 4 - 4);
+
     // health bar obj
     gObjBuffer[127].attr2 = ATTR2_ID(fetchSprite(healthBarTiles, healthBarTilesLen)) |
         ATTR2_PRIO(1) | ATTR2_PALBANK(2);

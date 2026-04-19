@@ -68,14 +68,30 @@ void doGroupActionStarLine(MemberComponent* m, GroupComponent* g) {
     }
 }
 
+const int starLineSpawnOffsets[11][2] = {
+    {20, 16}, {20, 16}, {20, 16}, {30, 24}, {40, 32}, {50, 40}, {60, 48}, {70, 56}, {80, 64}, {90, 72}, {100, 80}
+};
+
 void spawnStarLineRandomPos(int entId) {
     CounterComponent* numDefeated = getCounterByFlags(gPlayerId, COUNTER_NUM_DEFEATED_FLAG);
+    CounterComponent* health = getCounterByFlags(gPlayerId, COUNTER_HEALTH_FLAG);
+    PositionMini pos;
     int numDefeatedMod10 = Mod(numDefeated->curr, 10);
-    int xModifier = numDefeatedMod10 * 9;
-    int yModifier = numDefeatedMod10 * 8;
-    int xRanges[2] = { qran_range(20, 120 - xModifier), qran_range(120 + xModifier, 220) };
-    int yRanges[2] = { qran_range(20, 80 - yModifier), qran_range(80 + yModifier, 120) };
-    PositionMini pos = { xRanges[qran_range(0, 2)], yRanges[qran_range(0, 2)] };
+    bool randomCoord = gFrameCount & 1;
+    if (health && ((health->curr + 1) * lu_div(health->max + 1) < 0x4000)) numDefeatedMod10 = 2;
+    *((s16*)&pos + randomCoord) = (
+        (SCREEN_WIDTH / 2 - 40 * randomCoord) +
+        (1 - 2 * qran_range(0, 2)) *
+        qran_range(
+            starLineSpawnOffsets[numDefeatedMod10][randomCoord],
+            starLineSpawnOffsets[numDefeatedMod10 + 1][randomCoord]
+        )
+        );
+    *((s16*)&pos + !randomCoord) = qran_range(
+        (SCREEN_WIDTH / 2 - 40 * !randomCoord) - starLineSpawnOffsets[numDefeatedMod10 + 1][!randomCoord],
+        (SCREEN_WIDTH / 2 - 40 * !randomCoord) + starLineSpawnOffsets[numDefeatedMod10 + 1][!randomCoord]
+    );
+
     spawnStarLine(qran_range(0, sizeof(StarLines) / sizeof(StarLine)), pos, 1);
     markEntToBeDeleted(entId);
 }
@@ -121,8 +137,7 @@ int spawnStar(int x, int y) {
             (SWord)(clamp(y >> 16, 0 + height / 2, SCREEN_HEIGHT - height / 2) << 16)
         },
         (PhysArchetype*)&gPhysArchetypesStatic[ARCHETYPE_ITEM],
-        {{0}, {0}},
-        0xF000
+        {{0}, {0}}
     };
     addComponentCustom(&phys, COMP_PHYSICS_SIMPLE);
     return entId;

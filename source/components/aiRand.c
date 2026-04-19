@@ -6,7 +6,10 @@ void updateAiRand() {
             gAiRandCompsDense[i].header.entId,
             COMP_PHYSICS_SIMPLE
         );
-        physComp->angle += qran_range(-1, 2) * qran_range(0x1000, 0x2000);
+        u16 angle = ArcTan2(physComp->vec.x.HALF.HI, physComp->vec.y.HALF.HI);
+        angle += qran_range(-1, 2) * qran_range(0x1000, 0x2000);
+        physComp->vec.x.WORD = lu_cos(angle) << 16;
+        physComp->vec.y.WORD = -lu_sin(angle) << 16;
     }
 }
 
