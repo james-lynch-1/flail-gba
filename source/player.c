@@ -37,8 +37,12 @@ void updatePlayerStuff() {
     if (numComps(COMP_PHYSICS) > 1 && health && (numDefeated->curr >= 10)) {
         int frameCountMod60 = Mod(gFrameCount, 60);
         if ((frameCountMod60 == 0)) {
-            int numDefeatedModifier = clamp(((numDefeated->curr * lu_div(10)) >> 16), 0, 9);
-            incrementCounter(health, -numDefeatedModifier);
+            // every 10 enemies defeated, increase the health drain by 1
+            int numDefeatedModifier = clamp((numDefeated->curr * lu_div(10)) >> 16, 0, 9);
+
+            // every 30 seconds, increase the health drain by 1
+            int timeElapsedModifier = clamp((((gFrameCount * lu_div(60)) >> 16) * lu_div(30)) >> 16, 0, 9);
+            incrementCounter(health, -numDefeatedModifier - timeElapsedModifier);
         }
     }
     if (health->curr <= 0)

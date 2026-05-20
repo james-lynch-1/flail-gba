@@ -77,6 +77,8 @@ void updatePhysics() {
             SCREEN_HEIGHT - ent->archetype->hitbox.height / 2
         ))
             ent->vec.y.WORD += ((reflect(ent->pos.y.HALF.HI, 0, SCREEN_HEIGHT) - ent->pos.y.HALF.HI) << 16) / 4;
+
+        // do collisions between enemies
         for (int j = i + 1; j < numComps(COMP_PHYSICS); j++) {
             PhysicsComponent* ent2 = &gPhysCompsDense[j];
             int dist = ABS(fastMagnitude(ent->pos.x.WORD - ent2->pos.x.WORD, ent->pos.y.WORD - ent2->pos.y.WORD));
@@ -90,6 +92,7 @@ void updatePhysics() {
                 ent2->vec.y.WORD += reflect(distOverlappingY, 0, width << 16) >> 4;
             }
         }
+
         ent->pos.x.WORD += ent->vec.x.WORD;
         ent->pos.y.WORD += ent->vec.y.WORD;
     }
