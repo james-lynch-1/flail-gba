@@ -22,8 +22,6 @@ void removeStarLine(int entId) {
 }
 
 void handleStarLineTimerExpire(int entId) {
-    CounterComponent* power = getCounterByFlags(gPlayerId, COUNTER_POWER_FLAG);
-    power->curr = 0;
     removeStarLine(entId);
     bool spawnerExists = false;
     for (int i = 0; i < numComps(COMP_TIMER); i++) {
@@ -33,8 +31,6 @@ void handleStarLineTimerExpire(int entId) {
         }
     }
     if (!spawnerExists) addComponentTimer(reserveEntSlot(), 0, 2 * 60, spawnStarLineRandomPos);
-    memcpy32(&pal_bg_bank[MAP_PAL], gradientPal, gradientPalLen / sizeof(u32));
-    finishAffineAnimation(getComponent(gPlayerId, COMP_OBJ_AFF));
 }
 
 void doGroupActionStarLine(MemberComponent* m, GroupComponent* g) {
@@ -49,13 +45,12 @@ void doGroupActionStarLine(MemberComponent* m, GroupComponent* g) {
         power->incrementModifier = setSWord(1, 0x8000 - numDefeatedModifier);
     }
     else power->incrementModifier = setSWord(1, 0);
-    notify(m->header.entId, COMP_PHYSICS, E_STAR_COLLECTED);
     g->numCollected++;
     g->counter++; // this is the no. of stars collected without input
+
+    // whole group has been collected
     if (g->numCollected == g->numMembers) {
-        // if (g->numMembers == g->counter) { // if whole group collected without input, max power
-        //     if (power) power->curr = power->max;
-        // }
+        power->incrementModifier.WORD *= 2;
         removeStarLine(g->header.entId);
         bool spawnerExists = false;
         for (int i = 0; i < numComps(COMP_TIMER); i++) {
@@ -66,6 +61,7 @@ void doGroupActionStarLine(MemberComponent* m, GroupComponent* g) {
         }
         if (!spawnerExists) addComponentTimer(reserveEntSlot(), 0, 2 * 60, spawnStarLineRandomPos);
     }
+    notify(m->header.entId, COMP_PHYSICS, E_STAR_COLLECTED);
 }
 
 const int starLineSpawnOffsets[11][2] = {

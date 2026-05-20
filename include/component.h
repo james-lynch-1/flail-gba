@@ -4,6 +4,7 @@
 #include "global.h"
 #include "mem.h"
 
+#include "player.h"
 #include "enemy.h"
 #include "eventListener.h"
 #include "task.h"
@@ -175,8 +176,6 @@ void removeComponentTimer(int entId);
 CounterComponent* addComponentCounter(int entId, u16 flags, s16 curr, s16 max);
 
 void removeComponentCounter(int entId);
-
-void handlePowerFull();
 
 CounterComponent* getCounterByFlags(int entId, u16 flags);
 

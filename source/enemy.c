@@ -28,9 +28,10 @@ int spawnEnemyWeak(int x, int y) {
 int spawnEnemy(int x, int y) {
     if ((numComps(COMP_OBJ) >= MAX_OBJ_COMPONENTS) ||
         (numComps(COMP_PHYSICS) >= MAX_PHYSICS_COMPONENTS) ||
-        (numComps(COMP_AI) >= MAX_AI_COMPONENTS))
+        (numComps(COMP_AI) >= MAX_AI_COMPONENTS) ||
+        (numComps(COMP_TIMER) >= MAX_TIMER_COMPONENTS))
         return -1;
-    s16 entId = reserveEntSlot();
+    int entId = reserveEntSlot();
     if (entId == -1) return -1;
     ObjComponent* objComp = addComponentObj(entId, 0, COMP_PHYSICS);
     getObj(objComp)->attr0 |= ATTR0_4BPP | ATTR0_SQUARE;
@@ -48,6 +49,26 @@ int spawnEnemy(int x, int y) {
     addComponentCustom(&phys, COMP_PHYSICS);
     addComponentCustom(&ai, COMP_AI);
     return entId;
+}
+
+void splitEnemies() {
+    int numPhysComps = numComps(COMP_PHYSICS);
+    for (int i = 1; i < numPhysComps; i++) {
+        if (gPhysCompsDense[i].archetype == &gPhysArchetypesStatic[ARCHETYPE_ENEMY])
+            spawnEnemy(gPhysCompsDense[i].pos.x.WORD, gPhysCompsDense[i].pos.y.WORD);
+    }
+}
+
+void spawnEnemyConditional() {
+    bool isEnemyExist = false;
+    for (int i = 1; i < numComps(COMP_PHYSICS); i++) {
+        if (gPhysCompsDense[i].archetype == &gPhysArchetypesStatic[ARCHETYPE_ENEMY]) {
+            isEnemyExist = true;
+            break;
+        }
+    }
+    if (!isEnemyExist && !(gFlags & GFLAG_POWERED_UP))
+        spawnEnemy(120 << 16, 80 << 16);
 }
 
 void spawnEnemyCentred() {

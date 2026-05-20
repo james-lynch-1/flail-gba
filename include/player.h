@@ -3,6 +3,11 @@
 
 #include "component.h"
 #include "eventListener.h"
+#include "enemy.h"
+
+void handlePowerFull();
+
+void endPowerfulMode();
 
 void doPlayerHurtAnimation();
 

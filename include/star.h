@@ -5,12 +5,9 @@
 #include "entity.h"
 #include "component.h"
 #include "eventListener.h"
+#include "player.h"
 
-// A star line is an array of mini position structs. Each element
-// is an offset from the first star. Therefore, spawning any given
-// star pattern at position p means that the first star will be at
-// p and all the other star's positions are given as offsets to
-// the first one.
+
 extern const StarLine StarLines[];
 
 void timerCallback();

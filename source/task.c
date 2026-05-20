@@ -11,7 +11,7 @@ void spawnParticlesEnemyDefeat(PhysicsComponent* enemyPhys) {
         addComponentSimplePhysics(id, 0, enemyPhys->pos.x.WORD, enemyPhys->pos.y.WORD, ARCHETYPE_PARTICLE, lu_cos(angle) << 4, -lu_sin(angle) << 4);
         addComponentTimer(id, 0, 120, markEntToBeDeleted);
         ObjComponent* obj = addComponentObj(id, 0, COMP_PHYSICS_SIMPLE);
-        getObj(obj)->attr2 = fetchSprite(dotTiles, dotTilesLen) | ATTR2_PALBANK(2);
+        getObj(obj)->attr2 = fetchSprite(dotTiles, dotTilesLen) | ATTR2_PALBANK(0);
     }
 }
 

@@ -24,16 +24,22 @@ CounterComponent* getCounterByFlags(int entId, u16 flags) {
 void incrementPower(int entId) {
     CounterComponent* power = getCounterByFlags(gPlayerId, COUNTER_POWER_FLAG);
     CounterComponent* numDefeated = getCounterByFlags(gPlayerId, COUNTER_NUM_DEFEATED_FLAG);
-    if (!power || power->curr >= power->max) return;
+    if (!power || (gFlags & GFLAG_POWERED_UP)) return;
     Position playerPos = ((PhysicsComponent*)getComponent(gPlayerId, COMP_PHYSICS))->pos;
-    Position enemyPos = gPhysCompsDense[1].pos;
+    Position enemyPos = gPhysCompsDense[1].pos; // ZZZ should get every enemy and choose the closest pos
     Vector vec = { {playerPos.x.WORD - enemyPos.x.WORD}, {playerPos.y.WORD - enemyPos.y.WORD} };
     int distance = numComps(COMP_PHYSICS) > 1 ?
         (fastMagnitude(vec.x.HALF.HI, vec.y.HALF.HI))
         : 120;
+    // scale distance power modifier by 15% for every 10 fellas defeated
     int dist1PctFp = (distance * lu_div(100));
     distance += ((s64)(dist1PctFp * 15) * (numDefeated->curr * lu_div(10))) >> 32;
     SWord distPwrModifier = { .WORD = lu_div(clamp(distance, 0, 240)) << 12 };
+    // if it's the last of the group, scale power gain up
+    GroupComponent* group = getComponent(((MemberComponent*)(getComponent(entId, COMP_MEMBER)))->groupIds[0], COMP_GROUP);
+    if (group->numCollected == group->numMembers) {
+        distPwrModifier.WORD *= 2;
+    }
     distPwrModifier = multSWord(distPwrModifier, power->incrementModifier);
     incrementCounter(power, clamp(distPwrModifier.HALF.HI, 20, power->max / 2));
     if (power->curr >= power->max) notify(gPlayerId, COMP_COUNTER, E_POWER_FULL);
@@ -44,15 +50,10 @@ void incrementHealthConditional() {
     CounterComponent* numDefeated = getCounterByFlags(gPlayerId, COUNTER_NUM_DEFEATED_FLAG);
     if(!health || !numDefeated) return;
     // if (numDefeated->curr >= 10)
-        incrementCounter(health, 0x20);
+        incrementCounter(health, PLAYER_HEALTH_INCREMENT);
 }
 
 void incrementCounter(CounterComponent* counter, int amount) {
     counter->curr += amount;
     counter->curr = clamp(counter->curr, 0, counter->max + 1);
-}
-
-void handlePowerFull() {
-    lightenBgPalette(0x4000);
-    addAffineAnimation(getComponent(gPlayerId, COMP_OBJ_AFF), AFF_ANIM_GROW, 1);
 }

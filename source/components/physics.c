@@ -16,18 +16,36 @@ void pushAwayFromPosition(PhysicsComponent* physComp, int x, int y) {
 
 void updatePlayerPhysics() {
     PhysicsComponent* player = getComponent(gPlayerId, COMP_PHYSICS);
-    for (int i = 0; i < numComps(COMP_PHYSICS); i++) {
-        if (gPhysCompsDense[i].header.entId == player->header.entId) continue;
+    for (int i = 1; i < numComps(COMP_PHYSICS); i++) {
         if (checkPhysCompToPhysCompCollision(player, &gPhysCompsDense[i])) {
             notify(gPhysCompsDense[i].header.entId, COMP_PHYSICS, E_PHYS_TOUCHED);
         }
     }
-    bool isGravityOn = (gFlags & GFLAG_GRAVITY) && (player->header.flags & PHYS_GRAVITY_FLAG);
     u32 mag = fastMagnitude(player->vec.x.WORD, player->vec.y.WORD);
+    player->vec = decaySpeed(player->vec, 0x10000 - player->archetype->decay);
+    bool isGravityOn = (gFlags & GFLAG_GRAVITY) && (player->header.flags & PHYS_GRAVITY_FLAG);
+    bool isCentredAndSufficientlySlow =
+        in_range(player->pos.x.HALF.HI, 119, 121) &&
+        in_range(player->pos.y.HALF.HI, 79, 81) &&
+        mag < 0x1800;
+    if (isGravityOn && !isCentredAndSufficientlySlow) {
+        pullTowardsPosition(player, 120 << 16, 80 << 16);
+    }
     if (!isGravityOn && mag < 0x1800 && !(key_is_down(KEY_DIR))) {
         player->vec.x.WORD = 0;
         player->vec.y.WORD = 0;
     }
+    if ((mag >> 16) > player->archetype->radius) {
+        player->vec = normaliseVec(player->vec);
+        player->vec = scalarMultVec(player->vec, player->archetype->radius);
+    }
+    int hBWidth = player->archetype->hitbox.width, hBHeight = player->archetype->hitbox.height;
+    if (!in_range(player->pos.x.HALF.HI, 0 + hBWidth / 2, SCREEN_WIDTH - hBWidth / 2))
+        player->vec.x.WORD += ((reflect(player->pos.x.HALF.HI, 0, SCREEN_WIDTH) - player->pos.x.HALF.HI) << 16) / 4;
+    if (!in_range(player->pos.y.HALF.HI, 0 + hBHeight / 2, SCREEN_HEIGHT - hBHeight / 2))
+        player->vec.y.WORD += ((reflect(player->pos.y.HALF.HI, 0, SCREEN_HEIGHT) - player->pos.y.HALF.HI) << 16) / 4;
+    player->pos.x.WORD += player->vec.x.WORD;
+    player->pos.y.WORD += player->vec.y.WORD;
 }
 
 void addComponentSimplePhysics(int entId, u16 flags, int x, int y, int archetypeIndex, int vecX, int vecY) {
@@ -37,38 +55,40 @@ void addComponentSimplePhysics(int entId, u16 flags, int x, int y, int archetype
 
 // first use the input or ai components to add a vec to this vec, then clamp and decay speed, and apply gravity
 void updatePhysics() {
-    for (int i = 0; i < gNumCompsPerType[COMP_PHYSICS]; i++) {
+    for (int i = 1; i < numComps(COMP_PHYSICS); i++) {
         PhysicsComponent* ent = &gPhysCompsDense[i];
-        bool isGravityOn = (gFlags & GFLAG_GRAVITY) && (ent->header.flags & PHYS_GRAVITY_FLAG);
         u32 mag = fastMagnitude(ent->vec.x.WORD, ent->vec.y.WORD);
-        bool isCentredAndSufficientlySlow =
-            in_range(ent->pos.x.HALF.HI, 119, 121) &&
-            in_range(ent->pos.y.HALF.HI, 79, 81) &&
-            mag < 0x1800;
-
-        ent->vec = decaySpeed(ent->vec, 0x10000 - ent->archetype->decay);
-
         if ((mag >> 16) > ent->archetype->radius) {
             ent->vec = normaliseVec(ent->vec);
             ent->vec = scalarMultVec(ent->vec, ent->archetype->radius);
         }
-        if (isGravityOn && !isCentredAndSufficientlySlow) {
-            pullTowardsPosition(ent, 120 << 16, 80 << 16);
-        }
 
-        // stop if centred and sufficiently slow
-        if (isCentredAndSufficientlySlow && isGravityOn) {
-            ent->vec.x.WORD = 0;
-            ent->vec.y.WORD = 0;
-            ent->pos.x.WORD = 120 << 16;
-            ent->pos.y.WORD = 80 << 16;
-        }
+        ent->vec = decaySpeed(ent->vec, 0x10000 - ent->archetype->decay);
 
-        if (!in_range(ent->pos.x.HALF.HI, 0 + ent->archetype->hitbox.width / 2, SCREEN_WIDTH - ent->archetype->hitbox.width / 2))
+        if (!in_range(
+            ent->pos.x.HALF.HI,
+            0 + ent->archetype->hitbox.width / 2,
+            SCREEN_WIDTH - ent->archetype->hitbox.width / 2
+        ))
             ent->vec.x.WORD += ((reflect(ent->pos.x.HALF.HI, 0, SCREEN_WIDTH) - ent->pos.x.HALF.HI) << 16) / 4;
-        if (!in_range(ent->pos.y.HALF.HI, 0, SCREEN_HEIGHT - ent->archetype->hitbox.height / 2)) {
+        if (!in_range(
+            ent->pos.y.HALF.HI,
+            0 + ent->archetype->hitbox.height / 2,
+            SCREEN_HEIGHT - ent->archetype->hitbox.height / 2
+        ))
             ent->vec.y.WORD += ((reflect(ent->pos.y.HALF.HI, 0, SCREEN_HEIGHT) - ent->pos.y.HALF.HI) << 16) / 4;
-            doNothing();
+        for (int j = i + 1; j < numComps(COMP_PHYSICS); j++) {
+            PhysicsComponent* ent2 = &gPhysCompsDense[j];
+            int dist = ABS(fastMagnitude(ent->pos.x.WORD - ent2->pos.x.WORD, ent->pos.y.WORD - ent2->pos.y.WORD));
+            int width = ent->archetype->hitbox.width;
+            if ((dist >> 16) < width) {
+                int distOverlappingX = ABS(ent->pos.x.WORD - ent2->pos.x.WORD) - (width << 16);
+                int distOverlappingY = ABS(ent->pos.y.WORD - ent2->pos.y.WORD) - (width << 16);
+                ent->vec.x.WORD += reflect(distOverlappingX, 0, width << 16) >> 4;
+                ent->vec.y.WORD -= reflect(distOverlappingY, 0, width << 16) >> 4;
+                ent2->vec.x.WORD -= reflect(distOverlappingX, 0, width << 16) >> 4;
+                ent2->vec.y.WORD += reflect(distOverlappingY, 0, width << 16) >> 4;
+            }
         }
         ent->pos.x.WORD += ent->vec.x.WORD;
         ent->pos.y.WORD += ent->vec.y.WORD;
@@ -129,23 +149,25 @@ bool checkPlayerToHitboxCollision(PhysicsComponent* ent, HitboxComponent* hBox) 
 bool checkPhysCompToPhysCompCollision(PhysicsComponent* p1, PhysicsComponent* p2) {
     int p1hBWidth = p1->archetype->hitbox.width, p2hBWidth = p2->archetype->hitbox.width;
     int p1hBHeight = p1->archetype->hitbox.height, p2hBHeight = p2->archetype->hitbox.height;
-    return in_range(p1->pos.x.HALF.HI,
-        p2->pos.x.HALF.HI - (p1hBWidth + p2hBWidth) / 2,
-        p2->pos.x.HALF.HI + (p1hBWidth + p2hBWidth) / 2) &&
-        in_range(p1->pos.y.HALF.HI,
+    return
+        in_range(
+            p1->pos.x.HALF.HI,
+            p2->pos.x.HALF.HI - (p1hBWidth + p2hBWidth) / 2,
+            p2->pos.x.HALF.HI + (p1hBWidth + p2hBWidth) / 2
+        ) &&
+        in_range(
+            p1->pos.y.HALF.HI,
             p2->pos.y.HALF.HI - (p1hBHeight + p2hBHeight) / 2,
-            p2->pos.y.HALF.HI + (p1hBHeight + p2hBHeight) / 2);
+            p2->pos.y.HALF.HI + (p1hBHeight + p2hBHeight) / 2
+        );
 }
 
 void handlePlayerToPhysCollision(int entId) {
-    CounterComponent* power = getCounterByFlags(gPlayerId, COUNTER_POWER_FLAG);
     CounterComponent* health = getCounterByFlags(gPlayerId, COUNTER_HEALTH_FLAG);
     CounterComponent* numDefeated = getCounterByFlags(gPlayerId, COUNTER_NUM_DEFEATED_FLAG);
-    bool powerIsMax = power && (power->curr == power->max);
-    if (powerIsMax) { // kill 'im
+    if (gFlags & GFLAG_POWERED_UP) { // kill 'im
         PhysicsComponent* enemyPhys = getComponent(entId, COMP_PHYSICS);
         removeComponentAi(entId);
-        gHitstunFrameCount = 2;
         PhysicsComponent* playerPhys = getComponent(gPlayerId, COMP_PHYSICS);
         // knock it away, then it explodes when it either it hits the screen edge or 2 seconds pass,
         // whichever comes first
@@ -159,20 +181,10 @@ void handlePlayerToPhysCollision(int entId) {
         enemyPhys->vec.y.WORD = 8 * flyAwayVec.y.WORD;
         addTask(taskExplodeWhenWallIsHit, entId, 120);
 
-        // set background to normal colours
-        memcpy32(&pal_bg_bank[MAP_PAL], gradientPal, gradientPalLen / sizeof(u32));
-
-        // shrink player to normal size
-        ObjAffComponent* objAff = getComponent(gPlayerId, COMP_OBJ_AFF);
-        finishAffineAnimation(objAff);
-        obj_aff_identity(getObjAff(objAff));
+        if (health) health->curr = health->max;
 
         // spawn a new fella after 2 seconds
-        addComponentTimer(reserveEntSlot(), TIMER_DELETE_ENT, 120, spawnEnemyCentred);
-
-        // reset power and health
-        power->curr = 0;
-        if (health) health->curr = health->max;
+        addComponentTimer(reserveEntSlot(), TIMER_DELETE_ENT, 120, spawnEnemyConditional);
 
         if (numDefeated && numDefeated->curr < 255) incrementCounter(numDefeated, 1);
         else numDefeated->curr = 255;

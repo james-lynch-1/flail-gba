@@ -40,6 +40,7 @@
 // player
 #define PLAYER_POWER_INCREMENT          60
 #define PLAYER_POWER_DECREMENT          -1
+#define PLAYER_HEALTH_INCREMENT         0x20
 #define PLAYER_HEALTH_DECREMENT         -5
 
 // enemy-related constants
@@ -81,6 +82,7 @@
 
 // global flags (gFlags)
 #define GFLAG_GRAVITY       0x80000000
+#define GFLAG_POWERED_UP    0x00000001
 
 // ent flags (in gEntFlags)
 #define ENT_TO_DELETE           0b10000000

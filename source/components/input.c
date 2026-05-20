@@ -25,15 +25,14 @@ void handleInputNormal(int entId) { // coupled to PhysicsComponent
         if (health && !(gFrameCount & 3)) incrementCounter(health, numDefeated ? -(clamp((numDefeated->curr * lu_div(10)) >> 16, 0, 4)) : -1);
     }
 
-    if (key_hit(KEY_A)) {
-        doNothing();
-    }
-
     if (key_hit(KEY_START)) { // reset
         setGameState(PAUSE);
         return;
     }
 #ifdef DEBUG
+    if (key_hit(KEY_A)) {
+        spawnEnemyCentred();
+    }
     if (key_hit(KEY_B)) {
         if (numComps(COMP_PHYSICS_SIMPLE) < 64)
             spawnParticlesEnemyDefeat(physComp);

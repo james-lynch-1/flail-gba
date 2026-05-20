@@ -1,12 +1,34 @@
 #include "player.h"
 
+void handlePowerFull() {
+    gFlags |= GFLAG_POWERED_UP;
+    lightenBgPalette(0x4000);
+    addAffineAnimation(getComponent(gPlayerId, COMP_OBJ_AFF), AFF_ANIM_GROW, 1);
+}
+
+void endPowerfulMode() {
+    gFlags &= ~GFLAG_POWERED_UP;
+    addComponentTimer(reserveEntSlot(), TIMER_DELETE_ENT, 1, spawnEnemyConditional);
+    CounterComponent* power = getCounterByFlags(gPlayerId, COUNTER_POWER_FLAG);
+    power->curr = 0;
+    memcpy32(&pal_bg_bank[MAP_PAL], gradientPal, gradientPalLen / sizeof(u32));
+    ObjAffComponent* objAffComp = getComponent(gPlayerId, COMP_OBJ_AFF);
+    finishAffineAnimation(objAffComp);
+    obj_aff_identity(getObjAff(objAffComp));
+}
+
 void updatePlayerStuff() {
     // deplete power
     CounterComponent* power = getCounterByFlags(gPlayerId, COUNTER_POWER_FLAG);
     if (power && gFrameCount & 1) {
-        if (power->curr < power->max) {
-            incrementCounter(power, PLAYER_POWER_DECREMENT);
-            power->curr = clamp(power->curr, 0, power->max);
+        incrementCounter(
+            power,
+            PLAYER_POWER_DECREMENT + PLAYER_POWER_DECREMENT * (2 * ((gFlags & GFLAG_POWERED_UP) != 0))
+        );
+        power->curr = clamp(power->curr, 0, power->max);
+        if ((gFlags & GFLAG_POWERED_UP) && power->curr == 0) {
+            endPowerfulMode();
+            splitEnemies();
         }
     }
 
