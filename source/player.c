@@ -34,14 +34,14 @@ void updatePlayerStuff() {
 
     CounterComponent* health = getCounterByFlags(gPlayerId, COUNTER_HEALTH_FLAG);
     CounterComponent* numDefeated = getCounterByFlags(gPlayerId, COUNTER_NUM_DEFEATED_FLAG);
-    if (numComps(COMP_PHYSICS) > 1 && health && (numDefeated->curr >= 10)) {
+    if (health && numDefeated && (numDefeated->curr >= 1)) {
         int frameCountMod60 = Mod(gFrameCount, 60);
         if ((frameCountMod60 == 0)) {
-            // every 10 enemies defeated, increase the health drain by 1
-            int numDefeatedModifier = clamp((numDefeated->curr * lu_div(10)) >> 16, 0, 9);
+            // every 10 enemies defeated, increase the health drain by 4
+            int numDefeatedModifier = 4 + 4 * clamp((numDefeated->curr * lu_div(10)) >> 16, 0, 9);
 
             // every 30 seconds, increase the health drain by 1
-            int timeElapsedModifier = clamp((((gFrameCount * lu_div(60)) >> 16) * lu_div(30)) >> 16, 0, 9);
+            int timeElapsedModifier = 4 * clamp((frameCountMod60 * lu_div(30)) >> 16, 0, 9);
             incrementCounter(health, -numDefeatedModifier - timeElapsedModifier);
         }
     }

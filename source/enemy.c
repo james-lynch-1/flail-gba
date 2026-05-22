@@ -28,8 +28,7 @@ int spawnEnemyWeak(int x, int y) {
 int spawnEnemy(int x, int y) {
     if ((numComps(COMP_OBJ) >= MAX_OBJ_COMPONENTS) ||
         (numComps(COMP_PHYSICS) >= MAX_PHYSICS_COMPONENTS) ||
-        (numComps(COMP_AI) >= MAX_AI_COMPONENTS) ||
-        (numComps(COMP_TIMER) >= MAX_TIMER_COMPONENTS))
+        (numComps(COMP_AI) >= MAX_AI_COMPONENTS))
         return -1;
     int entId = reserveEntSlot();
     if (entId == -1) return -1;

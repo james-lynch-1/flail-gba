@@ -166,6 +166,7 @@ typedef struct EventListener_ {
     u32 flags;
     void (*callback)(int entId);
     bool isRemovedAfterCallback;
+    bool isCalledOncePerFrame;
 } EventListener;
 
 // stuff with only one instance

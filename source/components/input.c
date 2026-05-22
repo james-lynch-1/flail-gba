@@ -29,6 +29,9 @@ void handleInputNormal(int entId) { // coupled to PhysicsComponent
         setGameState(PAUSE);
         return;
     }
+    if (key_hit(KEY_A)) {
+        doNothing();
+    }
 #ifdef DEBUG
     if (key_hit(KEY_A)) {
         spawnEnemyCentred();

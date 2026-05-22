@@ -26,11 +26,13 @@ void incrementPower(int entId) {
     CounterComponent* numDefeated = getCounterByFlags(gPlayerId, COUNTER_NUM_DEFEATED_FLAG);
     if (!power || (gFlags & GFLAG_POWERED_UP)) return;
     Position playerPos = ((PhysicsComponent*)getComponent(gPlayerId, COMP_PHYSICS))->pos;
-    Position enemyPos = gPhysCompsDense[1].pos; // ZZZ should get every enemy and choose the closest pos
-    Vector vec = { {playerPos.x.WORD - enemyPos.x.WORD}, {playerPos.y.WORD - enemyPos.y.WORD} };
-    int distance = numComps(COMP_PHYSICS) > 1 ?
-        (fastMagnitude(vec.x.HALF.HI, vec.y.HALF.HI))
-        : 120;
+    int distance = 120;
+    for (int i = 1; i < numComps(COMP_PHYSICS); i++) {
+        Position enemyPos = gPhysCompsDense[i].pos;
+        int newDist = fastMagnitude(playerPos.x.HALF.HI - enemyPos.x.HALF.HI, playerPos.y.HALF.HI - enemyPos.y.HALF.HI);
+        if (newDist < distance)
+            distance = newDist;
+    }
     // scale distance power modifier by 15% for every 10 fellas defeated
     int dist1PctFp = (distance * lu_div(100));
     distance += ((s64)(dist1PctFp * 15) * (numDefeated->curr * lu_div(10))) >> 32;

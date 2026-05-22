@@ -16,9 +16,13 @@ void pushAwayFromPosition(PhysicsComponent* physComp, int x, int y) {
 
 void updatePlayerPhysics() {
     PhysicsComponent* player = getComponent(gPlayerId, COMP_PHYSICS);
+    bool didCollideAlready = false;
     for (int i = 1; i < numComps(COMP_PHYSICS); i++) {
         if (checkPhysCompToPhysCompCollision(player, &gPhysCompsDense[i])) {
+            if (!(gFlags & GFLAG_POWERED_UP) && didCollideAlready)
+                break;
             notify(gPhysCompsDense[i].header.entId, COMP_PHYSICS, E_PHYS_TOUCHED);
+            didCollideAlready = true;
         }
     }
     u32 mag = fastMagnitude(player->vec.x.WORD, player->vec.y.WORD);
